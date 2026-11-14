@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1794695859892,
+      "tag": "0000_grill_swill_core",
+      "breakpoints": true
+    }
+  ]
+}
