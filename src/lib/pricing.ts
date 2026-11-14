@@ -121,9 +121,9 @@ export function promoDiscountCents(promo: PromoDefinition, lines: PricedLine[]):
 export interface TotalsInput {
   lines: PricedLine[];
   fulfillment: "delivery" | "pickup";
-  promoCode?: string | null;
-  pointsToRedeem?: number;
-  availablePoints?: number;
+  promoCode?: string | null | undefined;
+  pointsToRedeem?: number | undefined;
+  availablePoints?: number | undefined;
 }
 
 export interface Totals {
