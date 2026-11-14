@@ -60,6 +60,7 @@ export interface CartLine {
   key: string;
   itemId: string;
   slug: string;
+  category: CategoryId;
   name: string;
   imageKey: string;
   quantity: number;

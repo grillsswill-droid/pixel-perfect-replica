@@ -1,0 +1,44 @@
+import { Link } from "@tanstack/react-router";
+
+import { Logo } from "./logo";
+
+export function SiteFooter() {
+  return (
+    <footer className="bg-charcoal text-cream">
+      <div className="checker-border" />
+      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div>
+          <Logo light />
+          <p className="mt-4 max-w-xs text-sm text-cream/70">
+            Smashed burgers, crispy chicken, wood-fired pizza and serious coffee. Fast food, made the slow way.
+          </p>
+        </div>
+        <div>
+          <h3 className="font-display text-sm font-black tracking-wider text-primary uppercase">Eat</h3>
+          <ul className="mt-3 space-y-2 text-sm text-cream/80">
+            <li><Link to="/menu" className="hover:text-cream">Full menu</Link></li>
+            <li><Link to="/deals" className="hover:text-cream">Deals</Link></li>
+            <li><Link to="/rewards" className="hover:text-cream">Rewards</Link></li>
+          </ul>
+        </div>
+        <div>
+          <h3 className="font-display text-sm font-black tracking-wider text-primary uppercase">Visit</h3>
+          <ul className="mt-3 space-y-2 text-sm text-cream/80">
+            <li><Link to="/locations" className="hover:text-cream">Find a store</Link></li>
+            <li><Link to="/kitchen" className="hover:text-cream">Kitchen staff</Link></li>
+          </ul>
+        </div>
+        <div>
+          <h3 className="font-display text-sm font-black tracking-wider text-primary uppercase">Open late</h3>
+          <p className="mt-3 text-sm text-cream/80">Most stores 7am – 11pm, every day.</p>
+        </div>
+      </div>
+      <div className="border-t border-cream/10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-cream/50 sm:flex-row sm:justify-between sm:px-6">
+          <span>© {new Date().getFullYear()} Grill & Swill Fast Food. All rights reserved.</span>
+          <span>Payments on this site are simulated. No card is charged.</span>
+        </div>
+      </div>
+    </footer>
+  );
+}
