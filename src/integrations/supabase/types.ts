@@ -17,24 +17,45 @@ export type Database = {
       admin_logs: {
         Row: {
           action: string
-          admin_id: string
+          admin_id: string | null
           created_at: string
           details: Json
           id: string
         }
         Insert: {
           action: string
-          admin_id: string
+          admin_id?: string | null
           created_at?: string
           details?: Json
           id?: string
         }
         Update: {
           action?: string
-          admin_id?: string
+          admin_id?: string | null
           created_at?: string
           details?: Json
           id?: string
+        }
+        Relationships: []
+      }
+      guests: {
+        Row: {
+          created_at: string
+          id: string
+          lifetime_points: number
+          points: number
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          lifetime_points?: number
+          points?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lifetime_points?: number
+          points?: number
         }
         Relationships: []
       }
@@ -100,6 +121,7 @@ export type Database = {
           delivery_fee_cents: number
           discount_cents: number
           fulfillment: string
+          guest_id: string | null
           id: string
           items: Json
           notes: string | null
@@ -114,7 +136,7 @@ export type Database = {
           tax_cents: number
           total_cents: number
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           address?: Json | null
@@ -123,6 +145,7 @@ export type Database = {
           delivery_fee_cents?: number
           discount_cents?: number
           fulfillment: string
+          guest_id?: string | null
           id?: string
           items: Json
           notes?: string | null
@@ -137,7 +160,7 @@ export type Database = {
           tax_cents?: number
           total_cents: number
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           address?: Json | null
@@ -146,6 +169,7 @@ export type Database = {
           delivery_fee_cents?: number
           discount_cents?: number
           fulfillment?: string
+          guest_id?: string | null
           id?: string
           items?: Json
           notes?: string | null
@@ -160,7 +184,7 @@ export type Database = {
           tax_cents?: number
           total_cents?: number
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {

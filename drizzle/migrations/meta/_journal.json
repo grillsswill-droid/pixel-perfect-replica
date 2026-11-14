@@ -8,6 +8,13 @@
       "when": 1794695859892,
       "tag": "0000_grill_swill_core",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794696525754,
+      "tag": "0001_guest_checkout_no_accounts",
+      "breakpoints": true
     }
   ]
 }
