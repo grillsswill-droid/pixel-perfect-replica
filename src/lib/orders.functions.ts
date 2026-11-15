@@ -163,7 +163,9 @@ export const getGuestRewards = createServerFn({ method: "GET" })
       supabaseAdmin.from("guests").select("points, lifetime_points, created_at").eq("id", data.guestId).maybeSingle(),
       supabaseAdmin
         .from("orders")
-        .select("id, order_number, status, fulfillment, items, total_cents, points_earned, created_at")
+        .select(
+          "id, order_number, status, fulfillment, store_id, items, total_cents, points_earned, created_at",
+        )
         .eq("guest_id", data.guestId)
         .order("created_at", { ascending: false })
         .limit(12),

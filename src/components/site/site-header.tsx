@@ -53,12 +53,14 @@ export function SiteHeader() {
       <div
         className={cn(
           "border-b transition-all duration-300",
-          scrolled ? "border-border bg-background/90 backdrop-blur-md" : "border-transparent bg-background",
+          scrolled
+            ? "border-border bg-background/90 backdrop-blur-md"
+            : "border-transparent bg-background",
         )}
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6">
           <Logo />
-          <nav className="ml-6 hidden items-center gap-1 md:flex" aria-label="Main">
+          <nav className="ml-6 hidden items-center gap-1 lg:flex" aria-label="Main">
             {NAV.map((n) => (
               <Link
                 key={n.to}
@@ -70,7 +72,10 @@ export function SiteHeader() {
                   <>
                     {n.label}
                     {isActive && (
-                      <motion.span layoutId="nav-pill" className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-primary" />
+                      <motion.span
+                        layoutId="nav-pill"
+                        className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-primary"
+                      />
                     )}
                   </>
                 )}
@@ -105,7 +110,7 @@ export function SiteHeader() {
             </Button>
             <button
               type="button"
-              className="grid h-11 w-11 place-items-center rounded-full md:hidden"
+              className="grid h-11 w-11 place-items-center rounded-full lg:hidden"
               onClick={() => setMobileOpen((o) => !o)}
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
@@ -120,12 +125,16 @@ export function SiteHeader() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden border-t md:hidden"
+              className="overflow-hidden border-t lg:hidden"
               aria-label="Mobile"
             >
               <div className="flex flex-col gap-1 px-4 py-4">
                 {NAV.map((n) => (
-                  <Link key={n.to} to={n.to} className="font-display rounded-xl px-3 py-3 text-2xl font-black uppercase hover:bg-muted">
+                  <Link
+                    key={n.to}
+                    to={n.to}
+                    className="font-display rounded-xl px-3 py-3 text-2xl font-black uppercase hover:bg-muted"
+                  >
                     {n.label}
                   </Link>
                 ))}

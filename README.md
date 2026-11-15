@@ -1,24 +1,41 @@
-# Pixel Perfect Replica
+# Grill & Swill
 
-Implement exactly the screenshot and nothing else
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/52b78d00-1e5b-439c-92f6-55b1ed9a3550).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+A fast-casual restaurant storefront built with React, TypeScript, TanStack Start,
+Tailwind CSS, and Supabase. Guests can browse and customize menu items, place
+simulated delivery or pickup orders, track order progress, and collect rewards.
+Staff can use the passcode-protected kitchen board to update orders and menu
+availability.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Install dependencies and start the development server:
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+Run the production build, tests, and linter:
+
+```sh
+npm run build
+npm test
+npm run lint
+```
+
+## Environment
+
+Set the server-side Supabase and staff values listed in [`.env.example`](./.env.example).
+Keep service-role keys, session secrets, and staff passcodes private. The checkout
+is a demo and does not charge a payment method.
+
+## Storefront routes
+
+- `/` — home and order entry
+- `/menu` — live catalog and item customizer
+- `/deals` — available promotion codes
+- `/locations` — store directory
+- `/rewards` — device-based points and order history
+- `/checkout` — guest pickup or delivery checkout
+- `/orders/:id` — live/simulated order progress
+- `/kitchen` — staff order queue and item availability

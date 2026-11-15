@@ -42,7 +42,10 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
     setSelections((s) => {
       const cur = s[groupId] ?? [];
       if (type === "single") return { ...s, [groupId]: [choiceId] };
-      return { ...s, [groupId]: cur.includes(choiceId) ? cur.filter((c) => c !== choiceId) : [...cur, choiceId] };
+      return {
+        ...s,
+        [groupId]: cur.includes(choiceId) ? cur.filter((c) => c !== choiceId) : [...cur, choiceId],
+      };
     });
   }
 
@@ -82,7 +85,10 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
           />
           <div className="absolute bottom-3 left-3 flex flex-wrap gap-1.5">
             {item.tags.map((t) => (
-              <span key={t} className="rounded-full bg-card/95 px-2.5 py-1 text-[11px] font-bold tracking-wide uppercase">
+              <span
+                key={t}
+                className="rounded-full bg-card/95 px-2.5 py-1 text-[11px] font-bold tracking-wide uppercase"
+              >
                 {t}
               </span>
             ))}
@@ -90,17 +96,24 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
         </div>
         <div className="space-y-6 p-6">
           <div>
-            <DialogTitle className="font-display text-3xl font-black uppercase">{item.name}</DialogTitle>
-            <DialogDescription className="mt-2 text-base text-charcoal/75">{item.description}</DialogDescription>
+            <DialogTitle className="font-display text-3xl font-black uppercase">
+              {item.name}
+            </DialogTitle>
+            <DialogDescription className="mt-2 text-base text-charcoal/75">
+              {item.description}
+            </DialogDescription>
             <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-              <Flame className="h-4 w-4 text-primary" /> {item.calories} cal · from {formatMoney(item.price_cents)}
+              <Flame className="h-4 w-4 text-primary" /> {item.calories} cal · from{" "}
+              {formatMoney(item.price_cents)}
             </p>
           </div>
 
           {item.options.map((g) => (
             <fieldset key={g.id}>
               <legend className="flex w-full items-center justify-between">
-                <span className="font-display text-sm font-black tracking-wider uppercase">{g.label}</span>
+                <span className="font-display text-sm font-black tracking-wider uppercase">
+                  {g.label}
+                </span>
                 <span className="text-xs font-semibold text-muted-foreground">
                   {g.required ? "Required" : g.type === "multi" ? "Pick any" : "Optional"}
                 </span>
@@ -116,7 +129,9 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
                       aria-pressed={on}
                       className={cn(
                         "flex items-center justify-between gap-3 rounded-2xl border-2 bg-card px-4 py-3 text-left text-sm font-semibold transition active:scale-[0.98]",
-                        on ? "border-primary shadow-chunky" : "border-transparent hover:border-border",
+                        on
+                          ? "border-primary shadow-chunky"
+                          : "border-transparent hover:border-border",
                       )}
                     >
                       <span className="flex items-center gap-2.5">
@@ -124,14 +139,20 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
                           className={cn(
                             "grid h-5 w-5 shrink-0 place-items-center border-2 transition",
                             g.type === "single" ? "rounded-full" : "rounded-md",
-                            on ? "border-primary bg-primary text-primary-foreground" : "border-input",
+                            on
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-input",
                           )}
                         >
                           {on && <Check className="h-3 w-3" strokeWidth={3} />}
                         </span>
                         {c.label}
                       </span>
-                      {c.price_cents > 0 && <span className="text-muted-foreground tabular-nums">+{formatMoney(c.price_cents)}</span>}
+                      {c.price_cents > 0 && (
+                        <span className="text-muted-foreground tabular-nums">
+                          +{formatMoney(c.price_cents)}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
@@ -142,7 +163,9 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
           {item.ingredients.length > 0 && (
             <fieldset>
               <legend className="flex w-full items-center justify-between">
-                <span className="font-display text-sm font-black tracking-wider uppercase">What's inside</span>
+                <span className="font-display text-sm font-black tracking-wider uppercase">
+                  What's inside
+                </span>
                 <span className="text-xs font-semibold text-muted-foreground">Tap to hold</span>
               </legend>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -152,11 +175,15 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
                     <button
                       type="button"
                       key={ing}
-                      onClick={() => setRemoved((r) => (off ? r.filter((x) => x !== ing) : [...r, ing]))}
+                      onClick={() =>
+                        setRemoved((r) => (off ? r.filter((x) => x !== ing) : [...r, ing]))
+                      }
                       aria-pressed={off}
                       className={cn(
                         "flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition active:scale-95",
-                        off ? "bg-muted text-muted-foreground line-through" : "bg-card text-charcoal shadow-card",
+                        off
+                          ? "bg-muted text-muted-foreground line-through"
+                          : "bg-card text-charcoal shadow-card",
                       )}
                     >
                       <Leaf className={cn("h-3.5 w-3.5", off ? "opacity-40" : "text-success")} />
@@ -169,7 +196,10 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
           )}
 
           <div>
-            <label htmlFor="item-note" className="font-display text-sm font-black tracking-wider uppercase">
+            <label
+              htmlFor="item-note"
+              className="font-display text-sm font-black tracking-wider uppercase"
+            >
               Notes for the kitchen
             </label>
             <input
@@ -185,15 +215,35 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
 
       <div className="flex items-center gap-3 border-t bg-card p-4 sm:px-6">
         <QuantityStepper value={qty} onChange={setQty} />
-        <Button variant="hero" size="xl" className="flex-1" onClick={add} disabled={!item.is_available || added}>
+        <Button
+          variant="hero"
+          size="xl"
+          className="flex-1"
+          onClick={add}
+          disabled={!cart.hydrated || !item.is_available || added}
+          loading={!cart.hydrated}
+        >
           <AnimatePresence mode="wait" initial={false}>
             {added ? (
-              <motion.span key="done" initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="flex items-center gap-2">
+              <motion.span
+                key="done"
+                initial={{ y: 12, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                className="flex items-center gap-2"
+              >
                 <Check className="h-5 w-5" /> In your bag
               </motion.span>
             ) : (
-              <motion.span key="add" initial={{ y: -12, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-                {item.is_available ? `Add to bag · ${formatMoney(unit * qty)}` : "Sold out today"}
+              <motion.span
+                key="add"
+                initial={{ y: -12, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+              >
+                {!cart.hydrated
+                  ? "Getting your bag ready…"
+                  : item.is_available
+                    ? `Add to bag · ${formatMoney(unit * qty)}`
+                    : "Sold out today"}
               </motion.span>
             )}
           </AnimatePresence>
