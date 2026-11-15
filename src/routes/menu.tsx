@@ -14,7 +14,7 @@ const CATEGORY_IDS = CATEGORIES.map((c) => c.id) as string[];
 
 export const Route = createFileRoute("/menu")({
   validateSearch: (s: Record<string, unknown>): { cat?: CategoryId } =>
-    typeof s.cat === "string" && CATEGORY_IDS.includes(s.cat) ? { cat: s.cat as CategoryId } : {},
+    typeof s["cat"] === "string" && CATEGORY_IDS.includes(s["cat"]) ? { cat: s["cat"] as CategoryId } : {},
   loader: ({ context }) => context.queryClient.ensureQueryData(menuQuery()),
   head: () => ({
     meta: [
