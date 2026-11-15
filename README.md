@@ -109,7 +109,7 @@ is charged until a payment provider is configured.
 - `/receipts/:id` — printable, snapshot-based order receipt
 - `/kitchen` — staff order queue and item availability
 - `/admin` — separate administrator login for order, menu/combo, customer, promotion,
-  catering, gallery, sales, and store settings workflows
+  catering, gallery, sales, store settings, and announcement ticker workflows
 
 Guests can also leave persistent likes and comments on published gallery posts,
 and submit catering inquiries for follow-up. Gallery comments and catering

@@ -19,6 +19,7 @@ import {
   POINTS_PER_DOLLAR_REDEEMED,
   PROMOS,
 } from "./pricing";
+import { DEFAULT_TICKER_MESSAGES } from "./site-content";
 
 type AdminSession = { admin?: boolean };
 
@@ -171,6 +172,7 @@ const settingsSchema = z
     points_per_dollar: z.number().int().min(1).max(1000),
     points_per_dollar_redeemed: z.number().int().min(1).max(10_000),
     reward_tiers: z.array(rewardTierSchema).min(1).max(20),
+    ticker_messages: z.array(z.string().trim().min(1).max(160)).max(20),
     business_hours: z
       .array(
         z.object({
@@ -431,6 +433,7 @@ export const getCheckoutConfiguration = createServerFn({ method: "GET" }).handle
     pointsPerDollar: settings?.points_per_dollar ?? POINTS_PER_DOLLAR,
     pointsPerDollarRedeemed: settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
     businessHours: settings?.business_hours ?? DEFAULT_HOURS,
+    tickerMessages: settings?.ticker_messages ?? DEFAULT_TICKER_MESSAGES,
     promotions: [
       ...promotionOverrides
         .filter((promo) => promo.active)
@@ -774,6 +777,7 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
       points_per_dollar_redeemed:
         settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
       reward_tiers: settings?.reward_tiers?.length ? settings.reward_tiers : DEFAULT_REWARD_TIERS,
+      ticker_messages: settings?.ticker_messages ?? DEFAULT_TICKER_MESSAGES,
       business_hours: settings?.business_hours ?? DEFAULT_HOURS,
     },
     stores,
@@ -890,6 +894,7 @@ export const saveAdminSettings = createServerFn({ method: "POST" })
       free_delivery_threshold_cents: data.free_delivery_threshold_cents,
       points_per_dollar: data.points_per_dollar,
       reward_tiers_count: data.reward_tiers.length,
+      ticker_messages_count: data.ticker_messages.length,
     });
     return { ok: true as const };
   });

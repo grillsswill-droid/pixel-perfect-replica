@@ -48,11 +48,11 @@ export interface PromoDefinition {
 export const PROMOS: PromoDefinition[] = [
   {
     code: "SWILL5",
-    label: "$5 off $25+",
-    description: "Take $5 off any order of $25 or more.",
+    label: "$5 off $35+",
+    description: "Take $5 off any order of $35 or more.",
     kind: "amount",
     value: 500,
-    minSubtotalCents: 2500,
+    minSubtotalCents: 3500,
   },
   {
     code: "PIZZANIGHT",

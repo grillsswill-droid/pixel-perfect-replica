@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { Menu as MenuIcon, ShoppingBag, X } from "lucide-react";
@@ -5,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
+import { getCheckoutConfiguration } from "@/lib/admin.functions";
+import { DEFAULT_TICKER_MESSAGES } from "@/lib/site-content";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
 
@@ -18,23 +21,20 @@ const NAV = [
   { to: "/rewards", label: "Rewards" },
 ] as const;
 
-const TICKER = [
-  "Free delivery threshold shown at checkout",
-  "Code SWILL5 · $5 off $25",
-  "Beef ground fresh every morning",
-  "Earn 10 points per $1",
-  "Potatoes cut by hand at 6am",
-  "18-hour cold brew on tap",
-];
-
 export function SiteHeader() {
   const { count, setOpen } = useCart();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const { data: checkoutConfiguration } = useQuery({
+    queryKey: ["checkout-configuration"],
+    queryFn: () => getCheckoutConfiguration(),
+    staleTime: 60_000,
+  });
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLElement>(null);
+  const ticker = checkoutConfiguration?.tickerMessages ?? DEFAULT_TICKER_MESSAGES;
 
   useEffect(() => setMobileOpen(false), [pathname]);
 
@@ -87,18 +87,20 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40">
-      <div className="overflow-hidden bg-charcoal py-1.5 text-cream">
-        <div className="flex w-max animate-marquee gap-10 whitespace-nowrap text-[11px] font-semibold tracking-[0.18em] uppercase">
-          {[...TICKER, ...TICKER].map((text, index) => (
-            <span key={`${text}-${index}`} className="flex items-center gap-10">
-              {text}
-              <span className="text-primary" aria-hidden="true">
-                ✦
+      {ticker.length ? (
+        <div className="overflow-hidden bg-charcoal py-1.5 text-cream">
+          <div className="flex w-max animate-marquee gap-10 whitespace-nowrap text-[11px] font-semibold tracking-[0.18em] uppercase">
+            {[...ticker, ...ticker].map((text, index) => (
+              <span key={index} className="flex items-center gap-10">
+                {text}
+                <span className="text-primary" aria-hidden="true">
+                  ✦
+                </span>
               </span>
-            </span>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      ) : null}
       <div
         className={cn(
           "border-b transition-all duration-300",

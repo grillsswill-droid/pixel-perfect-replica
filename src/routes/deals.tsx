@@ -16,7 +16,7 @@ export const Route = createFileRoute("/deals")({
       {
         name: "description",
         content:
-          "Current Grill & Swill promo codes: $5 off $25, 20% off pizzas, and more. Apply them at checkout.",
+          "Current Grill & Swill promo codes: $5 off $35, 20% off pizzas, and more. Apply them at checkout.",
       },
       { property: "og:title", content: "Grill & Swill Deals" },
       {

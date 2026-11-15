@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { computeTotals, PricingError, promoDiscountCents } from "@/lib/pricing";
+import { computeTotals, PricingError, promoDiscountCents, PROMOS } from "@/lib/pricing";
 
 describe("checkout pricing", () => {
   it("applies delivery fees only below the free-delivery threshold", () => {
@@ -34,6 +34,26 @@ describe("checkout pricing", () => {
         ],
       ),
     ).toBe(400);
+  });
+
+  it("uses the updated $35 minimum for SWILL5", () => {
+    const swill5 = PROMOS.find((promo) => promo.code === "SWILL5");
+    expect(swill5?.minSubtotalCents).toBe(3500);
+    expect(() =>
+      computeTotals({
+        lines: [{ category: "burgers", lineTotalCents: 3499 }],
+        fulfillment: "pickup",
+        promoCode: "SWILL5",
+      }),
+    ).toThrow("at least $35.00");
+
+    expect(
+      computeTotals({
+        lines: [{ category: "burgers", lineTotalCents: 3500 }],
+        fulfillment: "pickup",
+        promoCode: "SWILL5",
+      }).promoDiscountCents,
+    ).toBe(500);
   });
 
   it("rejects invalid promo codes and points that are not in redeemable blocks", () => {

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { z } from "zod";
 import {
@@ -87,6 +88,7 @@ export const Route = createFileRoute("/admin")({
 });
 
 function AdminPage() {
+  const queryClient = useQueryClient();
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [passcode, setPasscode] = useState("");
   const [tab, setTab] = useState<Tab>("overview");
@@ -144,6 +146,7 @@ function AdminPage() {
     setError("");
     try {
       await action();
+      await queryClient.invalidateQueries({ queryKey: ["checkout-configuration"] });
       await refresh();
       toast.success(successMessage);
       return true;
@@ -2632,6 +2635,7 @@ function SettingsPanel({
     String(data.settings.points_per_dollar_redeemed),
   );
   const [rewardTiers, setRewardTiers] = useState(data.settings.reward_tiers);
+  const [tickerMessages, setTickerMessages] = useState(data.settings.ticker_messages);
   const [hours, setHours] = useState(data.settings.business_hours);
   const settingsSnapshot = JSON.stringify(data.settings);
   const parsedSettings = useMemo(
@@ -2649,6 +2653,7 @@ function SettingsPanel({
               value: z.string(),
             }),
           ),
+          ticker_messages: z.array(z.string()),
           business_hours: z.array(
             z.object({
               day: z.enum([
@@ -2676,6 +2681,7 @@ function SettingsPanel({
     setPointsPerDollar(String(parsedSettings.points_per_dollar));
     setPointsPerDollarRedeemed(String(parsedSettings.points_per_dollar_redeemed));
     setRewardTiers(parsedSettings.reward_tiers);
+    setTickerMessages(parsedSettings.ticker_messages);
     setHours(parsedSettings.business_hours);
   }, [parsedSettings]);
 
@@ -2701,6 +2707,7 @@ function SettingsPanel({
                     label: tier.label,
                     value: tier.value,
                   })),
+                  ticker_messages: tickerMessages.map((message) => message.trim()).filter(Boolean),
                   business_hours: hours,
                 },
               }),
@@ -2745,6 +2752,63 @@ function SettingsPanel({
             onChange={setPointsPerDollarRedeemed}
             required
           />
+        </div>
+        <div>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <h3 className="font-display text-xl font-black uppercase">Announcement ticker</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Edit the scrolling messages in the storefront header. Add up to 20 messages.
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              disabled={tickerMessages.length >= 20}
+              onClick={() => setTickerMessages((current) => [...current, "New announcement"])}
+            >
+              Add message
+            </Button>
+          </div>
+          <div className="space-y-3">
+            {tickerMessages.map((message, index) => (
+              <div
+                key={index}
+                className="flex flex-wrap items-end gap-3 rounded-2xl bg-card p-3 shadow-card"
+              >
+                <div className="min-w-0 flex-1">
+                  <TextInput
+                    label={`Message ${index + 1}`}
+                    value={message}
+                    maxLength={160}
+                    onChange={(value) =>
+                      setTickerMessages((current) =>
+                        current.map((item, itemIndex) => (itemIndex === index ? value : item)),
+                      )
+                    }
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    setTickerMessages((current) =>
+                      current.filter((_, itemIndex) => itemIndex !== index),
+                    )
+                  }
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            {!tickerMessages.length ? (
+              <p className="rounded-2xl bg-card p-4 text-sm text-muted-foreground">
+                No ticker messages. Add one to show the announcement bar.
+              </p>
+            ) : null}
+          </div>
         </div>
         <div>
           <div className="mb-3 flex items-center justify-between gap-3">
@@ -2969,6 +3033,7 @@ function TextInput({
   min?: string;
   max?: string;
   step?: string;
+  maxLength?: number;
 }) {
   return (
     <label className="block text-sm font-semibold">
