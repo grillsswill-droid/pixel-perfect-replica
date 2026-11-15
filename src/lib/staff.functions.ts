@@ -8,7 +8,7 @@ import { canTransitionOrder } from "./order-status";
 
 type StaffSession = { staff?: boolean };
 
-function sessionConfig() {
+export function staffSessionConfig() {
   const password = process.env["SESSION_SECRET"];
   if (!password || password.length < 32) {
     throw new Error("SESSION_SECRET must be configured with at least 32 characters.");
@@ -18,7 +18,12 @@ function sessionConfig() {
     password,
     name: "gs-staff",
     maxAge: 60 * 60 * 12,
-    cookie: { httpOnly: true, secure: true, sameSite: "lax" as const, path: "/" },
+    cookie: {
+      httpOnly: true,
+      secure: process.env["NODE_ENV"] === "production",
+      sameSite: "lax" as const,
+      path: "/",
+    },
   };
 }
 
@@ -31,7 +36,7 @@ async function passcodeMatches(input: string, expected: string): Promise<boolean
 
 async function isStaff(): Promise<boolean> {
   const { useSession: getSession } = await import("@tanstack/react-start/server");
-  const session = await getSession<StaffSession>(sessionConfig());
+  const session = await getSession<StaffSession>(staffSessionConfig());
   return Boolean(session.data.staff);
 }
 
@@ -46,14 +51,14 @@ export const unlockKitchen = createServerFn({ method: "POST" })
     if (!expected) throw new Error("Staff passcode isn't set up");
     if (!(await passcodeMatches(data.passcode, expected))) return { ok: false as const };
     const { useSession: getSession } = await import("@tanstack/react-start/server");
-    const session = await getSession<StaffSession>(sessionConfig());
+    const session = await getSession<StaffSession>(staffSessionConfig());
     await session.update({ staff: true });
     return { ok: true as const };
   });
 
 export const lockKitchen = createServerFn({ method: "POST" }).handler(async () => {
   const { useSession: getSession } = await import("@tanstack/react-start/server");
-  const session = await getSession<StaffSession>(sessionConfig());
+  const session = await getSession<StaffSession>(staffSessionConfig());
   await session.clear();
   return { ok: true as const };
 });
