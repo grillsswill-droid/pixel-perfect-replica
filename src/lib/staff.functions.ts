@@ -2,13 +2,19 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 import type { DeliveryAddress } from "./orders.functions";
-import type { OrderLineSnapshot } from "./menu-types";
+import type { MenuItem, OrderLineSnapshot, Store } from "./menu-types";
+import type { AdminLogDocument, OrderDocument } from "./mongodb.server";
 
 type StaffSession = { staff?: boolean };
 
 function sessionConfig() {
+  const password = process.env["SESSION_SECRET"];
+  if (!password || password.length < 32) {
+    throw new Error("SESSION_SECRET must be configured with at least 32 characters.");
+  }
+
   return {
-    password: process.env["SESSION_SECRET"]!,
+    password,
     name: "gs-staff",
     maxAge: 60 * 60 * 12,
     cookie: { httpOnly: true, secure: true, sameSite: "lax" as const, path: "/" },
@@ -23,8 +29,8 @@ async function passcodeMatches(input: string, expected: string): Promise<boolean
 }
 
 async function isStaff(): Promise<boolean> {
-  const { useSession } = await import("@tanstack/react-start/server");
-  const session = await useSession<StaffSession>(sessionConfig());
+  const { useSession: getSession } = await import("@tanstack/react-start/server");
+  const session = await getSession<StaffSession>(sessionConfig());
   return Boolean(session.data.staff);
 }
 
@@ -38,65 +44,121 @@ export const unlockKitchen = createServerFn({ method: "POST" })
     const expected = process.env["STAFF_PASSCODE"];
     if (!expected) throw new Error("Staff passcode isn't set up");
     if (!(await passcodeMatches(data.passcode, expected))) return { ok: false as const };
-    const { useSession } = await import("@tanstack/react-start/server");
-    const session = await useSession<StaffSession>(sessionConfig());
+    const { useSession: getSession } = await import("@tanstack/react-start/server");
+    const session = await getSession<StaffSession>(sessionConfig());
     await session.update({ staff: true });
     return { ok: true as const };
   });
 
 export const lockKitchen = createServerFn({ method: "POST" }).handler(async () => {
-  const { useSession } = await import("@tanstack/react-start/server");
-  const session = await useSession<StaffSession>(sessionConfig());
+  const { useSession: getSession } = await import("@tanstack/react-start/server");
+  const session = await getSession<StaffSession>(sessionConfig());
   await session.clear();
   return { ok: true as const };
 });
 
 export const getKitchenBoard = createServerFn({ method: "GET" }).handler(async () => {
   if (!(await isStaff())) return { unlocked: false as const };
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { collection, getMongoDatabase } = await import("./mongodb.server");
+  const { db } = await getMongoDatabase();
   const since = new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString();
   const [orders, menu, logs] = await Promise.all([
-    supabaseAdmin
-      .from("orders")
-      .select("id, order_number, status, fulfillment, items, total_cents, customer_name, created_at, updated_at, address, stores(name)")
-      .gte("created_at", since)
-      .order("created_at", { ascending: false })
-      .limit(80),
-    supabaseAdmin.from("menu_items").select("id, name, category, is_available, price_cents").order("category").order("sort_order"),
-    supabaseAdmin.from("admin_logs").select("id, action, details, created_at").order("created_at", { ascending: false }).limit(12),
+    collection<OrderDocument>(db, "orders")
+      .find({ created_at: { $gte: since } })
+      .project<OrderDocument>({ _id: 0 })
+      .sort({ created_at: -1 })
+      .limit(80)
+      .toArray(),
+    collection<MenuItem>(db, "menu_items")
+      .find({})
+      .project<Pick<MenuItem, "id" | "name" | "category" | "is_available" | "price_cents">>({
+        _id: 0,
+        id: 1,
+        name: 1,
+        category: 1,
+        is_available: 1,
+        price_cents: 1,
+      })
+      .sort({ category: 1, sort_order: 1 })
+      .toArray(),
+    collection<AdminLogDocument>(db, "admin_logs")
+      .find({})
+      .project<AdminLogDocument>({ _id: 0 })
+      .sort({ created_at: -1 })
+      .limit(12)
+      .toArray(),
   ]);
+  const storeIds = [...new Set(orders.map((order) => order.store_id))];
+  const stores = await collection<Store>(db, "stores")
+    .find({ id: { $in: storeIds } })
+    .project<Store>({ _id: 0 })
+    .toArray();
+  const storesById = new Map(stores.map((store) => [store.id, store]));
+
   return {
     unlocked: true as const,
-    orders: (orders.data ?? []).map((o) => ({
-      ...o,
-      address: o.address as unknown as DeliveryAddress | null,
-      items: o.items as unknown as OrderLineSnapshot[],
+    orders: orders.map((order) => ({
+      ...order,
+      stores: storesById.get(order.store_id) ?? null,
+      address: order.address as DeliveryAddress | null,
+      items: order.items as OrderLineSnapshot[],
     })),
-    menu: menu.data ?? [],
-    logs: logs.data ?? [],
+    menu,
+    logs,
   };
 });
 
 export const setOrderStatus = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
-    z.object({ id: z.string().uuid(), status: z.enum(["received", "kitchen", "handoff", "completed", "cancelled"]) }).parse(d),
+    z
+      .object({
+        id: z.string().uuid(),
+        status: z.enum(["received", "kitchen", "handoff", "completed", "cancelled"]),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     await requireStaff();
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("orders").update({ status: data.status }).eq("id", data.id);
-    if (error) throw new Error("Couldn't update the order.");
-    await supabaseAdmin.from("admin_logs").insert({ action: "order_status", details: { order_id: data.id, status: data.status } });
+    const { collection, getMongoDatabase } = await import("./mongodb.server");
+    const { db } = await getMongoDatabase();
+    const now = new Date().toISOString();
+    const update = await collection<OrderDocument>(db, "orders").updateOne(
+      { id: data.id },
+      { $set: { status: data.status, updated_at: now } },
+    );
+    if (update.matchedCount === 0) throw new Error("That order couldn't be found.");
+    const { randomUUID } = await import("node:crypto");
+    await collection<AdminLogDocument>(db, "admin_logs").insertOne({
+      id: randomUUID(),
+      admin_id: null,
+      action: "order_status",
+      details: { order_id: data.id, status: data.status },
+      created_at: now,
+    });
     return { ok: true };
   });
 
 export const setItemAvailability = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), available: z.boolean() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ id: z.string().uuid(), available: z.boolean() }).parse(d),
+  )
   .handler(async ({ data }) => {
     await requireStaff();
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { error } = await supabaseAdmin.from("menu_items").update({ is_available: data.available }).eq("id", data.id);
-    if (error) throw new Error("Couldn't update the item.");
-    await supabaseAdmin.from("admin_logs").insert({ action: "inventory", details: { item_id: data.id, available: data.available } });
+    const { collection, getMongoDatabase } = await import("./mongodb.server");
+    const { db } = await getMongoDatabase();
+    const now = new Date().toISOString();
+    const update = await collection<MenuItem>(db, "menu_items").updateOne(
+      { id: data.id },
+      { $set: { is_available: data.available, updated_at: now } },
+    );
+    if (update.matchedCount === 0) throw new Error("That menu item couldn't be found.");
+    const { randomUUID } = await import("node:crypto");
+    await collection<AdminLogDocument>(db, "admin_logs").insertOne({
+      id: randomUUID(),
+      admin_id: null,
+      action: "inventory",
+      details: { item_id: data.id, available: data.available },
+      created_at: now,
+    });
     return { ok: true };
   });

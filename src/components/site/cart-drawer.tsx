@@ -52,7 +52,7 @@ export function CartDrawer() {
           {cart.fulfillment === "delivery" && cart.count > 0 && (
             <div className="mt-4">
               <p className="text-xs font-semibold text-muted-foreground">
-                {remaining > 0 ? `${formatMoney(remaining)} away from free delivery` : "You unlocked free delivery 🔥"}
+                {remaining > 0 ? `${formatMoney(remaining)} away from free delivery` : "You unlocked free delivery"}
               </p>
               <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
                 <motion.div className="h-full bg-flame" animate={{ width: `${progress}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }} />

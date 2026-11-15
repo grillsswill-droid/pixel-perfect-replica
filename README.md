@@ -1,7 +1,7 @@
 # Grill & Swill
 
 A fast-casual restaurant storefront built with React, TypeScript, TanStack Start,
-Tailwind CSS, and Supabase. Guests can browse and customize menu items, place
+Tailwind CSS, and MongoDB. Guests can browse and customize menu items, place
 simulated delivery or pickup orders, track order progress, and collect rewards.
 Staff can use the passcode-protected kitchen board to update orders and menu
 availability.
@@ -25,9 +25,29 @@ npm run lint
 
 ## Environment
 
-Set the server-side Supabase and staff values listed in [`.env.example`](./.env.example).
-Keep service-role keys, session secrets, and staff passcodes private. The checkout
-is a demo and does not charge a payment method.
+Configure `MONGODB_URI`, `MONGODB_DATABASE`, `SESSION_SECRET`, and `STAFF_PASSCODE`
+in a private local `.env` file using [`.env.example`](./.env.example) as a template.
+The app now targets a Node.js server because MongoDB's native driver requires
+Node-compatible networking; deploy it to a Node.js host, not Cloudflare Workers.
+The MongoDB deployment must support transactions (MongoDB Atlas does). The app
+creates its required indexes when it connects.
+
+For a production Node.js server, build and start with:
+
+```sh
+npm run build
+npm start
+```
+
+To load the starter menu and store locations into an empty database, run:
+
+```sh
+npm run db:seed
+```
+
+The seed command only inserts starter menu and store data when those collections
+are empty. Keep the MongoDB connection string, session secret, and staff passcode
+private. Checkout is a demo and does not charge a payment method.
 
 ## Storefront routes
 

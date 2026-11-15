@@ -110,18 +110,21 @@ function Hero() {
           <div className="mt-12 flex items-center gap-3 text-xs font-semibold tracking-wide text-cream/65">
             <span className="flex -space-x-2">
               {[
-                { label: "Burger", icon: "🍔" },
-                { label: "Pizza", icon: "🍕" },
-                { label: "Chicken", icon: "🍗" },
-              ].map((item) => (
-                <span
-                  key={item.label}
-                  aria-label={item.label}
-                  className="grid h-9 w-9 place-items-center rounded-full border-2 border-charcoal bg-cream text-base"
-                >
-                  {item.icon}
-                </span>
-              ))}
+                { label: "Burger", icon: Flame },
+                { label: "Pizza", icon: Sparkles },
+                { label: "Chicken", icon: BadgeCheck },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <span
+                    key={item.label}
+                    aria-label={item.label}
+                    className="grid h-9 w-9 place-items-center rounded-full border-2 border-charcoal bg-cream text-charcoal"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </span>
+                );
+              })}
             </span>
             <span>Good things are happening on the grill</span>
           </div>
