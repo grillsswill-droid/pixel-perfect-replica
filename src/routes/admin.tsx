@@ -668,6 +668,29 @@ const emptyMenuDraft: MenuDraft = {
   bundle_components: [],
 };
 
+const QUICK_ORDER_GROUP_OPTIONS: [QuickOrderGroup, string][] = [
+  ["burgers", "Burgers & Grill"],
+  ["pizza", "Pizza Deals"],
+  ["kids", "Kids' Meals"],
+  ["desserts", "Ice Cream & Desserts"],
+];
+
+function nextQuickOrderOrder(
+  items: MenuItem[],
+  group: QuickOrderGroup,
+  excludingId?: string,
+): number {
+  return (
+    items.reduce(
+      (highest, item) =>
+        item.is_quick_order && item.quick_order_group === group && item.id !== excludingId
+          ? Math.max(highest, item.quick_order_order ?? item.sort_order)
+          : highest,
+      0,
+    ) + 1
+  );
+}
+
 function MenuPanel({
   data,
   runAction,
@@ -679,7 +702,23 @@ function MenuPanel({
 }) {
   const [draft, setDraft] = useState<MenuDraft>(emptyMenuDraft);
   const [filter, setFilter] = useState("all");
-  const items = data.menu.filter((item) => filter === "all" || item.category === filter);
+  const quickOrderCount = data.menu.filter((item) => item.is_quick_order).length;
+  const items = data.menu.filter((item) => {
+    if (filter === "all") return true;
+    if (filter === "quick_order") return Boolean(item.is_quick_order);
+    return item.category === filter;
+  });
+
+  function startQuickOrderItem() {
+    const group: QuickOrderGroup = "burgers";
+    setFilter("quick_order");
+    setDraft({
+      ...emptyMenuDraft,
+      is_quick_order: true,
+      quick_order_group: group,
+      quick_order_order: String(nextQuickOrderOrder(data.menu, group)),
+    });
+  }
 
   function edit(item: MenuItem) {
     setDraft({
@@ -796,6 +835,26 @@ function MenuPanel({
       title="Menu and combo management"
       description="Edit customer-facing items, prices, availability, imagery and option groups. Combo offers use the same validated menu options and checkout pricing."
     >
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+        <div>
+          <h3 className="font-bold">Quick Order menu</h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {quickOrderCount} item{quickOrderCount === 1 ? "" : "s"} currently shown in Quick Order.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setFilter(filter === "quick_order" ? "all" : "quick_order")}
+          >
+            {filter === "quick_order" ? "Show all menu items" : "Manage Quick Order items"}
+          </Button>
+          <Button type="button" variant="hero" onClick={startQuickOrderItem}>
+            Add Quick Order item
+          </Button>
+        </div>
+      </div>
       <div className="grid gap-6 xl:grid-cols-[1fr_1.2fr]">
         <form
           onSubmit={(event) => void submit(event)}
@@ -803,7 +862,7 @@ function MenuPanel({
         >
           <div className="flex items-center justify-between gap-3">
             <h3 className="font-display text-xl font-black uppercase">
-              {draft.id ? "Edit item" : "New item"}
+              {draft.id ? "Edit item" : draft.is_quick_order ? "New Quick Order item" : "New item"}
             </h3>
             {draft.id ? (
               <Button
@@ -1016,15 +1075,16 @@ function MenuPanel({
               <SelectInput
                 label="Quick Order category"
                 value={draft.quick_order_group}
-                onChange={(value) =>
-                  setDraft({ ...draft, quick_order_group: value as QuickOrderGroup })
-                }
-                options={[
-                  ["burgers", "Burgers & Grill"],
-                  ["pizza", "Pizza Deals"],
-                  ["kids", "Kids' Meals"],
-                  ["desserts", "Ice Cream & Desserts"],
-                ]}
+                onChange={(value) => {
+                  const group = value as QuickOrderGroup;
+                  setDraft((current) => ({
+                    ...current,
+                    quick_order_group: group,
+                    category: group,
+                    quick_order_order: String(nextQuickOrderOrder(data.menu, group, current.id)),
+                  }));
+                }}
+                options={QUICK_ORDER_GROUP_OPTIONS}
               />
               <TextInput
                 label="Quick Order display order"
@@ -1041,7 +1101,11 @@ function MenuPanel({
             </p>
           ) : null}
           <Button type="submit" variant="hero" loading={busy}>
-            {draft.id ? "Save item" : "Create item"}
+            {draft.id
+              ? "Save item"
+              : draft.is_quick_order
+                ? "Create Quick Order item"
+                : "Create item"}
           </Button>
         </form>
 
@@ -1051,9 +1115,11 @@ function MenuPanel({
             <select
               value={filter}
               onChange={(event) => setFilter(event.target.value)}
+              aria-label="Filter menu catalog"
               className="h-10 rounded-xl border border-input bg-card px-3 text-sm"
             >
               <option value="all">All categories</option>
+              <option value="quick_order">Quick Order items</option>
               {data.categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.label}
@@ -1067,6 +1133,9 @@ function MenuPanel({
                 item.is_quick_order ||
                 Boolean(item.bundle_components?.length) ||
                 item.options.some((option) => option.id === "combo");
+              const quickOrderGroup = QUICK_ORDER_GROUP_OPTIONS.find(
+                ([group]) => group === item.quick_order_group,
+              )?.[1];
               return (
                 <article
                   key={item.id}
@@ -1076,7 +1145,12 @@ function MenuPanel({
                     <p className="font-semibold">{item.name}</p>
                     <p className="mt-1 text-xs text-muted-foreground">
                       {formatMoney(item.price_cents)} · {item.category}
-                      {isCombo ? " · combo offer" : ""}
+                      {item.is_quick_order
+                        ? ` · Quick Order · ${quickOrderGroup ?? "Unassigned"}`
+                        : isCombo
+                          ? " · combo offer"
+                          : ""}
+                      {item.is_quick_order && item.is_featured ? " · Popular Combos" : ""}
                       {!item.is_available ? " · sold out" : ""}
                     </p>
                   </div>
@@ -1142,6 +1216,13 @@ function MenuPanel({
               );
             })}
           </div>
+          {items.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">
+              {filter === "quick_order"
+                ? "No Quick Order items yet. Add one above to get started."
+                : "No menu items in this category yet."}
+            </p>
+          ) : null}
         </section>
       </div>
     </Panel>

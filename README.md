@@ -82,6 +82,9 @@ does not overwrite prices, availability, imagery, featured status, or other
 changes made later through Admin → Menu. Pizza combos link to the configured
 pizza varieties and reuse their current crust and topping choices. Combo prices
 are stored in cents with `currency: "USD"` and are editable in the admin menu.
+In Admin → Menu & combos, use the Quick Order filter to edit existing items or
+Add Quick Order item to create one and assign its category, display order,
+included components, price, availability, and featured status.
 
 The seed command only inserts starter menu, category, and store data when each
 collection is empty. Guest carts are synchronized to MongoDB while retaining
