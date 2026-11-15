@@ -27,8 +27,11 @@ npm run lint
 
 Configure `MONGODB_URI`, `MONGODB_DATABASE`, `SESSION_SECRET`, and `STAFF_PASSCODE`
 in a private local `.env` file using [`.env.example`](./.env.example) as a template.
-The app now targets a Node.js server because MongoDB's native driver requires
+The app uses a Node.js server because MongoDB's native driver requires
 Node-compatible networking; deploy it to a Node.js host, not Cloudflare Workers.
+Vercel builds use Nitro's Vercel Node.js preset automatically.
+In Vercel project settings, leave the output directory at its framework default;
+do not override it to `dist`.
 The MongoDB deployment must support transactions (MongoDB Atlas does). The app
 creates its required indexes when it connects.
 
