@@ -9,7 +9,15 @@ import type {
   OrderDocument,
   UserDocument,
 } from "./mongodb.server";
-import { PricingError, computeTotals, selectionSummary, unitPriceCents } from "./pricing";
+import {
+  DELIVERY_FEE_CENTS,
+  FREE_DELIVERY_THRESHOLD_CENTS,
+  PROMOS,
+  PricingError,
+  computeTotals,
+  selectionSummary,
+  unitPriceCents,
+} from "./pricing";
 
 const addressSchema = z.object({
   name: z.string().trim().min(2, "Enter the recipient's name").max(80),
@@ -37,6 +45,7 @@ export type DeliveryAddress = z.infer<typeof addressSchema>;
 export const placeOrderSchema = z
   .object({
     guestId: z.string().uuid(),
+    requestId: z.string().uuid().optional(),
     lines: z
       .array(
         z.object({
@@ -85,8 +94,28 @@ export const placeOrder = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const { collection, getMongoDatabase } = await import("./mongodb.server");
     const { client, db } = await getMongoDatabase();
+    const { randomUUID } = await import("node:crypto");
+    const requestId = data.requestId ?? randomUUID();
+
+    const existing = await collection<OrderDocument>(db, "orders").findOne(
+      { guest_id: data.guestId, checkout_request_id: requestId },
+      { projection: { _id: 0, id: 1, order_number: 1, points_earned: 1, receipt_number: 1 } },
+    );
+    if (existing) {
+      const { createOrderAccessToken } = await import("./order-access.server");
+      return {
+        ok: true as const,
+        orderId: existing.id,
+        orderNumber: existing.order_number,
+        receiptNumber:
+          existing.receipt_number ?? `GS-${String(existing.order_number).padStart(6, "0")}`,
+        accessToken: createOrderAccessToken(existing.id, data.guestId),
+        pointsEarned: existing.points_earned,
+      };
+    }
+
     const ids = [...new Set(data.lines.map((l) => l.itemId))];
-    const [items, store] = await Promise.all([
+    const [items, store, settings, storedPromotion] = await Promise.all([
       collection<MenuItem>(db, "menu_items")
         .find({ id: { $in: ids } })
         .project<MenuItem>({ _id: 0 })
@@ -95,6 +124,26 @@ export const placeOrder = createServerFn({ method: "POST" })
         { id: data.storeId },
         { projection: { _id: 0, id: 1 } },
       ),
+      db
+        .collection("site_settings")
+        .findOne<{ delivery_fee_cents?: number; free_delivery_threshold_cents?: number }>({
+          _id: "storefront",
+        }),
+      data.promoCode
+        ? db.collection("promotions").findOne<{
+            id: string;
+            code: string;
+            label: string;
+            description: string;
+            kind: "amount" | "percent";
+            value: number;
+            minSubtotalCents?: number;
+            category?: CategoryId;
+            usage_limit?: number;
+            usage_count?: number;
+            active: boolean;
+          }>({ code: data.promoCode.trim().toUpperCase(), active: true })
+        : Promise.resolve(null),
     ]);
     if (!store) return { ok: false as const, error: "Please choose a store." };
 
@@ -129,7 +178,6 @@ export const placeOrder = createServerFn({ method: "POST" })
       }
 
       const session = client.startSession();
-      const { randomUUID } = await import("node:crypto");
       let orderNumber = 0;
       let orderId = "";
       let pointsEarned = 0;
@@ -137,13 +185,58 @@ export const placeOrder = createServerFn({ method: "POST" })
         await session.withTransaction(async () => {
           const guests = collection<GuestDocument>(db, "guests");
           const guest = await guests.findOne({ id: data.guestId }, { session });
+          const databasePromotion = storedPromotion
+            ? {
+                code: storedPromotion.code,
+                label: storedPromotion.label,
+                description: storedPromotion.description,
+                kind: storedPromotion.kind,
+                value: storedPromotion.value,
+                minSubtotalCents: storedPromotion.minSubtotalCents,
+                category: storedPromotion.category,
+              }
+            : null;
+          if (
+            storedPromotion?.usage_limit !== undefined &&
+            (storedPromotion.usage_count ?? 0) >= storedPromotion.usage_limit
+          ) {
+            throw new PricingError("That promo code has reached its usage limit.");
+          }
           const totals = computeTotals({
             lines: priced,
             fulfillment: data.fulfillment,
             promoCode: data.promoCode,
             pointsToRedeem: data.pointsToRedeem,
             availablePoints: guest?.points ?? 0,
+            promotions: databasePromotion
+              ? [
+                  ...PROMOS.filter((promo) => promo.code !== databasePromotion.code),
+                  databasePromotion,
+                ]
+              : PROMOS,
+            deliveryFeeCents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
+            freeDeliveryThresholdCents:
+              settings?.free_delivery_threshold_cents ?? FREE_DELIVERY_THRESHOLD_CENTS,
           });
+          if (storedPromotion) {
+            const promotionUpdate = await db.collection("promotions").updateOne(
+              {
+                id: storedPromotion.id,
+                active: true,
+                $expr: {
+                  $or: [
+                    { $eq: [{ $type: "$usage_limit" }, "missing"] },
+                    { $lt: [{ $ifNull: ["$usage_count", 0] }, "$usage_limit"] },
+                  ],
+                },
+              },
+              { $inc: { usage_count: 1 } },
+              { session },
+            );
+            if (!promotionUpdate.modifiedCount) {
+              throw new PricingError("That promo code has reached its usage limit.");
+            }
+          }
           const counters = collection<CounterDocument>(db, "counters");
           await counters.updateOne(
             { _id: "orders" },
@@ -157,8 +250,11 @@ export const placeOrder = createServerFn({ method: "POST" })
           const order: OrderDocument = {
             id: randomUUID(),
             order_number: counter.sequence + 1000,
+            receipt_number: `GS-${String(counter.sequence + 1000).padStart(6, "0")}`,
+            checkout_request_id: requestId,
             guest_id: data.guestId,
             status: "received",
+            status_history: [{ status: "received", updated_at: now }],
             fulfillment: data.fulfillment,
             store_id: data.storeId,
             address: data.fulfillment === "delivery" ? data.address : null,
@@ -172,7 +268,10 @@ export const placeOrder = createServerFn({ method: "POST" })
             total_cents: totals.totalCents,
             points_earned: totals.pointsEarned,
             payment_last4: data.paymentLast4,
+            payment_method: "Demo card",
+            payment_status: "not_charged",
             customer_name: data.fulfillment === "delivery" ? data.address!.name : data.pickupName!,
+            customer_phone: data.fulfillment === "delivery" ? data.address!.phone : null,
             created_at: now,
             updated_at: now,
           };
@@ -225,10 +324,33 @@ export const placeOrder = createServerFn({ method: "POST" })
         ok: true as const,
         orderId,
         orderNumber,
+        receiptNumber: `GS-${String(orderNumber).padStart(6, "0")}`,
+        accessToken: (await import("./order-access.server")).createOrderAccessToken(
+          orderId,
+          data.guestId,
+        ),
         pointsEarned,
       };
     } catch (e) {
       if (e instanceof PricingError) return { ok: false as const, error: e.message };
+      if ((e as { code?: number }).code === 11000 && data.requestId) {
+        const duplicate = await collection<OrderDocument>(db, "orders").findOne(
+          { guest_id: data.guestId, checkout_request_id: requestId },
+          { projection: { _id: 0, id: 1, order_number: 1, points_earned: 1, receipt_number: 1 } },
+        );
+        if (duplicate) {
+          const { createOrderAccessToken } = await import("./order-access.server");
+          return {
+            ok: true as const,
+            orderId: duplicate.id,
+            orderNumber: duplicate.order_number,
+            receiptNumber:
+              duplicate.receipt_number ?? `GS-${String(duplicate.order_number).padStart(6, "0")}`,
+            accessToken: createOrderAccessToken(duplicate.id, data.guestId),
+            pointsEarned: duplicate.points_earned,
+          };
+        }
+      }
       throw e;
     }
   });
@@ -250,6 +372,7 @@ export const getGuestRewards = createServerFn({ method: "GET" })
             OrderDocument,
             | "id"
             | "order_number"
+            | "receipt_number"
             | "status"
             | "fulfillment"
             | "store_id"
@@ -263,16 +386,23 @@ export const getGuestRewards = createServerFn({ method: "GET" })
         .limit(12)
         .toArray(),
     ]);
+    const { createOrderAccessToken } = await import("./order-access.server");
     return {
       points: guest?.points ?? 0,
       lifetimePoints: guest?.lifetime_points ?? 0,
-      orders,
+      orders: orders.map((order) => ({
+        ...order,
+        receipt_number: order.receipt_number ?? `GS-${String(order.order_number).padStart(6, "0")}`,
+        accessToken: createOrderAccessToken(order.id, data.guestId),
+      })),
     };
   });
 
-/** Order IDs are unguessable; the tracking link works like a receipt. */
+/** A signed bearer token grants read-only access to this order's tracking and receipt data. */
 export const getOrder = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ id: z.string().uuid(), token: z.string().regex(/^[A-Za-z0-9_-]{43}$/) }).parse(d),
+  )
   .handler(async ({ data }) => {
     const { collection, getMongoDatabase } = await import("./mongodb.server");
     const { db } = await getMongoDatabase();
@@ -281,6 +411,15 @@ export const getOrder = createServerFn({ method: "GET" })
       .project<OrderDocument>({ _id: 0 })
       .next();
     if (!order) return null;
+    const { verifyOrderAccessToken } = await import("./order-access.server");
+    if (!verifyOrderAccessToken(data.token, order.id, order.guest_id)) return null;
+    if (!order.receipt_number) {
+      order.receipt_number = `GS-${String(order.order_number).padStart(6, "0")}`;
+      await collection<OrderDocument>(db, "orders").updateOne(
+        { id: order.id, receipt_number: { $exists: false } },
+        { $set: { receipt_number: order.receipt_number } },
+      );
+    }
     const store = await collection<Store>(db, "stores")
       .find({ id: order.store_id })
       .project<Pick<Store, "name" | "address" | "city" | "state" | "phone">>({
@@ -303,6 +442,10 @@ export const getOrder = createServerFn({ method: "GET" })
       : null;
     return {
       ...order,
+      payment_status: order.payment_status ?? "not_charged",
+      status_history: order.status_history ?? [
+        { status: order.status, updated_at: order.updated_at },
+      ],
       stores,
     };
   });

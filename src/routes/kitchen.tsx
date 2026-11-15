@@ -43,6 +43,12 @@ function KitchenPage() {
     void refresh();
   }, [refresh]);
 
+  useEffect(() => {
+    if (!board?.unlocked) return;
+    const timer = window.setInterval(() => void refresh(), 5_000);
+    return () => window.clearInterval(timer);
+  }, [board?.unlocked, refresh]);
+
   async function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
@@ -157,6 +163,9 @@ function KitchenPage() {
   const openOrders = activeBoard.orders.filter(
     (order) => order.status !== "completed" && order.status !== "cancelled",
   );
+  const closedOrders = activeBoard.orders.filter(
+    (order) => order.status === "completed" || order.status === "cancelled",
+  );
 
   return (
     <main className="min-h-[65vh] bg-background">
@@ -213,7 +222,7 @@ function KitchenPage() {
               <div className="space-y-4">
                 <AnimatePresence initial={false} mode="popLayout">
                   {openOrders.map((order) => {
-                    const status = order.status as OrderStatus;
+                    const status = order.status;
                     const next = nextStatus(status);
                     const items = order.items as OrderLineSnapshot[];
                     return (
@@ -234,6 +243,17 @@ function KitchenPage() {
                             <p className="mt-1 text-sm text-muted-foreground">
                               {order.customer_name} · {order.fulfillment}
                             </p>
+                            {order.customer_phone ? (
+                              <p className="mt-1 text-xs text-muted-foreground">
+                                {order.customer_phone}
+                              </p>
+                            ) : null}
+                            {order.address ? (
+                              <p className="mt-1 text-xs text-muted-foreground">
+                                {order.address.street}, {order.address.city}, {order.address.state}{" "}
+                                {order.address.zip}
+                              </p>
+                            ) : null}
                           </div>
                           <span className="rounded-full bg-accent px-3 py-1.5 text-xs font-bold text-primary">
                             <AnimatePresence mode="wait" initial={false}>
@@ -259,6 +279,11 @@ function KitchenPage() {
                                   {item.summary.join(" · ")}
                                 </span>
                               )}
+                              {item.note ? (
+                                <span className="block pl-8 text-xs font-semibold text-primary">
+                                  Note: {item.note}
+                                </span>
+                              ) : null}
                             </li>
                           ))}
                         </ul>
@@ -275,6 +300,16 @@ function KitchenPage() {
                               <ArrowRight />
                             </Button>
                           )}
+                          {status !== "cancelled" && status !== "completed" ? (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => void updateOrder(order.id, "cancelled")}
+                              disabled={busy}
+                            >
+                              Cancel order
+                            </Button>
+                          ) : null}
                         </div>
                       </motion.article>
                     );
@@ -282,6 +317,31 @@ function KitchenPage() {
                 </AnimatePresence>
               </div>
             )}
+            {closedOrders.length ? (
+              <section className="mt-8">
+                <p className="text-xs font-black tracking-widest text-primary uppercase">
+                  Recent activity
+                </p>
+                <h2 className="font-display mb-3 text-xl font-black uppercase">
+                  Completed &amp; cancelled
+                </h2>
+                <ul className="divide-y divide-border rounded-2xl bg-card px-4 shadow-card">
+                  {closedOrders.slice(0, 12).map((order) => (
+                    <li
+                      key={order.id}
+                      className="flex flex-wrap justify-between gap-2 py-3 text-sm"
+                    >
+                      <span>
+                        <b>#{order.order_number}</b> · {order.customer_name}
+                      </span>
+                      <span className="font-semibold text-muted-foreground">
+                        {statusLabel(order.status, order.fulfillment as Fulfillment)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
           </div>
           <aside>
             <p className="text-xs font-black tracking-widest text-primary uppercase">86 board</p>

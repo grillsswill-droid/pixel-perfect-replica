@@ -2,10 +2,19 @@ import { Link } from "@tanstack/react-router";
 
 import { cn } from "@/lib/utils";
 
-export function Logo({ className, light = false }: { className?: string; light?: boolean }) {
+export function Logo({
+  className,
+  light = false,
+  onClick,
+}: {
+  className?: string;
+  light?: boolean;
+  onClick?: () => void;
+}) {
   return (
     <Link
       to="/"
+      onClick={onClick}
       className={cn("group flex items-center gap-2.5", className)}
       aria-label="Grill & Swill home"
     >

@@ -2,15 +2,23 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { Check, ChefHat, CircleDot, PackageCheck, Truck } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect } from "react";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { getOrder } from "@/lib/orders.functions";
-import { effectiveStatus, STATUS_FLOW, statusLabel, type OrderStatus } from "@/lib/order-status";
+import { STATUS_FLOW, statusLabel } from "@/lib/order-status";
 import { formatMoney } from "@/lib/pricing";
 import type { Fulfillment, OrderLineSnapshot } from "@/lib/menu-types";
 
 export const Route = createFileRoute("/orders/$id")({
-  loader: ({ params }) => getOrder({ data: { id: params.id } }),
+  validateSearch: z.object({
+    token: z
+      .string()
+      .regex(/^[A-Za-z0-9_-]{43}$/)
+      .optional(),
+  }),
+  loader: ({ params, search }) =>
+    search.token ? getOrder({ data: { id: params.id, token: search.token } }) : null,
   head: () => ({ meta: [{ title: "Track your order | Grill & Swill" }] }),
   component: OrderPage,
 });
@@ -19,6 +27,7 @@ const STAGE_ICONS = [CircleDot, ChefHat, Truck, PackageCheck];
 
 function OrderPage() {
   const order = Route.useLoaderData();
+  const { token } = Route.useSearch();
   const router = useRouter();
 
   useEffect(() => {
@@ -42,7 +51,7 @@ function OrderPage() {
     );
   }
 
-  const status = effectiveStatus(order.status as OrderStatus, order.created_at);
+  const status = order.status;
   const activeStage = STATUS_FLOW.indexOf(status as (typeof STATUS_FLOW)[number]);
   const items = order.items as OrderLineSnapshot[];
 
@@ -59,6 +68,9 @@ function OrderPage() {
           <p className="mt-3 text-cream/70">
             Order <span className="font-bold text-cream">#{order.order_number}</span> ·{" "}
             {statusLabel(status, order.fulfillment as Fulfillment)}
+          </p>
+          <p className="mt-2 text-sm text-cream/60">
+            Receipt {order.receipt_number} · {new Date(order.created_at).toLocaleString()}
           </p>
         </div>
       </section>
@@ -108,8 +120,25 @@ function OrderPage() {
               })}
             </ol>
             <p className="mt-7 text-center text-xs text-muted-foreground">
-              This tracker refreshes automatically as your order moves along.
+              This tracker refreshes automatically as staff update your order.
             </p>
+            {order.status_history?.length ? (
+              <ol className="mt-5 space-y-2 border-t border-border pt-4">
+                {order.status_history.map((entry, index) => (
+                  <li
+                    key={`${entry.status}-${entry.updated_at}-${index}`}
+                    className="flex flex-wrap justify-between gap-2 text-xs"
+                  >
+                    <span className="font-semibold">
+                      {statusLabel(entry.status, order.fulfillment as Fulfillment)}
+                    </span>
+                    <time className="text-muted-foreground">
+                      {new Date(entry.updated_at).toLocaleString()}
+                    </time>
+                  </li>
+                ))}
+              </ol>
+            ) : null}
           </div>
         )}
         <div className="grid gap-6 sm:grid-cols-[1fr_0.8fr]">
@@ -139,6 +168,9 @@ function OrderPage() {
               <span>Total</span>
               <span>{formatMoney(order.total_cents)}</span>
             </div>
+            <p className="mt-4 rounded-xl bg-accent p-3 text-xs leading-relaxed text-muted-foreground">
+              Demo checkout: no payment was processed or charged.
+            </p>
           </div>
           <aside className="rounded-3xl bg-accent p-6">
             <h2 className="font-display text-xl font-black uppercase">
@@ -156,6 +188,14 @@ function OrderPage() {
             <p className="mt-4 text-xs text-muted-foreground">
               Prepared at {order.stores?.name ?? "your selected Grill & Swill"}
             </p>
+            {order.customer_phone ? (
+              <p className="mt-1 text-xs text-muted-foreground">{order.customer_phone}</p>
+            ) : null}
+            <Button asChild variant="outline" className="mt-4 w-full">
+              <Link to="/receipts/$id" params={{ id: order.id }} search={{ token }}>
+                View receipt
+              </Link>
+            </Button>
             <Button asChild variant="hero" className="mt-6 w-full">
               <Link to="/menu">Order something else</Link>
             </Button>

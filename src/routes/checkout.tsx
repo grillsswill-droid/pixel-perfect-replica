@@ -1,26 +1,51 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowLeft, Bike, Check, CreditCard, Gift, Lock, MapPin, ShoppingBag, Store as StoreIcon, Tag } from "lucide-react";
-import { useEffect, useMemo, useState, type ComponentProps, type ReactNode } from "react";
+import {
+  ArrowLeft,
+  Bike,
+  Check,
+  CreditCard,
+  Gift,
+  Lock,
+  MapPin,
+  ShoppingBag,
+  Store as StoreIcon,
+  Tag,
+} from "lucide-react";
+import { useEffect, useMemo, useRef, useState, type ComponentProps, type ReactNode } from "react";
 import { toast } from "sonner";
 
 import { Field } from "@/components/site/field";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useGuestId } from "@/hooks/use-guest";
+import { getCheckoutConfiguration } from "@/lib/admin.functions";
 import { storesQuery } from "@/lib/catalog.functions";
 import { foodImage } from "@/lib/food-images";
 import { guestRewardsQuery } from "@/lib/order-queries";
 import { deliveryAddressSchema, placeOrder, type DeliveryAddress } from "@/lib/orders.functions";
-import { PricingError, REDEEM_STEP, computeTotals, formatMoney, type Totals } from "@/lib/pricing";
+import {
+  DELIVERY_FEE_CENTS,
+  FREE_DELIVERY_THRESHOLD_CENTS,
+  PROMOS,
+  PricingError,
+  REDEEM_STEP,
+  computeTotals,
+  formatMoney,
+  type Totals,
+} from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
       { title: "Checkout | Grill & Swill" },
-      { name: "description", content: "Finish your Grill & Swill order for delivery or pickup. Guest checkout, no account needed." },
+      {
+        name: "description",
+        content:
+          "Finish your Grill & Swill order for delivery or pickup. Guest checkout, no account needed.",
+      },
       { property: "og:title", content: "Checkout | Grill & Swill" },
       { property: "og:description", content: "Guest checkout for delivery or pickup." },
       { property: "og:type", content: "website" },
@@ -32,9 +57,20 @@ export const Route = createFileRoute("/checkout")({
 });
 
 const ADDRESS_KEY = "grill-swill-address-v1";
+const CHECKOUT_REQUEST_KEY = "grill-swill-checkout-request-v1";
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const STEPS = ["Where", "Details", "Pay"] as const;
 
-const EMPTY_ADDRESS: DeliveryAddress = { name: "", street: "", unit: "", city: "", state: "", zip: "", phone: "", instructions: "" };
+const EMPTY_ADDRESS: DeliveryAddress = {
+  name: "",
+  street: "",
+  unit: "",
+  city: "",
+  state: "",
+  zip: "",
+  phone: "",
+  instructions: "",
+};
 
 function CheckoutPage() {
   const cart = useCart();
@@ -43,10 +79,18 @@ function CheckoutPage() {
   const queryClient = useQueryClient();
   const { data: stores = [] } = useQuery(storesQuery());
   const { data: rewards } = useQuery(guestRewardsQuery(guestId));
+  const { data: checkoutConfiguration } = useQuery({
+    queryKey: ["checkout-configuration"],
+    queryFn: () => getCheckoutConfiguration(),
+    staleTime: 60_000,
+  });
+  const requestId = useRef<string | null>(null);
 
   const [step, setStep] = useState(0);
   const [address, setAddress] = useState<DeliveryAddress>(EMPTY_ADDRESS);
-  const [addressErrors, setAddressErrors] = useState<Partial<Record<keyof DeliveryAddress, string>>>({});
+  const [addressErrors, setAddressErrors] = useState<
+    Partial<Record<keyof DeliveryAddress, string>>
+  >({});
   const [pickupName, setPickupName] = useState("");
   const [pickupError, setPickupError] = useState<string>();
   const [promoInput, setPromoInput] = useState("");
@@ -75,23 +119,47 @@ function CheckoutPage() {
   }, [cart, stores]);
 
   const availablePoints = rewards?.points ?? 0;
-  const pricedLines = cart.lines.map((l) => ({ category: l.category, lineTotalCents: l.unitPriceCents * l.quantity }));
+  const pricedLines = useMemo(
+    () =>
+      cart.lines.map((line) => ({
+        category: line.category,
+        lineTotalCents: line.unitPriceCents * line.quantity,
+      })),
+    [cart.lines],
+  );
 
-  const { totals, promoError } = useMemo((): { totals: Totals | null; promoError: string | null } => {
+  const { totals, promoError } = useMemo((): {
+    totals: Totals | null;
+    promoError: string | null;
+  } => {
     if (pricedLines.length === 0) return { totals: null, promoError: null };
-    const base = { lines: pricedLines, fulfillment: cart.fulfillment, pointsToRedeem: points, availablePoints };
+    const base = {
+      lines: pricedLines,
+      fulfillment: cart.fulfillment,
+      pointsToRedeem: points,
+      availablePoints,
+      promotions: checkoutConfiguration?.promotions ?? PROMOS,
+      deliveryFeeCents: checkoutConfiguration?.deliveryFeeCents ?? DELIVERY_FEE_CENTS,
+      freeDeliveryThresholdCents:
+        checkoutConfiguration?.freeDeliveryThresholdCents ?? FREE_DELIVERY_THRESHOLD_CENTS,
+    };
     try {
       return { totals: computeTotals({ ...base, promoCode }), promoError: null };
     } catch (e) {
       const msg = e instanceof PricingError ? e.message : "Couldn't apply that";
       try {
-        return { totals: computeTotals({ ...base, promoCode: null }), promoError: promoCode ? msg : null };
+        return {
+          totals: computeTotals({ ...base, promoCode: null }),
+          promoError: promoCode ? msg : null,
+        };
       } catch {
-        return { totals: computeTotals({ ...base, promoCode: null, pointsToRedeem: 0 }), promoError: msg };
+        return {
+          totals: computeTotals({ ...base, promoCode: null, pointsToRedeem: 0 }),
+          promoError: msg,
+        };
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(pricedLines), cart.fulfillment, points, availablePoints, promoCode]);
+  }, [pricedLines, cart.fulfillment, points, availablePoints, promoCode, checkoutConfiguration]);
 
   if (cart.hydrated && cart.lines.length === 0) {
     return (
@@ -100,7 +168,9 @@ function CheckoutPage() {
           <ShoppingBag className="h-8 w-8 text-primary" />
         </div>
         <h1 className="mt-6 text-3xl font-black uppercase">Your bag is empty</h1>
-        <p className="mt-2 text-muted-foreground">Add something hot off the grill, then come back here to check out.</p>
+        <p className="mt-2 text-muted-foreground">
+          Add something hot off the grill, then come back here to check out.
+        </p>
         <Button asChild variant="hero" size="lg" className="mt-6">
           <Link to="/menu">Browse the menu</Link>
         </Button>
@@ -110,7 +180,10 @@ function CheckoutPage() {
 
   const store = stores.find((s) => s.id === cart.storeId);
   const maxPoints = totals
-    ? Math.min(availablePoints, Math.floor((totals.subtotalCents - totals.promoDiscountCents) / 100) * 100)
+    ? Math.min(
+        availablePoints,
+        Math.floor((totals.subtotalCents - totals.promoDiscountCents) / 100) * 100,
+      )
     : 0;
   const maxRedeem = maxPoints - (maxPoints % REDEEM_STEP);
 
@@ -126,7 +199,8 @@ function CheckoutPage() {
     const res = deliveryAddressSchema.safeParse(address);
     if (!res.success) {
       const errs: Partial<Record<keyof DeliveryAddress, string>> = {};
-      for (const issue of res.error.issues) errs[issue.path[0] as keyof DeliveryAddress] ??= issue.message;
+      for (const issue of res.error.issues)
+        errs[issue.path[0] as keyof DeliveryAddress] ??= issue.message;
       setAddressErrors(errs);
       return false;
     }
@@ -139,7 +213,8 @@ function CheckoutPage() {
   function validateCard(): boolean {
     const digits = card.number.replace(/\D/g, "");
     const errs: typeof cardErrors = {};
-    if (digits.length < 15 || digits.length > 16) errs.number = "Enter a 15 or 16 digit card number";
+    if (digits.length < 15 || digits.length > 16)
+      errs.number = "Enter a 15 or 16 digit card number";
     const m = card.exp.match(/^(\d{2})\s*\/\s*(\d{2})$/);
     if (!m || Number(m[1]) < 1 || Number(m[1]) > 12) errs.exp = "Use MM/YY";
     else {
@@ -153,12 +228,21 @@ function CheckoutPage() {
 
   async function submit() {
     if (!validateCard() || !guestId || !cart.storeId) return;
+    const savedRequestId = window.sessionStorage.getItem(CHECKOUT_REQUEST_KEY);
+    const checkoutRequestId =
+      requestId.current ??
+      (savedRequestId && UUID_PATTERN.test(savedRequestId)
+        ? savedRequestId
+        : window.crypto.randomUUID());
+    requestId.current = checkoutRequestId;
+    window.sessionStorage.setItem(CHECKOUT_REQUEST_KEY, checkoutRequestId);
     setPlacing(true);
     setServerError(null);
     try {
       const res = await placeOrder({
         data: {
           guestId,
+          requestId: checkoutRequestId,
           lines: cart.lines.map((l) => ({
             itemId: l.itemId,
             quantity: l.quantity,
@@ -180,12 +264,21 @@ function CheckoutPage() {
         return;
       }
       if (cart.fulfillment === "pickup") {
-        window.localStorage.setItem(ADDRESS_KEY, JSON.stringify({ ...address, name: pickupName.trim() }));
+        window.localStorage.setItem(
+          ADDRESS_KEY,
+          JSON.stringify({ ...address, name: pickupName.trim() }),
+        );
       }
       cart.clear();
       await queryClient.invalidateQueries({ queryKey: ["guest-rewards"] });
       toast.success(`Order #${res.orderNumber} is in! +${res.pointsEarned} points`);
-      navigate({ to: "/orders/$id", params: { id: res.orderId } });
+      requestId.current = null;
+      window.sessionStorage.removeItem(CHECKOUT_REQUEST_KEY);
+      navigate({
+        to: "/orders/$id",
+        params: { id: res.orderId },
+        search: { token: res.accessToken },
+      });
     } catch (e) {
       console.error(e);
       setServerError("We couldn't place your order. You weren't charged — please try again.");
@@ -196,7 +289,10 @@ function CheckoutPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 pt-8 pb-24 sm:px-6">
-      <Link to="/menu" className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-charcoal">
+      <Link
+        to="/menu"
+        className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-charcoal"
+      >
         <ArrowLeft className="h-4 w-4" /> Keep shopping
       </Link>
       <h1 className="mt-3 text-4xl font-black uppercase sm:text-5xl">Checkout</h1>
@@ -217,7 +313,11 @@ function CheckoutPage() {
               <span
                 className={cn(
                   "grid h-8 w-8 place-items-center rounded-full font-display text-sm font-black transition",
-                  i < step ? "bg-success text-primary-foreground" : i === step ? "bg-primary text-primary-foreground" : "bg-muted",
+                  i < step
+                    ? "bg-success text-primary-foreground"
+                    : i === step
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted",
                 )}
               >
                 {i < step ? <Check className="h-4 w-4" /> : i + 1}
@@ -226,7 +326,10 @@ function CheckoutPage() {
             </button>
             {i < STEPS.length - 1 && (
               <span className="h-1 flex-1 overflow-hidden rounded-full bg-muted">
-                <motion.span className="block h-full bg-primary" animate={{ width: i < step ? "100%" : "0%" }} />
+                <motion.span
+                  className="block h-full bg-primary"
+                  animate={{ width: i < step ? "100%" : "0%" }}
+                />
               </span>
             )}
           </li>
@@ -254,16 +357,26 @@ function CheckoutPage() {
                         onClick={() => cart.setFulfillment(f)}
                         className={cn(
                           "flex items-center gap-4 rounded-2xl border-2 bg-card p-5 text-left transition active:scale-[0.98]",
-                          cart.fulfillment === f ? "border-primary shadow-chunky" : "border-transparent hover:border-border",
+                          cart.fulfillment === f
+                            ? "border-primary shadow-chunky"
+                            : "border-transparent hover:border-border",
                         )}
                       >
                         <span className="grid h-12 w-12 place-items-center rounded-full bg-muted text-primary">
-                          {f === "delivery" ? <Bike className="h-6 w-6" /> : <StoreIcon className="h-6 w-6" />}
+                          {f === "delivery" ? (
+                            <Bike className="h-6 w-6" />
+                          ) : (
+                            <StoreIcon className="h-6 w-6" />
+                          )}
                         </span>
                         <span>
-                          <span className="block font-display text-lg font-black uppercase">{f}</span>
+                          <span className="block font-display text-lg font-black uppercase">
+                            {f}
+                          </span>
                           <span className="text-sm text-muted-foreground">
-                            {f === "delivery" ? "~30 min · free over $35" : "~15 min · always free"}
+                            {f === "delivery"
+                              ? `~30 min · free over ${formatMoney(checkoutConfiguration?.freeDeliveryThresholdCents ?? FREE_DELIVERY_THRESHOLD_CENTS)}`
+                              : "~15 min · always free"}
                           </span>
                         </span>
                       </button>
@@ -281,7 +394,9 @@ function CheckoutPage() {
                         onClick={() => cart.setStoreId(s.id)}
                         className={cn(
                           "rounded-2xl border-2 bg-card p-4 text-left transition",
-                          cart.storeId === s.id ? "border-primary" : "border-transparent hover:border-border",
+                          cart.storeId === s.id
+                            ? "border-primary"
+                            : "border-transparent hover:border-border",
                         )}
                       >
                         <span className="flex items-center gap-2 font-bold">
@@ -290,7 +405,9 @@ function CheckoutPage() {
                         <span className="mt-1 block text-sm text-muted-foreground">
                           {s.address}, {s.city}
                         </span>
-                        <span className="mt-0.5 block text-xs text-muted-foreground">{s.hours}</span>
+                        <span className="mt-0.5 block text-xs text-muted-foreground">
+                          {s.hours}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -301,17 +418,75 @@ function CheckoutPage() {
               )}
 
               {step === 1 && (
-                <Panel title={cart.fulfillment === "delivery" ? "Where should we bring it?" : "Who's picking up?"}>
+                <Panel
+                  title={
+                    cart.fulfillment === "delivery"
+                      ? "Where should we bring it?"
+                      : "Who's picking up?"
+                  }
+                >
                   {cart.fulfillment === "delivery" ? (
                     <div className="grid gap-4 sm:grid-cols-6">
-                      <AddrField k="name" label="Full name" autoComplete="name" className="sm:col-span-3" {...{ address, setAddress, addressErrors }} />
-                      <AddrField k="phone" label="Phone" type="tel" autoComplete="tel" className="sm:col-span-3" {...{ address, setAddress, addressErrors }} />
-                      <AddrField k="street" label="Street address" autoComplete="address-line1" className="sm:col-span-4" {...{ address, setAddress, addressErrors }} />
-                      <AddrField k="unit" label="Apt / unit" autoComplete="address-line2" className="sm:col-span-2" {...{ address, setAddress, addressErrors }} />
-                      <AddrField k="city" label="City" autoComplete="address-level2" className="sm:col-span-3" {...{ address, setAddress, addressErrors }} />
-                      <AddrField k="state" label="State" autoComplete="address-level1" maxLength={2} placeholder="TX" className="sm:col-span-1" {...{ address, setAddress, addressErrors }} />
-                      <AddrField k="zip" label="ZIP" autoComplete="postal-code" inputMode="numeric" className="sm:col-span-2" {...{ address, setAddress, addressErrors }} />
-                      <AddrField k="instructions" label="Delivery notes (optional)" placeholder="Gate code, leave at door…" className="sm:col-span-6" {...{ address, setAddress, addressErrors }} />
+                      <AddrField
+                        k="name"
+                        label="Full name"
+                        autoComplete="name"
+                        className="sm:col-span-3"
+                        {...{ address, setAddress, addressErrors }}
+                      />
+                      <AddrField
+                        k="phone"
+                        label="Phone"
+                        type="tel"
+                        autoComplete="tel"
+                        className="sm:col-span-3"
+                        {...{ address, setAddress, addressErrors }}
+                      />
+                      <AddrField
+                        k="street"
+                        label="Street address"
+                        autoComplete="address-line1"
+                        className="sm:col-span-4"
+                        {...{ address, setAddress, addressErrors }}
+                      />
+                      <AddrField
+                        k="unit"
+                        label="Apt / unit"
+                        autoComplete="address-line2"
+                        className="sm:col-span-2"
+                        {...{ address, setAddress, addressErrors }}
+                      />
+                      <AddrField
+                        k="city"
+                        label="City"
+                        autoComplete="address-level2"
+                        className="sm:col-span-3"
+                        {...{ address, setAddress, addressErrors }}
+                      />
+                      <AddrField
+                        k="state"
+                        label="State"
+                        autoComplete="address-level1"
+                        maxLength={2}
+                        placeholder="TX"
+                        className="sm:col-span-1"
+                        {...{ address, setAddress, addressErrors }}
+                      />
+                      <AddrField
+                        k="zip"
+                        label="ZIP"
+                        autoComplete="postal-code"
+                        inputMode="numeric"
+                        className="sm:col-span-2"
+                        {...{ address, setAddress, addressErrors }}
+                      />
+                      <AddrField
+                        k="instructions"
+                        label="Delivery notes (optional)"
+                        placeholder="Gate code, leave at door…"
+                        className="sm:col-span-6"
+                        {...{ address, setAddress, addressErrors }}
+                      />
                     </div>
                   ) : (
                     <div className="max-w-sm">
@@ -335,7 +510,9 @@ function CheckoutPage() {
                       )}
                     </div>
                   )}
-                  <NextButton onClick={() => validateDetails() && setStep(2)}>Continue to payment</NextButton>
+                  <NextButton onClick={() => validateDetails() && setStep(2)}>
+                    Continue to payment
+                  </NextButton>
                 </Panel>
               )}
 
@@ -369,12 +546,21 @@ function CheckoutPage() {
                           <Check className="mr-1 inline h-4 w-4" />
                           {promoCode} applied
                         </span>
-                        <button type="button" className="text-muted-foreground underline" onClick={() => { setPromoCode(null); setPromoInput(""); }}>
+                        <button
+                          type="button"
+                          className="text-muted-foreground underline"
+                          onClick={() => {
+                            setPromoCode(null);
+                            setPromoInput("");
+                          }}
+                        >
                           Remove
                         </button>
                       </p>
                     )}
-                    {promoError && <p className="mt-2 text-sm font-semibold text-destructive">{promoError}</p>}
+                    {promoError && (
+                      <p className="mt-2 text-sm font-semibold text-destructive">{promoError}</p>
+                    )}
                   </div>
 
                   <div className="mt-4 rounded-2xl bg-card p-5">
@@ -382,7 +568,8 @@ function CheckoutPage() {
                       <Gift className="h-4 w-4 text-primary" /> Swill points
                     </h3>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      You have <b className="text-charcoal">{availablePoints}</b> points. 100 points = $1 off.
+                      You have <b className="text-charcoal">{availablePoints}</b> points. 100 points
+                      = $1 off.
                     </p>
                     {maxRedeem >= REDEEM_STEP ? (
                       <div className="mt-3 flex items-center gap-3">
@@ -397,11 +584,14 @@ function CheckoutPage() {
                           className="flex-1 accent-primary"
                         />
                         <span className="w-28 text-right text-sm font-bold tabular-nums">
-                          {Math.min(points, maxRedeem)} pts · {formatMoney(Math.min(points, maxRedeem))}
+                          {Math.min(points, maxRedeem)} pts ·{" "}
+                          {formatMoney(Math.min(points, maxRedeem))}
                         </span>
                       </div>
                     ) : (
-                      <p className="mt-2 text-xs text-muted-foreground">Earn 100 points to start redeeming.</p>
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Earn 100 points to start redeeming.
+                      </p>
                     )}
                   </div>
 
@@ -409,7 +599,9 @@ function CheckoutPage() {
                     <h3 className="flex items-center gap-2 font-display text-sm font-black tracking-wider uppercase">
                       <CreditCard className="h-4 w-4 text-primary" /> Card
                     </h3>
-                    <p className="mt-1 text-xs text-muted-foreground">Payments are simulated — no card is charged. Try 4242 4242 4242 4242.</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Payments are simulated — no card is charged. Try 4242 4242 4242 4242.
+                    </p>
                     <div className="mt-3 grid grid-cols-6 gap-3">
                       <Field
                         label="Card number"
@@ -419,7 +611,13 @@ function CheckoutPage() {
                         placeholder="4242 4242 4242 4242"
                         value={card.number}
                         onChange={(e) =>
-                          setCard((c) => ({ ...c, number: e.target.value.replace(/[^\d]/g, "").slice(0, 16).replace(/(\d{4})(?=\d)/g, "$1 ") }))
+                          setCard((c) => ({
+                            ...c,
+                            number: e.target.value
+                              .replace(/[^\d]/g, "")
+                              .slice(0, 16)
+                              .replace(/(\d{4})(?=\d)/g, "$1 "),
+                          }))
                         }
                         error={cardErrors.number}
                       />
@@ -432,7 +630,10 @@ function CheckoutPage() {
                         value={card.exp}
                         onChange={(e) => {
                           const d = e.target.value.replace(/\D/g, "").slice(0, 4);
-                          setCard((c) => ({ ...c, exp: d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d }));
+                          setCard((c) => ({
+                            ...c,
+                            exp: d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d,
+                          }));
                         }}
                         error={cardErrors.exp}
                       />
@@ -443,19 +644,35 @@ function CheckoutPage() {
                         autoComplete="cc-csc"
                         placeholder="123"
                         value={card.cvc}
-                        onChange={(e) => setCard((c) => ({ ...c, cvc: e.target.value.replace(/\D/g, "").slice(0, 4) }))}
+                        onChange={(e) =>
+                          setCard((c) => ({
+                            ...c,
+                            cvc: e.target.value.replace(/\D/g, "").slice(0, 4),
+                          }))
+                        }
                         error={cardErrors.cvc}
                       />
                     </div>
                   </div>
 
                   {serverError && (
-                    <p role="alert" className="mt-4 rounded-xl bg-destructive/10 p-4 text-sm font-semibold text-destructive">
+                    <p
+                      role="alert"
+                      className="mt-4 rounded-xl bg-destructive/10 p-4 text-sm font-semibold text-destructive"
+                    >
                       {serverError}
                     </p>
                   )}
-                  <Button variant="hero" size="xl" className="mt-6 w-full" onClick={submit} loading={placing} disabled={!guestId || !totals}>
-                    <Lock className="h-4 w-4" /> Place order {totals ? `· ${formatMoney(totals.totalCents)}` : ""}
+                  <Button
+                    variant="hero"
+                    size="xl"
+                    className="mt-6 w-full"
+                    onClick={submit}
+                    loading={placing}
+                    disabled={!guestId || !totals}
+                  >
+                    <Lock className="h-4 w-4" /> Place order{" "}
+                    {totals ? `· ${formatMoney(totals.totalCents)}` : ""}
                   </Button>
                 </Panel>
               )}
@@ -468,31 +685,64 @@ function CheckoutPage() {
           <ul className="mt-4 space-y-3">
             {cart.lines.map((l) => (
               <li key={l.key} className="flex gap-3">
-                <img src={foodImage(l.imageKey)} alt="" width={56} height={56} className="h-14 w-14 rounded-xl object-cover" />
+                <img
+                  src={foodImage(l.imageKey)}
+                  alt=""
+                  width={56}
+                  height={56}
+                  className="h-14 w-14 rounded-xl object-cover"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-bold">
                     {l.quantity} × {l.name}
                   </p>
-                  {l.summary.length > 0 && <p className="truncate text-xs text-muted-foreground">{l.summary.join(" · ")}</p>}
+                  {l.summary.length > 0 && (
+                    <p className="truncate text-xs text-muted-foreground">
+                      {l.summary.join(" · ")}
+                    </p>
+                  )}
                 </div>
-                <span className="text-sm font-semibold tabular-nums">{formatMoney(l.unitPriceCents * l.quantity)}</span>
+                <span className="text-sm font-semibold tabular-nums">
+                  {formatMoney(l.unitPriceCents * l.quantity)}
+                </span>
               </li>
             ))}
           </ul>
           {totals && (
             <dl className="mt-5 space-y-2 border-t pt-4 text-sm">
               <Row label="Subtotal" value={formatMoney(totals.subtotalCents)} />
-              {totals.promoDiscountCents > 0 && <Row label={`Promo ${totals.promoCode}`} value={`−${formatMoney(totals.promoDiscountCents)}`} accent />}
-              {totals.pointsDiscountCents > 0 && <Row label={`${totals.pointsRedeemed} points`} value={`−${formatMoney(totals.pointsDiscountCents)}`} accent />}
+              {totals.promoDiscountCents > 0 && (
+                <Row
+                  label={`Promo ${totals.promoCode}`}
+                  value={`−${formatMoney(totals.promoDiscountCents)}`}
+                  accent
+                />
+              )}
+              {totals.pointsDiscountCents > 0 && (
+                <Row
+                  label={`${totals.pointsRedeemed} points`}
+                  value={`−${formatMoney(totals.pointsDiscountCents)}`}
+                  accent
+                />
+              )}
               {cart.fulfillment === "delivery" && (
-                <Row label="Delivery" value={totals.deliveryFeeCents === 0 ? "Free" : formatMoney(totals.deliveryFeeCents)} />
+                <Row
+                  label="Delivery"
+                  value={
+                    totals.deliveryFeeCents === 0 ? "Free" : formatMoney(totals.deliveryFeeCents)
+                  }
+                />
               )}
               <Row label="Tax (8.25%)" value={formatMoney(totals.taxCents)} />
               <div className="flex items-baseline justify-between border-t pt-3">
                 <dt className="font-display font-black uppercase">Total</dt>
-                <dd className="font-display text-2xl font-black tabular-nums">{formatMoney(totals.totalCents)}</dd>
+                <dd className="font-display text-2xl font-black tabular-nums">
+                  {formatMoney(totals.totalCents)}
+                </dd>
               </div>
-              <p className="pt-1 text-xs font-semibold text-primary">You'll earn {totals.pointsEarned} points with this order</p>
+              <p className="pt-1 text-xs font-semibold text-primary">
+                You'll earn {totals.pointsEarned} points with this order
+              </p>
             </dl>
           )}
         </aside>
@@ -510,9 +760,23 @@ function Panel({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function NextButton({ children, onClick, disabled }: { children: ReactNode; onClick: () => void; disabled?: boolean }) {
+function NextButton({
+  children,
+  onClick,
+  disabled,
+}: {
+  children: ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+}) {
   return (
-    <Button variant="hero" size="xl" className="mt-8 w-full sm:w-auto" onClick={onClick} disabled={disabled}>
+    <Button
+      variant="hero"
+      size="xl"
+      className="mt-8 w-full sm:w-auto"
+      onClick={onClick}
+      disabled={disabled}
+    >
       {children}
     </Button>
   );

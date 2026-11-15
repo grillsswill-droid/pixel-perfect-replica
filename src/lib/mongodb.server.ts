@@ -49,8 +49,11 @@ export interface OrderAddress {
 export interface OrderDocument {
   id: string;
   order_number: number;
+  receipt_number?: string;
+  checkout_request_id?: string;
   guest_id: string;
   status: OrderStatus;
+  status_history?: { status: OrderStatus; updated_at: string }[];
   fulfillment: "delivery" | "pickup";
   store_id: string;
   address: OrderAddress | null;
@@ -64,7 +67,10 @@ export interface OrderDocument {
   total_cents: number;
   points_earned: number;
   payment_last4: string;
+  payment_method?: string;
+  payment_status?: "not_charged" | "pending" | "paid" | "failed" | "refunded";
   customer_name: string;
+  customer_phone?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -75,6 +81,38 @@ export interface AdminLogDocument {
   action: string;
   details: Record<string, string | number | boolean | null>;
   created_at: string;
+}
+
+export interface GalleryLikeDocument {
+  id: string;
+  gallery_item_id: string;
+  visitor_hash: string;
+  created_at: string;
+}
+
+export interface GalleryCommentDocument {
+  id: string;
+  gallery_item_id: string;
+  guest_id: string;
+  author: string;
+  text: string;
+  created_at: string;
+}
+
+export interface CateringInquiryDocument {
+  id: string;
+  guest_id: string;
+  name: string;
+  email: string;
+  phone: string;
+  event_date: string;
+  guest_count: number;
+  package_id: string | null;
+  package_name: string | null;
+  message: string;
+  status: "new" | "contacted" | "closed";
+  created_at: string;
+  updated_at: string;
 }
 
 export interface CounterDocument {
@@ -152,9 +190,37 @@ async function ensureIndexes(db: Db): Promise<void> {
         .createIndex({ order_number: 1 }, { unique: true }),
       db
         .collection<MongoDocument<OrderDocument>>("orders")
+        .createIndex({ receipt_number: 1 }, { unique: true, sparse: true }),
+      db
+        .collection<MongoDocument<OrderDocument>>("orders")
+        .createIndex({ guest_id: 1, checkout_request_id: 1 }, { unique: true, sparse: true }),
+      db
+        .collection<MongoDocument<OrderDocument>>("orders")
         .createIndex({ guest_id: 1, created_at: -1 }),
       db.collection<MongoDocument<OrderDocument>>("orders").createIndex({ created_at: -1 }),
       db.collection<MongoDocument<AdminLogDocument>>("admin_logs").createIndex({ created_at: -1 }),
+      db
+        .collection<MongoDocument<GalleryLikeDocument>>("gallery_likes")
+        .createIndex({ gallery_item_id: 1, visitor_hash: 1 }, { unique: true }),
+      db
+        .collection<MongoDocument<GalleryCommentDocument>>("gallery_comments")
+        .createIndex({ gallery_item_id: 1, created_at: 1 }),
+      db
+        .collection<MongoDocument<GalleryCommentDocument>>("gallery_comments")
+        .createIndex({ guest_id: 1, created_at: -1 }),
+      db
+        .collection<MongoDocument<CateringInquiryDocument>>("catering_inquiries")
+        .createIndex({ id: 1 }, { unique: true }),
+      db
+        .collection<MongoDocument<CateringInquiryDocument>>("catering_inquiries")
+        .createIndex({ created_at: -1 }),
+      db
+        .collection<MongoDocument<CateringInquiryDocument>>("catering_inquiries")
+        .createIndex({ guest_id: 1, created_at: -1 }),
+      db.collection("promotions").createIndex({ code: 1 }, { unique: true, sparse: true }),
+      db.collection("catering_packages").createIndex({ id: 1 }, { unique: true, sparse: true }),
+      db.collection("catering_proteins").createIndex({ id: 1 }, { unique: true, sparse: true }),
+      db.collection("gallery_items").createIndex({ id: 1 }, { unique: true, sparse: true }),
     ]).then(() => undefined);
     indexSetupByDb.set(db, setup);
   }

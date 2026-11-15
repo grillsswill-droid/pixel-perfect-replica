@@ -1,9 +1,17 @@
+import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { Bike, ShoppingBag, Store, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
+import { getCheckoutConfiguration } from "@/lib/admin.functions";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import { useCart } from "@/hooks/use-cart";
 import { foodImage } from "@/lib/food-images";
 import { FREE_DELIVERY_THRESHOLD_CENTS, formatMoney } from "@/lib/pricing";
@@ -13,21 +21,36 @@ import { QuantityStepper } from "./quantity-stepper";
 export function CartDrawer() {
   const cart = useCart();
   const navigate = useNavigate();
-  const remaining = Math.max(0, FREE_DELIVERY_THRESHOLD_CENTS - cart.subtotalCents);
-  const progress = Math.min(100, (cart.subtotalCents / FREE_DELIVERY_THRESHOLD_CENTS) * 100);
+  const { data: config } = useQuery({
+    queryKey: ["checkout-configuration"],
+    queryFn: () => getCheckoutConfiguration(),
+    staleTime: 60_000,
+  });
+  const threshold = config?.freeDeliveryThresholdCents ?? FREE_DELIVERY_THRESHOLD_CENTS;
+  const remaining = Math.max(0, threshold - cart.subtotalCents);
+  const progress = threshold === 0 ? 100 : Math.min(100, (cart.subtotalCents / threshold) * 100);
 
   return (
     <Sheet open={cart.isOpen} onOpenChange={cart.setOpen}>
-      <SheetContent side="right" className="flex w-full flex-col gap-0 border-l-0 bg-background p-0 sm:max-w-md">
+      <SheetContent
+        side="right"
+        className="flex w-full flex-col gap-0 border-l-0 bg-background p-0 sm:max-w-md"
+      >
         <SheetHeader className="border-b px-6 py-5 text-left">
           <SheetTitle className="font-display text-2xl font-black uppercase">Your Bag</SheetTitle>
           <SheetDescription>
-            {cart.count === 0 ? "Nothing here yet." : `${cart.count} item${cart.count === 1 ? "" : "s"}`}
+            {cart.count === 0
+              ? "Nothing here yet."
+              : `${cart.count} item${cart.count === 1 ? "" : "s"}`}
           </SheetDescription>
         </SheetHeader>
 
         <div className="px-6 pt-4">
-          <div className="grid grid-cols-2 gap-1 rounded-full bg-muted p-1" role="radiogroup" aria-label="How do you want it?">
+          <div
+            className="grid grid-cols-2 gap-1 rounded-full bg-muted p-1"
+            role="radiogroup"
+            aria-label="How do you want it?"
+          >
             {(["delivery", "pickup"] as const).map((f) => (
               <button
                 key={f}
@@ -40,7 +63,10 @@ export function CartDrawer() {
                 )}
               >
                 {cart.fulfillment === f && (
-                  <motion.span layoutId="drawer-fulfil" className="absolute inset-0 rounded-full bg-primary" />
+                  <motion.span
+                    layoutId="drawer-fulfil"
+                    className="absolute inset-0 rounded-full bg-primary"
+                  />
                 )}
                 <span className="relative flex items-center gap-2">
                   {f === "delivery" ? <Bike className="h-4 w-4" /> : <Store className="h-4 w-4" />}
@@ -52,10 +78,16 @@ export function CartDrawer() {
           {cart.fulfillment === "delivery" && cart.count > 0 && (
             <div className="mt-4">
               <p className="text-xs font-semibold text-muted-foreground">
-                {remaining > 0 ? `${formatMoney(remaining)} away from free delivery` : "You unlocked free delivery"}
+                {remaining > 0
+                  ? `${formatMoney(remaining)} away from free delivery`
+                  : "You unlocked free delivery"}
               </p>
               <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-muted">
-                <motion.div className="h-full bg-flame" animate={{ width: `${progress}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }} />
+                <motion.div
+                  className="h-full bg-flame"
+                  animate={{ width: `${progress}%` }}
+                  transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                />
               </div>
             </div>
           )}
@@ -68,11 +100,17 @@ export function CartDrawer() {
                 <ShoppingBag className="h-8 w-8 text-primary" />
               </div>
               <p className="font-display text-xl font-black uppercase">Hungry?</p>
-              <p className="max-w-60 text-sm text-muted-foreground">Add a smash burger, a pie, or an 18-hour cold brew to get started.</p>
+              <p className="max-w-60 text-sm text-muted-foreground">
+                Add a smash burger, a pie, or an 18-hour cold brew to get started.
+              </p>
               <Button asChild variant="hero" onClick={() => cart.setOpen(false)}>
                 <Link to="/menu">Browse the menu</Link>
               </Button>
-              <Link to="/rewards" onClick={() => cart.setOpen(false)} className="text-sm font-semibold text-primary underline-offset-4 hover:underline">
+              <Link
+                to="/rewards"
+                onClick={() => cart.setOpen(false)}
+                className="text-sm font-semibold text-primary underline-offset-4 hover:underline"
+              >
                 Reorder a past favorite
               </Link>
             </div>
@@ -88,18 +126,36 @@ export function CartDrawer() {
                     exit={{ opacity: 0, x: -30, height: 0, marginTop: 0 }}
                     className="flex gap-3 rounded-2xl bg-card p-3 shadow-card"
                   >
-                    <img src={foodImage(line.imageKey)} alt="" width={80} height={80} loading="lazy" className="h-20 w-20 rounded-xl object-cover" />
+                    <img
+                      src={foodImage(line.imageKey)}
+                      alt=""
+                      width={80}
+                      height={80}
+                      loading="lazy"
+                      className="h-20 w-20 rounded-xl object-cover"
+                    />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2">
                         <p className="font-display leading-tight font-bold">{line.name}</p>
-                        <p className="font-bold tabular-nums">{formatMoney(line.unitPriceCents * line.quantity)}</p>
+                        <p className="font-bold tabular-nums">
+                          {formatMoney(line.unitPriceCents * line.quantity)}
+                        </p>
                       </div>
                       {line.summary.length > 0 && (
-                        <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{line.summary.join(" · ")}</p>
+                        <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                          {line.summary.join(" · ")}
+                        </p>
                       )}
-                      {line.note && <p className="mt-0.5 text-xs text-muted-foreground italic">"{line.note}"</p>}
+                      {line.note && (
+                        <p className="mt-0.5 text-xs text-muted-foreground italic">"{line.note}"</p>
+                      )}
                       <div className="mt-2 flex items-center justify-between">
-                        <QuantityStepper size="sm" value={line.quantity} onChange={(q) => cart.updateQuantity(line.key, q)} min={0} />
+                        <QuantityStepper
+                          size="sm"
+                          value={line.quantity}
+                          onChange={(q) => cart.updateQuantity(line.key, q)}
+                          min={0}
+                        />
                         <button
                           type="button"
                           onClick={() => cart.removeLine(line.key)}
@@ -121,9 +177,13 @@ export function CartDrawer() {
           <div className="border-t bg-card px-6 py-5">
             <div className="flex items-center justify-between text-sm">
               <span className="text-muted-foreground">Subtotal</span>
-              <span className="font-display text-xl font-black tabular-nums">{formatMoney(cart.subtotalCents)}</span>
+              <span className="font-display text-xl font-black tabular-nums">
+                {formatMoney(cart.subtotalCents)}
+              </span>
             </div>
-            <p className="mt-1 text-xs text-muted-foreground">Tax, fees, promos and points are applied at checkout.</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Tax, fees, promos and points are applied at checkout.
+            </p>
             <Button
               variant="hero"
               size="xl"

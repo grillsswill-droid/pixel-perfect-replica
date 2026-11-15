@@ -47,7 +47,10 @@ export const PROMOS: PromoDefinition[] = [
 export class PricingError extends Error {}
 
 /** Unit price for a menu item with the given option selections. Validates the selections. */
-export function unitPriceCents(item: Pick<MenuItem, "price_cents" | "options">, selections: Selections): number {
+export function unitPriceCents(
+  item: Pick<MenuItem, "price_cents" | "options">,
+  selections: Selections,
+): number {
   let total = item.price_cents;
   for (const group of item.options) {
     const chosen = selections[group.id] ?? [];
@@ -78,14 +81,19 @@ export function defaultSelections(item: Pick<MenuItem, "options">): Selections {
   return s;
 }
 
-export function selectionSummary(item: Pick<MenuItem, "options">, selections: Selections, removed: string[]): string[] {
+export function selectionSummary(
+  item: Pick<MenuItem, "options">,
+  selections: Selections,
+  removed: string[],
+): string[] {
   const parts: string[] = [];
   for (const g of item.options) {
     for (const id of selections[g.id] ?? []) {
       const c = g.choices.find((x) => x.id === id);
       if (!c) continue;
       // Skip "nothing extra" defaults like "Just the burger".
-      if (c.price_cents === 0 && (id === "none" || g.choices[0]?.id === id) && g.type === "single") continue;
+      if (c.price_cents === 0 && (id === "none" || g.choices[0]?.id === id) && g.type === "single")
+        continue;
       parts.push(c.label);
     }
   }
@@ -93,10 +101,13 @@ export function selectionSummary(item: Pick<MenuItem, "options">, selections: Se
   return parts;
 }
 
-export function findPromo(code: string | null | undefined): PromoDefinition | undefined {
+export function findPromo(
+  code: string | null | undefined,
+  promotions: PromoDefinition[] = PROMOS,
+): PromoDefinition | undefined {
   if (!code) return undefined;
   const norm = code.trim().toUpperCase();
-  return PROMOS.find((p) => p.code === norm);
+  return promotions.find((p) => p.code === norm);
 }
 
 export interface PricedLine {
@@ -108,7 +119,9 @@ export interface PricedLine {
 export function promoDiscountCents(promo: PromoDefinition, lines: PricedLine[]): number {
   const subtotal = lines.reduce((s, l) => s + l.lineTotalCents, 0);
   if (promo.minSubtotalCents && subtotal < promo.minSubtotalCents) {
-    throw new PricingError(`${promo.code} needs a subtotal of at least $${(promo.minSubtotalCents / 100).toFixed(2)}`);
+    throw new PricingError(
+      `${promo.code} needs a subtotal of at least $${(promo.minSubtotalCents / 100).toFixed(2)}`,
+    );
   }
   const base = promo.category
     ? lines.filter((l) => l.category === promo.category).reduce((s, l) => s + l.lineTotalCents, 0)
@@ -124,6 +137,9 @@ export interface TotalsInput {
   promoCode?: string | null | undefined;
   pointsToRedeem?: number | undefined;
   availablePoints?: number | undefined;
+  promotions?: PromoDefinition[] | undefined;
+  deliveryFeeCents?: number | undefined;
+  freeDeliveryThresholdCents?: number | undefined;
 }
 
 export interface Totals {
@@ -143,13 +159,18 @@ export function computeTotals(input: TotalsInput): Totals {
   const subtotalCents = input.lines.reduce((s, l) => s + l.lineTotalCents, 0);
   if (subtotalCents <= 0) throw new PricingError("Your bag is empty");
 
-  const promo = input.promoCode ? findPromo(input.promoCode) : undefined;
-  if (input.promoCode && input.promoCode.trim() && !promo) throw new PricingError("That promo code isn't valid");
+  const promo = input.promoCode
+    ? findPromo(input.promoCode, input.promotions ?? PROMOS)
+    : undefined;
+  if (input.promoCode && input.promoCode.trim() && !promo)
+    throw new PricingError("That promo code isn't valid");
   const promoDiscount = promo ? promoDiscountCents(promo, input.lines) : 0;
 
   const requested = Math.max(0, Math.floor(input.pointsToRedeem ?? 0));
-  if (requested % REDEEM_STEP !== 0) throw new PricingError(`Points redeem in blocks of ${REDEEM_STEP}`);
-  if (requested > (input.availablePoints ?? 0)) throw new PricingError("You don't have that many points");
+  if (requested % REDEEM_STEP !== 0)
+    throw new PricingError(`Points redeem in blocks of ${REDEEM_STEP}`);
+  if (requested > (input.availablePoints ?? 0))
+    throw new PricingError("You don't have that many points");
   const afterPromo = subtotalCents - promoDiscount;
   const maxRedeemable = Math.floor(afterPromo / 100) * POINTS_PER_DOLLAR_REDEEMED;
   const pointsRedeemed = Math.min(requested, maxRedeemable - (maxRedeemable % REDEEM_STEP));
@@ -158,7 +179,10 @@ export function computeTotals(input: TotalsInput): Totals {
   const discountCents = promoDiscount + pointsDiscount;
   const taxable = subtotalCents - discountCents;
   const deliveryFeeCents =
-    input.fulfillment === "delivery" && subtotalCents < FREE_DELIVERY_THRESHOLD_CENTS ? DELIVERY_FEE_CENTS : 0;
+    input.fulfillment === "delivery" &&
+    subtotalCents < (input.freeDeliveryThresholdCents ?? FREE_DELIVERY_THRESHOLD_CENTS)
+      ? (input.deliveryFeeCents ?? DELIVERY_FEE_CENTS)
+      : 0;
   const taxCents = Math.round(taxable * TAX_RATE);
   const totalCents = taxable + taxCents + deliveryFeeCents;
   const pointsEarned = Math.floor(taxable / 100) * POINTS_PER_DOLLAR;
@@ -185,7 +209,7 @@ export const REWARD_TIERS = [
   { points: 250, label: "Hand-Cut Fries or Lemonade", value: "$2.50 off" },
   { points: 500, label: "Any Coffee or Shake", value: "$5 off" },
   { points: 900, label: "Any Burger or Sandwich", value: "$9 off" },
-  { points: 1500, label: "Any 16\" Pizza", value: "$15 off" },
+  { points: 1500, label: 'Any 16" Pizza', value: "$15 off" },
 ];
 
 export const MEMBER_LEVELS = [

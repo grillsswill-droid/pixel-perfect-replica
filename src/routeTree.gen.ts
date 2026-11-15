@@ -10,17 +10,33 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as CateringRouteImport } from './routes/catering'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as DealsRouteImport } from './routes/deals'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as KitchenRouteImport } from './routes/kitchen'
 import { Route as LocationsRouteImport } from './routes/locations'
 import { Route as MenuRouteImport } from './routes/menu'
 import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as AccountOrdersRouteImport } from './routes/account.orders'
 import { Route as OrdersIdRouteImport } from './routes/orders.$id'
+import { Route as ReceiptsIdRouteImport } from './routes/receipts.$id'
+import { Route as ApiMediaIdRouteImport } from './routes/api.media.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CateringRoute = CateringRouteImport.update({
+  id: '/catering',
+  path: '/catering',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -31,6 +47,11 @@ const CheckoutRoute = CheckoutRouteImport.update({
 const DealsRoute = DealsRouteImport.update({
   id: '/deals',
   path: '/deals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KitchenRoute = KitchenRouteImport.update({
@@ -53,85 +74,142 @@ const RewardsRoute = RewardsRouteImport.update({
   path: '/rewards',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountOrdersRoute = AccountOrdersRouteImport.update({
+  id: '/account/orders',
+  path: '/account/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrdersIdRoute = OrdersIdRouteImport.update({
   id: '/orders/$id',
   path: '/orders/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReceiptsIdRoute = ReceiptsIdRouteImport.update({
+  id: '/receipts/$id',
+  path: '/receipts/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMediaIdRoute = ApiMediaIdRouteImport.update({
+  id: '/api/media/$id',
+  path: '/api/media/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/catering': typeof CateringRoute
   '/checkout': typeof CheckoutRoute
   '/deals': typeof DealsRoute
+  '/gallery': typeof GalleryRoute
   '/kitchen': typeof KitchenRoute
   '/locations': typeof LocationsRoute
   '/menu': typeof MenuRoute
   '/rewards': typeof RewardsRoute
+  '/account/orders': typeof AccountOrdersRoute
   '/orders/$id': typeof OrdersIdRoute
+  '/receipts/$id': typeof ReceiptsIdRoute
+  '/api/media/$id': typeof ApiMediaIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/catering': typeof CateringRoute
   '/checkout': typeof CheckoutRoute
   '/deals': typeof DealsRoute
+  '/gallery': typeof GalleryRoute
   '/kitchen': typeof KitchenRoute
   '/locations': typeof LocationsRoute
   '/menu': typeof MenuRoute
   '/rewards': typeof RewardsRoute
+  '/account/orders': typeof AccountOrdersRoute
   '/orders/$id': typeof OrdersIdRoute
+  '/receipts/$id': typeof ReceiptsIdRoute
+  '/api/media/$id': typeof ApiMediaIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/catering': typeof CateringRoute
   '/checkout': typeof CheckoutRoute
   '/deals': typeof DealsRoute
+  '/gallery': typeof GalleryRoute
   '/kitchen': typeof KitchenRoute
   '/locations': typeof LocationsRoute
   '/menu': typeof MenuRoute
   '/rewards': typeof RewardsRoute
+  '/account/orders': typeof AccountOrdersRoute
   '/orders/$id': typeof OrdersIdRoute
+  '/receipts/$id': typeof ReceiptsIdRoute
+  '/api/media/$id': typeof ApiMediaIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
+    | '/catering'
     | '/checkout'
     | '/deals'
+    | '/gallery'
     | '/kitchen'
     | '/locations'
     | '/menu'
     | '/rewards'
+    | '/account/orders'
     | '/orders/$id'
+    | '/receipts/$id'
+    | '/api/media/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
+    | '/catering'
     | '/checkout'
     | '/deals'
+    | '/gallery'
     | '/kitchen'
     | '/locations'
     | '/menu'
     | '/rewards'
+    | '/account/orders'
     | '/orders/$id'
+    | '/receipts/$id'
+    | '/api/media/$id'
   id:
     | '__root__'
     | '/'
+    | '/admin'
+    | '/catering'
     | '/checkout'
     | '/deals'
+    | '/gallery'
     | '/kitchen'
     | '/locations'
     | '/menu'
     | '/rewards'
+    | '/account/orders'
     | '/orders/$id'
+    | '/receipts/$id'
+    | '/api/media/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  CateringRoute: typeof CateringRoute
   CheckoutRoute: typeof CheckoutRoute
   DealsRoute: typeof DealsRoute
+  GalleryRoute: typeof GalleryRoute
   KitchenRoute: typeof KitchenRoute
   LocationsRoute: typeof LocationsRoute
   MenuRoute: typeof MenuRoute
   RewardsRoute: typeof RewardsRoute
+  AccountOrdersRoute: typeof AccountOrdersRoute
   OrdersIdRoute: typeof OrdersIdRoute
+  ReceiptsIdRoute: typeof ReceiptsIdRoute
+  ApiMediaIdRoute: typeof ApiMediaIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -141,6 +219,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catering': {
+      id: '/catering'
+      path: '/catering'
+      fullPath: '/catering'
+      preLoaderRoute: typeof CateringRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {
@@ -155,6 +247,13 @@ declare module '@tanstack/react-router' {
       path: '/deals'
       fullPath: '/deals'
       preLoaderRoute: typeof DealsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kitchen': {
@@ -185,6 +284,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RewardsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/account/orders': {
+      id: '/account/orders'
+      path: '/account/orders'
+      fullPath: '/account/orders'
+      preLoaderRoute: typeof AccountOrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/orders/$id': {
       id: '/orders/$id'
       path: '/orders/$id'
@@ -192,18 +298,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrdersIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/receipts/$id': {
+      id: '/receipts/$id'
+      path: '/receipts/$id'
+      fullPath: '/receipts/$id'
+      preLoaderRoute: typeof ReceiptsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/media/$id': {
+      id: '/api/media/$id'
+      path: '/api/media/$id'
+      fullPath: '/api/media/$id'
+      preLoaderRoute: typeof ApiMediaIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  CateringRoute: CateringRoute,
   CheckoutRoute: CheckoutRoute,
   DealsRoute: DealsRoute,
+  GalleryRoute: GalleryRoute,
   KitchenRoute: KitchenRoute,
   LocationsRoute: LocationsRoute,
   MenuRoute: MenuRoute,
   RewardsRoute: RewardsRoute,
+  AccountOrdersRoute: AccountOrdersRoute,
   OrdersIdRoute: OrdersIdRoute,
+  ReceiptsIdRoute: ReceiptsIdRoute,
+  ApiMediaIdRoute: ApiMediaIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

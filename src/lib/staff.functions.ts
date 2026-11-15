@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { DeliveryAddress } from "./orders.functions";
 import type { MenuItem, OrderLineSnapshot, Store } from "./menu-types";
 import type { AdminLogDocument, OrderDocument } from "./mongodb.server";
+import { canTransitionOrder } from "./order-status";
 
 type StaffSession = { staff?: boolean };
 
@@ -121,12 +122,29 @@ export const setOrderStatus = createServerFn({ method: "POST" })
     await requireStaff();
     const { collection, getMongoDatabase } = await import("./mongodb.server");
     const { db } = await getMongoDatabase();
+    const orders = collection<OrderDocument>(db, "orders");
+    const order = await orders.findOne({ id: data.id });
+    if (!order) throw new Error("That order couldn't be found.");
+    if (!canTransitionOrder(order.status, data.status)) {
+      throw new Error(`Cannot move an order from ${order.status} to ${data.status}.`);
+    }
+    if (order.status === data.status) return { ok: true };
     const now = new Date().toISOString();
-    const update = await collection<OrderDocument>(db, "orders").updateOne(
-      { id: data.id },
-      { $set: { status: data.status, updated_at: now } },
+    const update = await orders.updateOne(
+      { id: data.id, status: order.status },
+      {
+        $set: {
+          status: data.status,
+          updated_at: now,
+          status_history: [
+            ...(order.status_history ?? [{ status: order.status, updated_at: order.created_at }]),
+            { status: data.status, updated_at: now },
+          ],
+        },
+      },
     );
-    if (update.matchedCount === 0) throw new Error("That order couldn't be found.");
+    if (update.modifiedCount === 0)
+      throw new Error("The order changed in another session. Refresh and retry.");
     const { randomUUID } = await import("node:crypto");
     await collection<AdminLogDocument>(db, "admin_logs").insertOne({
       id: randomUUID(),

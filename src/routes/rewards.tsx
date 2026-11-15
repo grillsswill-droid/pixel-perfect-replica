@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Flame, Gift, RotateCcw, Star } from "lucide-react";
+import { ArrowRight, Flame, Gift, ReceiptText, RotateCcw, Star } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -214,6 +214,38 @@ function RewardsPage() {
                         <p className="font-bold">{formatMoney(order.total_cents)}</p>
                         <p className="mt-1 text-xs text-primary">+{order.points_earned} points</p>
                       </div>
+                      {order.accessToken ? (
+                        <div className="flex gap-1">
+                          <Button
+                            asChild
+                            variant="outline"
+                            size="sm"
+                            aria-label={`Track order ${order.order_number}`}
+                          >
+                            <Link
+                              to="/orders/$id"
+                              params={{ id: order.id }}
+                              search={{ token: order.accessToken }}
+                            >
+                              Track
+                            </Link>
+                          </Button>
+                          <Button
+                            asChild
+                            variant="outline"
+                            size="sm"
+                            aria-label={`View receipt for order ${order.order_number}`}
+                          >
+                            <Link
+                              to="/receipts/$id"
+                              params={{ id: order.id }}
+                              search={{ token: order.accessToken }}
+                            >
+                              <ReceiptText className="h-4 w-4" />
+                            </Link>
+                          </Button>
+                        </div>
+                      ) : null}
                       <Button
                         variant="outline"
                         size="sm"

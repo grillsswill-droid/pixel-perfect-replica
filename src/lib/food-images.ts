@@ -33,5 +33,7 @@ export const CATEGORY_IMAGES = {
 } as const;
 
 export function foodImage(key: string): string {
+  if (key.startsWith("/") && !key.startsWith("//")) return key;
+  if (key.startsWith("https://")) return key;
   return MAP[key] ?? burger;
 }

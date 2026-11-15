@@ -14,6 +14,7 @@ describe("App routing", () => {
     "/locations",
     "/rewards",
     "/checkout",
+    "/admin",
     "/kitchen",
     "/orders/00000000-0000-4000-8000-000000000000",
   ])("matches a page for %s instead of falling back to not found", (path) => {
