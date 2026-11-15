@@ -60,6 +60,23 @@ the Little Swillers and dessert categories with:
 npm run db:seed:combos
 ```
 
+Vercel does not run database seed scripts during deployment. To populate the
+Production database, authenticate and link the Vercel CLI to this project, then
+run these commands from the repository root:
+
+```sh
+vercel env pull /tmp/grill-swill-production.env --environment=production
+# Only for a brand-new database:
+node --env-file=/tmp/grill-swill-production.env scripts/seed-mongodb.mjs
+node --env-file=/tmp/grill-swill-production.env scripts/seed-combo-meals.mjs
+```
+
+The combo seed requires pizza items configured with size, crust, and topping
+options, so skip the starter seed if those items already exist.
+Confirm the seed reports 18 Quick Order products. This targets the Production
+`MONGODB_URI` and `MONGODB_DATABASE` without printing their values. Reload the
+site after the seed completes; a redeploy is not required.
+
 The combo seed is idempotent and only inserts missing products/categories. It
 does not overwrite prices, availability, imagery, featured status, or other
 changes made later through Admin → Menu. Pizza combos link to the configured
