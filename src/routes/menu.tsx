@@ -25,11 +25,11 @@ export const Route = createFileRoute("/menu")({
   },
   head: () => ({
     meta: [
-      { title: "Menu — Burgers, Chicken, Pizza & Coffee | Grill & Swill" },
+      { title: "Menu — Combos, Burgers, Pizza, Kids' Meals & Desserts | Grill & Swill" },
       {
         name: "description",
         content:
-          "Browse the full Grill & Swill menu: smash burgers, crispy chicken, wood-fired pizza, hand-cut fries and cold brew.",
+          "Browse Grill & Swill combos, smash burgers, crispy chicken, wood-fired pizza, Little Swillers meals, desserts and cold brew.",
       },
       { property: "og:title", content: "The Grill & Swill Menu" },
       {

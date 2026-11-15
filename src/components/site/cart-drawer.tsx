@@ -126,14 +126,16 @@ export function CartDrawer() {
                     exit={{ opacity: 0, x: -30, height: 0, marginTop: 0 }}
                     className="flex gap-3 rounded-2xl bg-card p-3 shadow-card"
                   >
-                    <img
-                      src={foodImage(line.imageKey)}
-                      alt=""
-                      width={80}
-                      height={80}
-                      loading="lazy"
-                      className="h-20 w-20 rounded-xl object-cover"
-                    />
+                    {foodImage(line.imageKey) ? (
+                      <img
+                        src={foodImage(line.imageKey)}
+                        alt=""
+                        width={80}
+                        height={80}
+                        loading="lazy"
+                        className="h-20 w-20 rounded-xl object-cover"
+                      />
+                    ) : null}
                     <div className="min-w-0 flex-1">
                       <div className="flex items-start justify-between gap-2">
                         <p className="font-display leading-tight font-bold">{line.name}</p>
@@ -141,8 +143,17 @@ export function CartDrawer() {
                           {formatMoney(line.unitPriceCents * line.quantity)}
                         </p>
                       </div>
+                      {line.bundleComponents && line.bundleComponents.length > 0 && (
+                        <ul className="mt-1 text-xs text-muted-foreground">
+                          {line.bundleComponents.map((component, index) => (
+                            <li key={`${component.label}-${index}`}>
+                              {component.quantity} × {component.label}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                       {line.summary.length > 0 && (
-                        <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                        <p className="mt-0.5 text-xs text-muted-foreground">
                           {line.summary.join(" · ")}
                         </p>
                       )}

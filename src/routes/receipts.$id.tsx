@@ -132,6 +132,14 @@ function ReceiptPage() {
                     <span className="font-semibold">
                       {item.quantity} × {item.name}
                     </span>
+                    {item.bundleComponents?.length ? (
+                      <span className="mt-1 block text-xs text-muted-foreground">
+                        Includes:{" "}
+                        {item.bundleComponents
+                          .map((component) => `${component.quantity} × ${component.label}`)
+                          .join(" · ")}
+                      </span>
+                    ) : null}
                     {item.summary.length ? (
                       <span className="mt-1 block text-xs text-muted-foreground">
                         {item.summary.join(" · ")}
@@ -152,6 +160,9 @@ function ReceiptPage() {
           </section>
 
           <section className="ml-auto max-w-sm border-t border-dashed border-border pt-5 text-sm">
+            <p className="mb-2 text-right text-xs text-muted-foreground">
+              Currency: {order.currency ?? "USD"}
+            </p>
             <MoneyRow label="Subtotal" value={order.subtotal_cents} />
             {order.discount_cents > 0 ? (
               <MoneyRow

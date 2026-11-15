@@ -6,9 +6,16 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { useCart } from "@/hooks/use-cart";
+import { verifyQuickOrderSelection } from "@/lib/catalog.functions";
 import { foodImage } from "@/lib/food-images";
 import type { MenuItem, Selections } from "@/lib/menu-types";
-import { defaultSelections, formatMoney, selectionSummary, unitPriceCents } from "@/lib/pricing";
+import {
+  bundleComponentsFor,
+  defaultSelections,
+  formatMoney,
+  selectionSummary,
+  unitPriceCents,
+} from "@/lib/pricing";
 import { cn } from "@/lib/utils";
 import { QuantityStepper } from "./quantity-stepper";
 
@@ -29,6 +36,7 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
   const [note, setNote] = useState("");
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
+  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     if (!added) return;
@@ -36,7 +44,13 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
     return () => clearTimeout(t);
   }, [added, onDone]);
 
-  const unit = useMemo(() => unitPriceCents(item, selections), [item, selections]);
+  const unit = useMemo(() => {
+    const requiredChoicesUnavailable = item.options.some(
+      (group) => group.required && !group.choices.some((choice) => choice.is_available !== false),
+    );
+    return requiredChoicesUnavailable ? item.price_cents : unitPriceCents(item, selections);
+  }, [item, selections]);
+  const imageSrc = foodImage(item.image_key);
 
   function toggle(groupId: string, choiceId: string, type: "single" | "multi") {
     setSelections((s) => {
@@ -49,40 +63,71 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
     });
   }
 
-  function add() {
-    cart.addLine({
-      itemId: item.id,
-      slug: item.slug,
-      category: item.category,
-      name: item.name,
-      imageKey: item.image_key,
-      quantity: qty,
-      selections,
-      removed,
-      note: note.trim(),
-      unitPriceCents: unit,
-      summary: selectionSummary(item, selections, removed),
-    });
-    setAdded(true);
-    toast.success(`${qty} × ${item.name} added to your bag`, {
-      action: { label: "View bag", onClick: () => cart.setOpen(true) },
-    });
+  async function add() {
+    if (adding || !cart.hydrated || !item.is_available) return;
+    setAdding(true);
+    try {
+      const currentLine = {
+        itemId: item.id,
+        slug: item.slug,
+        category: item.category,
+        name: item.name,
+        imageKey: item.image_key,
+        quantity: qty,
+        selections,
+        removed,
+        note: note.trim(),
+        unitPriceCents: unit,
+        summary: selectionSummary(item, selections, removed),
+        bundleComponents: bundleComponentsFor(item, selections),
+      };
+      if (item.is_quick_order) {
+        const verification = await verifyQuickOrderSelection({
+          data: { itemId: item.id, selections },
+        });
+        if (!verification.ok) {
+          toast.error(verification.error);
+          return;
+        }
+        cart.addLine({
+          ...verification.line,
+          quantity: qty,
+          selections,
+          removed,
+          note: note.trim(),
+        });
+      } else {
+        cart.addLine(currentLine);
+      }
+      setAdded(true);
+      toast.success(`${qty} × ${item.name} added to your bag`, {
+        action: { label: "View bag", onClick: () => cart.setOpen(true) },
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "The item couldn't be added. Try again.",
+      );
+    } finally {
+      setAdding(false);
+    }
   }
 
   return (
     <div className="flex max-h-[92vh] flex-col">
       <div className="overflow-y-auto">
         <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
-          <motion.img
-            initial={{ scale: 1.08 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            src={foodImage(item.image_key)}
-            alt={item.name}
-            width={1024}
-            height={1024}
-            className="h-full w-full object-cover"
-          />
+          {imageSrc ? (
+            <motion.img
+              initial={{ scale: 1.08 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              src={imageSrc}
+              alt={item.name}
+              width={1024}
+              height={1024}
+              className="h-full w-full object-cover"
+            />
+          ) : null}
           <div className="absolute bottom-3 left-3 flex flex-wrap gap-1.5">
             {item.tags.map((t) => (
               <span
@@ -103,10 +148,29 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
               {item.description}
             </DialogDescription>
             <p className="mt-2 flex items-center gap-1.5 text-sm font-semibold text-muted-foreground">
-              <Flame className="h-4 w-4 text-primary" /> {item.calories} cal · from{" "}
-              {formatMoney(item.price_cents)}
+              {item.calories > 0 ? (
+                <>
+                  <Flame className="h-4 w-4 text-primary" /> {item.calories} cal ·{" "}
+                </>
+              ) : null}
+              From {formatMoney(item.price_cents)} USD
             </p>
           </div>
+
+          {item.bundle_components?.length ? (
+            <fieldset>
+              <legend className="font-display text-sm font-black tracking-wider uppercase">
+                Included with this combo
+              </legend>
+              <ul className="mt-3 space-y-1 rounded-2xl bg-card p-4 text-sm">
+                {item.bundle_components.map((component, index) => (
+                  <li key={`${component.label}-${index}`}>
+                    <span className="font-semibold">{component.quantity} ×</span> {component.label}
+                  </li>
+                ))}
+              </ul>
+            </fieldset>
+          ) : null}
 
           {item.options.map((g) => (
             <fieldset key={g.id}>
@@ -121,14 +185,16 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 {g.choices.map((c) => {
                   const on = (selections[g.id] ?? []).includes(c.id);
+                  const unavailable = c.is_available === false;
                   return (
                     <button
                       type="button"
                       key={c.id}
                       onClick={() => toggle(g.id, c.id, g.type)}
+                      disabled={unavailable}
                       aria-pressed={on}
                       className={cn(
-                        "flex items-center justify-between gap-3 rounded-2xl border-2 bg-card px-4 py-3 text-left text-sm font-semibold transition active:scale-[0.98]",
+                        "flex items-center justify-between gap-3 rounded-2xl border-2 bg-card px-4 py-3 text-left text-sm font-semibold transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50",
                         on
                           ? "border-primary shadow-chunky"
                           : "border-transparent hover:border-border",
@@ -147,6 +213,7 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
                           {on && <Check className="h-3 w-3" strokeWidth={3} />}
                         </span>
                         {c.label}
+                        {unavailable ? " · Sold out" : ""}
                       </span>
                       {c.price_cents > 0 && (
                         <span className="text-muted-foreground tabular-nums">
@@ -219,9 +286,9 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
           variant="hero"
           size="xl"
           className="flex-1"
-          onClick={add}
-          disabled={!cart.hydrated || !item.is_available || added}
-          loading={!cart.hydrated}
+          onClick={() => void add()}
+          disabled={!cart.hydrated || !item.is_available || added || adding}
+          loading={!cart.hydrated || adding}
         >
           <AnimatePresence mode="wait" initial={false}>
             {added ? (
@@ -241,9 +308,11 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
               >
                 {!cart.hydrated
                   ? "Getting your bag ready…"
-                  : item.is_available
-                    ? `Add to bag · ${formatMoney(unit * qty)}`
-                    : "Sold out today"}
+                  : adding
+                    ? "Checking availability…"
+                    : item.is_available
+                      ? `Add to bag · ${formatMoney(unit * qty)}`
+                      : "Sold out today"}
               </motion.span>
             )}
           </AnimatePresence>

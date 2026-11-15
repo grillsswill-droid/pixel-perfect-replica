@@ -8,6 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "db:seed": "node scripts/seed-mongodb.mjs",
+    "db:seed:combos": "node scripts/seed-combo-meals.mjs",
     "start": "node .output/server/index.mjs",
     "preview": "vite preview",
     "lint": "eslint .",

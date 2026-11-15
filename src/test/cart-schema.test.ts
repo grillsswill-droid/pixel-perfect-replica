@@ -31,6 +31,21 @@ describe("cart persistence validation", () => {
     expect(saveCartSchema.safeParse(validCart).success).toBe(true);
   });
 
+  it("accepts kids' combos and their saved bundle details", () => {
+    const comboCart = {
+      ...validCart,
+      lines: [
+        {
+          ...validCart.lines[0],
+          category: "kids",
+          bundleComponents: [{ label: "Small fries", quantity: 1 }],
+        },
+      ],
+    };
+
+    expect(saveCartSchema.safeParse(comboCart).success).toBe(true);
+  });
+
   it("rejects malformed identities and unsupported quantities", () => {
     expect(saveCartSchema.safeParse({ ...validCart, guestId: "not-an-id" }).success).toBe(false);
     expect(

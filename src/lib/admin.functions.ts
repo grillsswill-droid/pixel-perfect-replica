@@ -84,6 +84,8 @@ const optionSchema = z
     label: z.string().trim().min(1).max(100),
     type: z.enum(["single", "multi"]),
     required: z.boolean().optional(),
+    source_item_group_id: z.string().trim().min(1).max(60).optional(),
+    source_option_group_id: z.string().trim().min(1).max(60).optional(),
     choices: z
       .array(
         z.object({
@@ -95,18 +97,24 @@ const optionSchema = z
             .regex(/^[a-z0-9_-]+$/i),
           label: z.string().trim().min(1).max(120),
           price_cents: z.number().int().min(-100_000).max(100_000),
+          menu_item_id: z.string().uuid().optional(),
+          bundle_quantity: z.number().int().min(1).max(20).optional(),
         }),
       )
       .min(1)
       .max(50),
   })
-  .strict();
+  .strict()
+  .refine(
+    (group) => Boolean(group.source_item_group_id) === Boolean(group.source_option_group_id),
+    "Linked option groups need both source group IDs.",
+  );
 
 const menuItemSchema = z
   .object({
     id: z.string().uuid().optional(),
     name: z.string().trim().min(1).max(120),
-    category: z.enum(["burgers", "chicken", "pizza", "sides", "drinks"]),
+    category: z.enum(["burgers", "chicken", "pizza", "sides", "drinks", "kids", "desserts"]),
     description: z.string().trim().max(2000),
     price_cents: z.number().int().min(0).max(100_000),
     calories: z.number().int().min(0).max(100_000),
@@ -117,12 +125,30 @@ const menuItemSchema = z
     is_available: z.boolean(),
     is_featured: z.boolean(),
     sort_order: z.number().int().min(0).max(100_000),
+    currency: z.literal("USD").default("USD"),
+    is_quick_order: z.boolean().default(false),
+    quick_order_group: z.enum(["burgers", "pizza", "kids", "desserts"]).optional(),
+    quick_order_order: z.number().int().min(0).max(100_000).optional(),
+    bundle_components: z
+      .array(
+        z.object({
+          label: z.string().trim().min(1).max(120),
+          quantity: z.number().int().min(1).max(20),
+          menu_item_id: z.string().uuid().optional(),
+        }),
+      )
+      .max(30)
+      .default([]),
   })
-  .strict();
+  .strict()
+  .refine(
+    (item) => !item.is_quick_order || Boolean(item.quick_order_group),
+    "Choose a Quick Order category for this item.",
+  );
 
 const categorySchema = z
   .object({
-    id: z.enum(["burgers", "chicken", "pizza", "sides", "drinks"]),
+    id: z.enum(["burgers", "chicken", "pizza", "sides", "drinks", "kids", "desserts"]),
     label: z.string().trim().min(1).max(80),
     short: z.string().trim().min(1).max(40),
     blurb: z.string().trim().max(240),
@@ -184,7 +210,9 @@ const promotionSchema = z
     kind: z.enum(["amount", "percent"]),
     value: z.number().finite().positive().max(100_000),
     minSubtotalCents: z.number().int().min(0).max(100_000).optional(),
-    category: z.enum(["burgers", "chicken", "pizza", "sides", "drinks"]).optional(),
+    category: z
+      .enum(["burgers", "chicken", "pizza", "sides", "drinks", "kids", "desserts"])
+      .optional(),
     usage_limit: z.number().int().min(1).max(1_000_000).optional(),
     active: z.boolean(),
   })
@@ -774,15 +802,16 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
 export const getStorefrontSettings = createServerFn({ method: "GET" }).handler(async () => {
   const { getMongoDatabase } = await import("./mongodb.server");
   const { db } = await getMongoDatabase();
-  const settings = await db.collection<StoreSettings>("site_settings").findOne({ _id: "storefront" });
+  const settings = await db
+    .collection<StoreSettings>("site_settings")
+    .findOne({ _id: "storefront" });
 
   return {
     delivery_fee_cents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
     free_delivery_threshold_cents:
       settings?.free_delivery_threshold_cents ?? FREE_DELIVERY_THRESHOLD_CENTS,
     points_per_dollar: settings?.points_per_dollar ?? POINTS_PER_DOLLAR,
-    points_per_dollar_redeemed:
-      settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
+    points_per_dollar_redeemed: settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
     reward_tiers: settings?.reward_tiers?.length ? settings.reward_tiers : DEFAULT_REWARD_TIERS,
     business_hours: settings?.business_hours ?? DEFAULT_HOURS,
   };
@@ -879,7 +908,9 @@ export const saveStoreLocation = createServerFn({ method: "POST" })
       features: [...new Set(data.features.map((feature) => feature.trim()).filter(Boolean))],
       sort_order: data.sort_order ?? 0,
     };
-    await db.collection<StoreLocation>("stores").updateOne({ id }, { $set: store }, { upsert: true });
+    await db
+      .collection<StoreLocation>("stores")
+      .updateOne({ id }, { $set: store }, { upsert: true });
     await adminLog(data.id ? "store_location_updated" : "store_location_created", {
       location_id: id,
     });

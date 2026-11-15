@@ -1,4 +1,17 @@
-export type CategoryId = "burgers" | "chicken" | "pizza" | "sides" | "drinks";
+export type CategoryId = "burgers" | "chicken" | "pizza" | "sides" | "drinks" | "kids" | "desserts";
+export type QuickOrderGroup = "burgers" | "pizza" | "kids" | "desserts";
+export type CurrencyCode = "USD";
+
+export interface BundleComponent {
+  label: string;
+  quantity: number;
+  menu_item_id?: string;
+}
+
+export interface BundleComponentSnapshot {
+  label: string;
+  quantity: number;
+}
 
 export const CATEGORIES: { id: CategoryId; label: string; short: string; blurb: string }[] = [
   {
@@ -26,6 +39,18 @@ export const CATEGORIES: { id: CategoryId; label: string; short: string; blurb: 
     short: "Drinks",
     blurb: "18-hour cold brew & hand-spun shakes.",
   },
+  {
+    id: "kids",
+    label: "Little Swillers",
+    short: "Kids' Meals",
+    blurb: "Little portions made for hungry young guests.",
+  },
+  {
+    id: "desserts",
+    label: "Ice Cream & Desserts",
+    short: "Desserts",
+    blurb: "A sweet finish to your Grill & Swill meal.",
+  },
 ];
 
 export interface MenuCategory {
@@ -40,6 +65,9 @@ export interface OptionChoice {
   id: string;
   label: string;
   price_cents: number;
+  menu_item_id?: string;
+  bundle_quantity?: number;
+  is_available?: boolean;
 }
 
 export interface OptionGroup {
@@ -47,6 +75,8 @@ export interface OptionGroup {
   label: string;
   type: "single" | "multi";
   required?: boolean;
+  source_item_group_id?: string;
+  source_option_group_id?: string;
   choices: OptionChoice[];
 }
 
@@ -65,6 +95,11 @@ export interface MenuItem {
   is_available: boolean;
   is_featured: boolean;
   sort_order: number;
+  currency?: CurrencyCode;
+  is_quick_order?: boolean;
+  quick_order_group?: QuickOrderGroup;
+  quick_order_order?: number;
+  bundle_components?: BundleComponent[];
 }
 
 export interface Store {
@@ -98,6 +133,7 @@ export interface CartLine {
   /** Display-only snapshot; the server recomputes every price. */
   unitPriceCents: number;
   summary: string[];
+  bundleComponents?: BundleComponentSnapshot[];
 }
 
 export type Fulfillment = "delivery" | "pickup";
@@ -112,4 +148,5 @@ export interface OrderLineSnapshot {
   selections: Selections;
   removed: string[];
   note: string;
+  bundleComponents?: BundleComponentSnapshot[];
 }

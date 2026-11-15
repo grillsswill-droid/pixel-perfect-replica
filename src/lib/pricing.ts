@@ -1,4 +1,4 @@
-import type { CategoryId, MenuItem, Selections } from "./menu-types";
+import type { BundleComponentSnapshot, CategoryId, MenuItem, Selections } from "./menu-types";
 
 export const TAX_RATE = 0.0825;
 export const DELIVERY_FEE_CENTS = 399;
@@ -30,7 +30,9 @@ export function getPointsPerDollar(value?: number | null): number {
 }
 
 export function getPointsPerDollarRedeemed(value?: number | null): number {
-  return Number.isFinite(value) && (value as number) > 0 ? (value as number) : POINTS_PER_DOLLAR_REDEEMED;
+  return Number.isFinite(value) && (value as number) > 0
+    ? (value as number)
+    : POINTS_PER_DOLLAR_REDEEMED;
 }
 
 export interface PromoDefinition {
@@ -71,6 +73,107 @@ export const PROMOS: PromoDefinition[] = [
 
 export class PricingError extends Error {}
 
+export function withMenuBundleAvailability(items: MenuItem[]): MenuItem[] {
+  const itemsById = new Map(items.map((item) => [item.id, item]));
+  return items.map((item) => {
+    const options = item.options.map((group) => {
+      const sourceChoices = group.source_item_group_id
+        ? (item.options.find((source) => source.id === group.source_item_group_id)?.choices ?? [])
+            .map((choice) => (choice.menu_item_id ? itemsById.get(choice.menu_item_id) : undefined))
+            .filter((source): source is MenuItem => Boolean(source?.is_available))
+        : [];
+      return {
+        ...group,
+        choices: group.choices.map((choice) => {
+          if (choice.menu_item_id) {
+            return {
+              ...choice,
+              is_available: itemsById.get(choice.menu_item_id)?.is_available ?? false,
+            };
+          }
+          if (group.source_option_group_id) {
+            const supported = sourceChoices.some((source) =>
+              source.options
+                .find((sourceGroup) => sourceGroup.id === group.source_option_group_id)
+                ?.choices.some(
+                  (sourceChoice) =>
+                    sourceChoice.id === choice.id &&
+                    sourceChoice.price_cents === choice.price_cents,
+                ),
+            );
+            return { ...choice, is_available: supported };
+          }
+          return choice;
+        }),
+      };
+    });
+    const requiredChoicesUnavailable = options.some(
+      (group) =>
+        group.required &&
+        group.choices.length > 0 &&
+        group.choices.every((choice) => choice.is_available === false),
+    );
+    const linkedComponentUnavailable = (item.bundle_components ?? []).some(
+      (component) => component.menu_item_id && !itemsById.get(component.menu_item_id)?.is_available,
+    );
+    return {
+      ...item,
+      options,
+      is_available: item.is_available && !requiredChoicesUnavailable && !linkedComponentUnavailable,
+    };
+  });
+}
+
+export function validateMenuBundle(
+  item: MenuItem,
+  selections: Selections,
+  itemsById: ReadonlyMap<string, MenuItem>,
+): void {
+  for (const component of item.bundle_components ?? []) {
+    if (!component.menu_item_id) continue;
+    const linkedItem = itemsById.get(component.menu_item_id);
+    if (!linkedItem?.is_available) {
+      throw new PricingError(
+        `${component.label} is unavailable, so ${item.name} can't be ordered.`,
+      );
+    }
+  }
+
+  for (const group of item.options) {
+    for (const choiceId of selections[group.id] ?? []) {
+      const choice = group.choices.find((entry) => entry.id === choiceId);
+      if (!choice?.menu_item_id) continue;
+      const linkedItem = itemsById.get(choice.menu_item_id);
+      if (!linkedItem?.is_available) {
+        throw new PricingError(`${choice.label} is sold out right now.`);
+      }
+    }
+
+    if (!group.source_item_group_id || !group.source_option_group_id) continue;
+    const sourceGroup = item.options.find((entry) => entry.id === group.source_item_group_id);
+    const sourceChoiceId = selections[group.source_item_group_id]?.[0];
+    const sourceChoice = sourceGroup?.choices.find((entry) => entry.id === sourceChoiceId);
+    const sourceItem = sourceChoice?.menu_item_id
+      ? itemsById.get(sourceChoice.menu_item_id)
+      : undefined;
+    const sourceOptions = sourceItem?.options.find(
+      (entry) => entry.id === group.source_option_group_id,
+    );
+    if (!sourceItem?.is_available || !sourceOptions) {
+      throw new PricingError(`Choose an available ${sourceGroup?.label ?? "menu item"}.`);
+    }
+    for (const choiceId of selections[group.id] ?? []) {
+      const choice = group.choices.find((entry) => entry.id === choiceId);
+      const sourceOption = sourceOptions.choices.find((entry) => entry.id === choiceId);
+      if (!choice || !sourceOption || sourceOption.price_cents !== choice.price_cents) {
+        throw new PricingError(
+          `${choice?.label ?? "That option"} isn't available for ${sourceItem.name}.`,
+        );
+      }
+    }
+  }
+}
+
 /** Unit price for a menu item with the given option selections. Validates the selections. */
 export function unitPriceCents(
   item: Pick<MenuItem, "price_cents" | "options">,
@@ -88,6 +191,8 @@ export function unitPriceCents(
     for (const choiceId of chosen) {
       const choice = group.choices.find((c) => c.id === choiceId);
       if (!choice) throw new PricingError(`Unknown option for ${group.label}`);
+      if (choice.is_available === false)
+        throw new PricingError(`${choice.label} is sold out right now.`);
       total += choice.price_cents;
     }
   }
@@ -101,7 +206,12 @@ export function unitPriceCents(
 export function defaultSelections(item: Pick<MenuItem, "options">): Selections {
   const s: Selections = {};
   for (const g of item.options) {
-    s[g.id] = g.type === "single" && g.required ? [g.choices[0]!.id] : [];
+    s[g.id] =
+      g.type === "single" && g.required
+        ? [g.choices.find((choice) => choice.is_available !== false)?.id].filter(
+            (id): id is string => Boolean(id),
+          )
+        : [];
   }
   return s;
 }
@@ -116,6 +226,7 @@ export function selectionSummary(
     for (const id of selections[g.id] ?? []) {
       const c = g.choices.find((x) => x.id === id);
       if (!c) continue;
+      if (c.menu_item_id) continue;
       // Skip "nothing extra" defaults like "Just the burger".
       if (c.price_cents === 0 && (id === "none" || g.choices[0]?.id === id) && g.type === "single")
         continue;
@@ -124,6 +235,27 @@ export function selectionSummary(
   }
   for (const r of removed) parts.push(`No ${r.toLowerCase()}`);
   return parts;
+}
+
+export function bundleComponentsFor(
+  item: Pick<MenuItem, "options" | "bundle_components">,
+  selections: Selections,
+): BundleComponentSnapshot[] {
+  const components = (item.bundle_components ?? []).map(({ label, quantity }) => ({
+    label,
+    quantity,
+  }));
+  for (const group of item.options) {
+    for (const choiceId of selections[group.id] ?? []) {
+      const choice = group.choices.find((entry) => entry.id === choiceId);
+      if (!choice?.menu_item_id) continue;
+      components.push({
+        label: choice.label,
+        quantity: choice.bundle_quantity ?? 1,
+      });
+    }
+  }
+  return components;
 }
 
 export function findPromo(

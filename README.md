@@ -53,12 +53,26 @@ To load the starter menu and store locations into an empty database, run:
 npm run db:seed
 ```
 
+After the starter pizza catalog is present, load the 18 signature combo meals and
+the Little Swillers and dessert categories with:
+
+```sh
+npm run db:seed:combos
+```
+
+The combo seed is idempotent and only inserts missing products/categories. It
+does not overwrite prices, availability, imagery, featured status, or other
+changes made later through Admin → Menu. Pizza combos link to the configured
+pizza varieties and reuse their current crust and topping choices. Combo prices
+are stored in cents with `currency: "USD"` and are editable in the admin menu.
+
 The seed command only inserts starter menu, category, and store data when each
 collection is empty. Guest carts are synchronized to MongoDB while retaining
 the local-device fallback; guest reward balances remain in `guests`, and order
 profiles are stored in `users`. Keep the MongoDB connection string, session
 secret, and staff passcode private. Checkout is a demo and does not charge a
-payment method.
+payment method; USD amounts are displayed and recorded, but no live USD payment
+is charged until a payment provider is configured.
 
 ## Storefront routes
 

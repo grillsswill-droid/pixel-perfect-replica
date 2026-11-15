@@ -36,6 +36,20 @@ export const defaultCategories: MenuCategory[] = [
     blurb: "18-hour cold brew & hand-spun shakes.",
     sort_order: 5,
   },
+  {
+    id: "kids",
+    label: "Little Swillers",
+    short: "Kids' Meals",
+    blurb: "Little portions made for hungry young guests.",
+    sort_order: 6,
+  },
+  {
+    id: "desserts",
+    label: "Ice Cream & Desserts",
+    short: "Desserts",
+    blurb: "A sweet finish to your Grill & Swill meal.",
+    sort_order: 7,
+  },
 ];
 
 const burgerOptions = [
@@ -327,13 +341,7 @@ export const defaultMenu: MenuItem[] = [
     calories: 980,
     image_key: "margherita",
     tags: ["Vegetarian", "Wood-fired"],
-    ingredients: [
-      "48-hour dough",
-      "Crushed tomato",
-      "Fresh mozzarella",
-      "Basil",
-      "Olive oil",
-    ],
+    ingredients: ["48-hour dough", "Crushed tomato", "Fresh mozzarella", "Basil", "Olive oil"],
     options: [...pizzaOptions],
     is_available: true,
     is_featured: false,
@@ -361,7 +369,8 @@ export const defaultMenu: MenuItem[] = [
     slug: "loaded-fries",
     category: "sides",
     name: "Loaded Swill Fries",
-    description: "Hand-cut fries buried in cheddar sauce, bacon crumble, jalapeños and Swill Sauce.",
+    description:
+      "Hand-cut fries buried in cheddar sauce, bacon crumble, jalapeños and Swill Sauce.",
     price_cents: 649,
     calories: 780,
     image_key: "fries",

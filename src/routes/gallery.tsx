@@ -76,22 +76,24 @@ function GalleryPage() {
               className="mb-5 break-inside-avoid overflow-hidden rounded-3xl bg-card shadow-card"
             >
               {item.media_type === "video" ? (
-                <video
-                  src={foodImage(item.url)}
-                  controls
-                  preload="metadata"
-                  className="max-h-[34rem] w-full bg-charcoal object-cover"
-                >
-                  Your browser does not support video playback.
-                </video>
-              ) : (
+                foodImage(item.url) ? (
+                  <video
+                    src={foodImage(item.url)}
+                    controls
+                    preload="metadata"
+                    className="max-h-[34rem] w-full bg-charcoal object-cover"
+                  >
+                    Your browser does not support video playback.
+                  </video>
+                ) : null
+              ) : foodImage(item.url) ? (
                 <img
                   src={foodImage(item.url)}
                   alt={item.caption || "Grill & Swill food"}
                   loading="lazy"
                   className="max-h-[34rem] w-full object-cover"
                 />
-              )}
+              ) : null}
               {item.caption ? <p className="p-4 text-sm font-semibold">{item.caption}</p> : null}
               <GalleryFeedback itemId={item.id} />
             </article>

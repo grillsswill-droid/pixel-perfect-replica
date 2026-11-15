@@ -47,7 +47,7 @@ import {
 import { canTransitionOrder, nextStatus, statusLabel, type OrderStatus } from "@/lib/order-status";
 import { formatMoney } from "@/lib/pricing";
 import { foodImage } from "@/lib/food-images";
-import type { CategoryId, MenuItem } from "@/lib/menu-types";
+import type { BundleComponent, CategoryId, MenuItem, QuickOrderGroup } from "@/lib/menu-types";
 
 type Workspace = Awaited<ReturnType<typeof getAdminWorkspace>>;
 type Tab =
@@ -397,7 +397,7 @@ function OrdersPanel({
       const matchesStatus = statusFilter === "all" || order.status === statusFilter;
       const matchesTerm =
         !term ||
-        `${order.order_number} ${order.customer_name} ${order.customer_phone ?? ""} ${order.receipt_number ?? ""}`
+        `${order.order_number} ${order.customer_name} ${order.customer_phone ?? ""} ${order.receipt_number ?? ""} ${order.items.map((item) => item.name).join(" ")}`
           .toLowerCase()
           .includes(term);
       return matchesStatus && matchesTerm;
@@ -455,13 +455,14 @@ function OrderTable({
 }) {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[760px] text-left text-sm">
+      <table className="w-full min-w-[900px] text-left text-sm">
         <thead className="border-b border-border text-xs uppercase tracking-wider text-muted-foreground">
           <tr>
             <th className="px-3 py-3">Order / receipt</th>
             <th className="px-3 py-3">Customer</th>
             <th className="px-3 py-3">Status</th>
             <th className="px-3 py-3">Fulfillment</th>
+            <th className="px-3 py-3">Order items</th>
             <th className="px-3 py-3 text-right">Total</th>
             <th className="px-3 py-3">Actions</th>
           </tr>
@@ -492,6 +493,33 @@ function OrderTable({
                   </span>
                 </td>
                 <td className="px-3 py-3 capitalize">{order.fulfillment}</td>
+                <td className="px-3 py-3">
+                  <details className="max-w-sm">
+                    <summary className="flex min-h-11 cursor-pointer items-center font-semibold text-primary">
+                      {order.items.length} {order.items.length === 1 ? "item" : "items"}
+                    </summary>
+                    <ul className="space-y-2 py-2 text-xs">
+                      {order.items.map((item, index) => (
+                        <li key={`${item.itemId}-${index}`}>
+                          <span className="font-bold">{item.quantity} ×</span> {item.name}
+                          {item.bundleComponents?.length ? (
+                            <span className="block text-muted-foreground">
+                              Includes:{" "}
+                              {item.bundleComponents
+                                .map((component) => `${component.quantity} × ${component.label}`)
+                                .join(" · ")}
+                            </span>
+                          ) : null}
+                          {item.summary.length ? (
+                            <span className="block text-muted-foreground">
+                              {item.summary.join(" · ")}
+                            </span>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                </td>
                 <td className="px-3 py-3 text-right font-bold">{formatMoney(order.total_cents)}</td>
                 <td className="px-3 py-3">
                   <div className="flex items-center gap-2">
@@ -566,6 +594,10 @@ type MenuDraft = {
   is_available: boolean;
   is_featured: boolean;
   sort_order: string;
+  is_quick_order: boolean;
+  quick_order_group: QuickOrderGroup;
+  quick_order_order: string;
+  bundle_components: BundleComponent[];
 };
 
 const optionsSchema = z
@@ -575,12 +607,16 @@ const optionsSchema = z
       label: z.string().min(1).max(100),
       type: z.enum(["single", "multi"]),
       required: z.boolean().optional(),
+      source_item_group_id: z.string().min(1).max(60).optional(),
+      source_option_group_id: z.string().min(1).max(60).optional(),
       choices: z
         .array(
           z.object({
             id: z.string().min(1).max(60),
             label: z.string().min(1).max(120),
             price_cents: z.number().int().min(-100_000).max(100_000),
+            menu_item_id: z.string().uuid().optional(),
+            bundle_quantity: z.number().int().min(1).max(20).optional(),
           }),
         )
         .min(1)
@@ -626,6 +662,10 @@ const emptyMenuDraft: MenuDraft = {
   is_available: true,
   is_featured: false,
   sort_order: "0",
+  is_quick_order: false,
+  quick_order_group: "burgers",
+  quick_order_order: "0",
+  bundle_components: [],
 };
 
 function MenuPanel({
@@ -656,6 +696,10 @@ function MenuPanel({
       is_available: item.is_available,
       is_featured: item.is_featured,
       sort_order: String(item.sort_order),
+      is_quick_order: Boolean(item.is_quick_order),
+      quick_order_group: item.quick_order_group ?? "burgers",
+      quick_order_order: String(item.quick_order_order ?? item.sort_order),
+      bundle_components: (item.bundle_components ?? []).map((component) => ({ ...component })),
     });
   }
 
@@ -718,6 +762,11 @@ function MenuPanel({
             is_available: draft.is_available,
             is_featured: draft.is_featured,
             sort_order: Number(draft.sort_order),
+            currency: "USD",
+            is_quick_order: draft.is_quick_order,
+            ...(draft.is_quick_order ? { quick_order_group: draft.quick_order_group } : {}),
+            quick_order_order: Number(draft.quick_order_order),
+            bundle_components: draft.bundle_components,
           },
         }),
       draft.id ? "Menu item updated" : "Menu item created",
@@ -786,7 +835,7 @@ function MenuPanel({
               )}
             />
             <TextInput
-              label="Price ($)"
+              label="Price ($ USD)"
               type="number"
               step="0.01"
               min="0"
@@ -846,6 +895,98 @@ function MenuPanel({
           <Button type="button" variant="outline" size="sm" onClick={addComboGroup}>
             Add combo option group
           </Button>
+          <fieldset className="space-y-3 rounded-2xl border border-border p-4">
+            <legend className="px-1 text-sm font-bold">Included bundle components</legend>
+            <p className="text-xs text-muted-foreground">
+              These items are saved with the order and shown to the kitchen. Link a component to a
+              menu item when its availability should control this combo.
+            </p>
+            {draft.bundle_components.map((component, index) => (
+              <div
+                key={`${draft.id ?? "new"}-component-${index}`}
+                className="grid gap-3 rounded-xl bg-card p-3 sm:grid-cols-[minmax(0,1fr)_100px_minmax(0,1fr)_auto]"
+              >
+                <TextInput
+                  label="Component"
+                  value={component.label}
+                  onChange={(label) =>
+                    setDraft((current) => ({
+                      ...current,
+                      bundle_components: current.bundle_components.map((entry, entryIndex) =>
+                        entryIndex === index ? { ...entry, label } : entry,
+                      ),
+                    }))
+                  }
+                />
+                <TextInput
+                  label="Quantity"
+                  type="number"
+                  min="1"
+                  max="20"
+                  value={String(component.quantity)}
+                  onChange={(value) =>
+                    setDraft((current) => ({
+                      ...current,
+                      bundle_components: current.bundle_components.map((entry, entryIndex) =>
+                        entryIndex === index
+                          ? { ...entry, quantity: Math.max(1, Number(value) || 1) }
+                          : entry,
+                      ),
+                    }))
+                  }
+                />
+                <SelectInput
+                  label="Linked menu item"
+                  value={component.menu_item_id ?? ""}
+                  onChange={(menu_item_id) =>
+                    setDraft((current) => ({
+                      ...current,
+                      bundle_components: current.bundle_components.map((entry, entryIndex) =>
+                        entryIndex === index
+                          ? { ...entry, menu_item_id: menu_item_id || undefined }
+                          : entry,
+                      ),
+                    }))
+                  }
+                  options={[
+                    ["", "No linked item"],
+                    ...data.menu
+                      .filter((item) => item.id !== draft.id)
+                      .map((item) => [item.id, item.name] as [string, string]),
+                  ]}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="self-end"
+                  aria-label={`Remove component ${component.label || index + 1}`}
+                  onClick={() =>
+                    setDraft((current) => ({
+                      ...current,
+                      bundle_components: current.bundle_components.filter(
+                        (_, entryIndex) => entryIndex !== index,
+                      ),
+                    }))
+                  }
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() =>
+                setDraft((current) => ({
+                  ...current,
+                  bundle_components: [...current.bundle_components, { label: "", quantity: 1 }],
+                }))
+              }
+            >
+              Add component
+            </Button>
+          </fieldset>
           <TextInput
             label="Sort order"
             type="number"
@@ -860,11 +1001,45 @@ function MenuPanel({
               onChange={(checked) => setDraft({ ...draft, is_available: checked })}
             />
             <CheckInput
-              label="Featured"
+              label={draft.is_quick_order ? "Popular Combos" : "Featured"}
               checked={draft.is_featured}
               onChange={(checked) => setDraft({ ...draft, is_featured: checked })}
             />
+            <CheckInput
+              label="Show in Quick Order"
+              checked={draft.is_quick_order}
+              onChange={(checked) => setDraft({ ...draft, is_quick_order: checked })}
+            />
           </div>
+          {draft.is_quick_order ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <SelectInput
+                label="Quick Order category"
+                value={draft.quick_order_group}
+                onChange={(value) =>
+                  setDraft({ ...draft, quick_order_group: value as QuickOrderGroup })
+                }
+                options={[
+                  ["burgers", "Burgers & Grill"],
+                  ["pizza", "Pizza Deals"],
+                  ["kids", "Kids' Meals"],
+                  ["desserts", "Ice Cream & Desserts"],
+                ]}
+              />
+              <TextInput
+                label="Quick Order display order"
+                type="number"
+                min="0"
+                value={draft.quick_order_order}
+                onChange={(value) => setDraft({ ...draft, quick_order_order: value })}
+              />
+            </div>
+          ) : null}
+          {draft.is_quick_order ? (
+            <p className="-mt-2 text-xs text-muted-foreground">
+              Lower display-order numbers appear first in their category and in Popular Combos.
+            </p>
+          ) : null}
           <Button type="submit" variant="hero" loading={busy}>
             {draft.id ? "Save item" : "Create item"}
           </Button>
@@ -888,7 +1063,10 @@ function MenuPanel({
           </div>
           <div className="max-h-[70vh] divide-y divide-border overflow-y-auto rounded-2xl bg-card px-4 shadow-card">
             {items.map((item) => {
-              const isCombo = item.options.some((option) => option.id === "combo");
+              const isCombo =
+                item.is_quick_order ||
+                Boolean(item.bundle_components?.length) ||
+                item.options.some((option) => option.id === "combo");
               return (
                 <article
                   key={item.id}
@@ -928,6 +1106,15 @@ function MenuPanel({
                                 is_available: !item.is_available,
                                 is_featured: item.is_featured,
                                 sort_order: item.sort_order,
+                                currency: item.currency ?? "USD",
+                                is_quick_order: item.is_quick_order ?? false,
+                                ...(item.quick_order_group
+                                  ? { quick_order_group: item.quick_order_group }
+                                  : {}),
+                                ...(item.quick_order_order !== undefined
+                                  ? { quick_order_order: item.quick_order_order }
+                                  : {}),
+                                bundle_components: item.bundle_components ?? [],
                               },
                             }),
                           item.is_available ? "Item marked sold out" : "Item is available",
@@ -1194,43 +1381,113 @@ function LocationsPanel({
       description="Manage where customers can order pickup and delivery, plus the contact details and map metadata shown on the storefront."
     >
       <div className="grid gap-6 xl:grid-cols-[1fr_1.05fr]">
-        <form onSubmit={(event) => void submit(event)} className="space-y-4 rounded-2xl bg-background p-5">
+        <form
+          onSubmit={(event) => void submit(event)}
+          className="space-y-4 rounded-2xl bg-background p-5"
+        >
           <div className="flex items-center justify-between gap-3">
             <h3 className="font-display text-xl font-black uppercase">
               {draft.id ? "Edit location" : "New location"}
             </h3>
             {draft.id ? (
-              <Button type="button" size="sm" variant="outline" onClick={() => setDraft(emptyStoreDraft)}>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => setDraft(emptyStoreDraft)}
+              >
                 New
               </Button>
             ) : null}
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            <TextInput label="Location name" value={draft.name} onChange={(value) => setDraft({ ...draft, name: value })} required />
-            <TextInput label="Sort order" type="number" min="0" value={draft.sort_order} onChange={(value) => setDraft({ ...draft, sort_order: value })} />
+            <TextInput
+              label="Location name"
+              value={draft.name}
+              onChange={(value) => setDraft({ ...draft, name: value })}
+              required
+            />
+            <TextInput
+              label="Sort order"
+              type="number"
+              min="0"
+              value={draft.sort_order}
+              onChange={(value) => setDraft({ ...draft, sort_order: value })}
+            />
           </div>
-          <TextInput label="Street address" value={draft.address} onChange={(value) => setDraft({ ...draft, address: value })} required />
+          <TextInput
+            label="Street address"
+            value={draft.address}
+            onChange={(value) => setDraft({ ...draft, address: value })}
+            required
+          />
           <div className="grid gap-3 sm:grid-cols-[1fr_120px_120px]">
-            <TextInput label="City" value={draft.city} onChange={(value) => setDraft({ ...draft, city: value })} required />
-            <TextInput label="State" value={draft.state} onChange={(value) => setDraft({ ...draft, state: value })} required />
-            <TextInput label="ZIP" value={draft.zip} onChange={(value) => setDraft({ ...draft, zip: value })} required />
+            <TextInput
+              label="City"
+              value={draft.city}
+              onChange={(value) => setDraft({ ...draft, city: value })}
+              required
+            />
+            <TextInput
+              label="State"
+              value={draft.state}
+              onChange={(value) => setDraft({ ...draft, state: value })}
+              required
+            />
+            <TextInput
+              label="ZIP"
+              value={draft.zip}
+              onChange={(value) => setDraft({ ...draft, zip: value })}
+              required
+            />
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            <TextInput label="Phone" value={draft.phone} onChange={(value) => setDraft({ ...draft, phone: value })} required />
-            <TextInput label="Hours" value={draft.hours} onChange={(value) => setDraft({ ...draft, hours: value })} required />
+            <TextInput
+              label="Phone"
+              value={draft.phone}
+              onChange={(value) => setDraft({ ...draft, phone: value })}
+              required
+            />
+            <TextInput
+              label="Hours"
+              value={draft.hours}
+              onChange={(value) => setDraft({ ...draft, hours: value })}
+              required
+            />
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
-            <TextInput label="Latitude" type="number" step="0.0001" value={draft.lat} onChange={(value) => setDraft({ ...draft, lat: value })} required />
-            <TextInput label="Longitude" type="number" step="0.0001" value={draft.lng} onChange={(value) => setDraft({ ...draft, lng: value })} required />
+            <TextInput
+              label="Latitude"
+              type="number"
+              step="0.0001"
+              value={draft.lat}
+              onChange={(value) => setDraft({ ...draft, lat: value })}
+              required
+            />
+            <TextInput
+              label="Longitude"
+              type="number"
+              step="0.0001"
+              value={draft.lng}
+              onChange={(value) => setDraft({ ...draft, lng: value })}
+              required
+            />
           </div>
-          <TextInput label="Features (comma separated)" value={draft.features} onChange={(value) => setDraft({ ...draft, features: value })} />
+          <TextInput
+            label="Features (comma separated)"
+            value={draft.features}
+            onChange={(value) => setDraft({ ...draft, features: value })}
+          />
           <Button type="submit" variant="hero" loading={busy}>
             {draft.id ? "Save location" : "Create location"}
           </Button>
         </form>
         <div className="space-y-3">
           {data.stores.map((location) => (
-            <article key={location.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-card p-4 shadow-card">
+            <article
+              key={location.id}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-card p-4 shadow-card"
+            >
               <div>
                 <p className="font-display text-lg font-black uppercase">{location.name}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
@@ -1239,7 +1496,9 @@ function LocationsPanel({
                 <p className="mt-1 text-xs text-muted-foreground">{location.hours}</p>
               </div>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" onClick={() => edit(location)}>Edit</Button>
+                <Button size="sm" variant="outline" onClick={() => edit(location)}>
+                  Edit
+                </Button>
                 <Button
                   size="sm"
                   variant="outline"
@@ -2056,13 +2315,15 @@ function GalleryPanel({
                   preload="metadata"
                   className="aspect-video w-full bg-charcoal object-cover"
                 />
-              ) : (
+              ) : foodImage(item.url) ? (
                 <img
                   src={foodImage(item.url)}
                   alt={item.caption || "Gallery media"}
                   loading="lazy"
                   className="aspect-video w-full bg-muted object-cover"
                 />
+              ) : (
+                <div className="aspect-video w-full bg-muted" />
               )}
               <div className="flex items-start justify-between gap-3 p-4">
                 <div>
@@ -2412,7 +2673,10 @@ function SettingsPanel({
               variant="outline"
               size="sm"
               onClick={() =>
-                setRewardTiers((current) => [...current, { points: 250, label: "New reward", value: "$2.50 off" }])
+                setRewardTiers((current) => [
+                  ...current,
+                  { points: 250, label: "New reward", value: "$2.50 off" },
+                ])
               }
             >
               Add reward
@@ -2420,7 +2684,10 @@ function SettingsPanel({
           </div>
           <div className="space-y-3">
             {rewardTiers.map((tier, index) => (
-              <div key={`${tier.label}-${index}`} className="grid gap-3 rounded-2xl bg-card p-3 shadow-card sm:grid-cols-[120px_1fr_1fr_auto]">
+              <div
+                key={`${tier.label}-${index}`}
+                className="grid gap-3 rounded-2xl bg-card p-3 shadow-card sm:grid-cols-[120px_1fr_1fr_auto]"
+              >
                 <TextInput
                   label="Points"
                   type="number"
@@ -2462,7 +2729,9 @@ function SettingsPanel({
                   size="sm"
                   className="self-end"
                   onClick={() =>
-                    setRewardTiers((current) => current.filter((_, itemIndex) => itemIndex !== index))
+                    setRewardTiers((current) =>
+                      current.filter((_, itemIndex) => itemIndex !== index),
+                    )
                   }
                 >
                   Remove

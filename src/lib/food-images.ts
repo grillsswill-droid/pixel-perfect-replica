@@ -9,6 +9,7 @@ import onionRings from "@/assets/food-onion-rings.jpg";
 import coldbrew from "@/assets/food-coldbrew.jpg";
 import shake from "@/assets/food-shake.jpg";
 import lemonade from "@/assets/food-lemonade.jpg";
+import type { CategoryId } from "./menu-types";
 
 const MAP: Record<string, string> = {
   burger,
@@ -24,7 +25,7 @@ const MAP: Record<string, string> = {
   lemonade,
 };
 
-export const CATEGORY_IMAGES = {
+export const CATEGORY_IMAGES: Partial<Record<CategoryId, string>> = {
   burgers: burger,
   chicken,
   pizza,
@@ -35,5 +36,5 @@ export const CATEGORY_IMAGES = {
 export function foodImage(key: string): string {
   if (key.startsWith("/") && !key.startsWith("//")) return key;
   if (key.startsWith("https://")) return key;
-  return MAP[key] ?? burger;
+  return MAP[key] ?? "";
 }

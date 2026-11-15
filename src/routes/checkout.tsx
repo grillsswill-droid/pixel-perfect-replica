@@ -687,21 +687,30 @@ function CheckoutPage() {
           <ul className="mt-4 space-y-3">
             {cart.lines.map((l) => (
               <li key={l.key} className="flex gap-3">
-                <img
-                  src={foodImage(l.imageKey)}
-                  alt=""
-                  width={56}
-                  height={56}
-                  className="h-14 w-14 rounded-xl object-cover"
-                />
+                {foodImage(l.imageKey) ? (
+                  <img
+                    src={foodImage(l.imageKey)}
+                    alt=""
+                    width={56}
+                    height={56}
+                    className="h-14 w-14 rounded-xl object-cover"
+                  />
+                ) : null}
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-bold">
                     {l.quantity} × {l.name}
                   </p>
+                  {l.bundleComponents && l.bundleComponents.length > 0 ? (
+                    <ul className="text-xs text-muted-foreground">
+                      {l.bundleComponents.map((component, index) => (
+                        <li key={`${component.label}-${index}`}>
+                          {component.quantity} × {component.label}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
                   {l.summary.length > 0 && (
-                    <p className="truncate text-xs text-muted-foreground">
-                      {l.summary.join(" · ")}
-                    </p>
+                    <p className="text-xs text-muted-foreground">{l.summary.join(" · ")}</p>
                   )}
                 </div>
                 <span className="text-sm font-semibold tabular-nums">

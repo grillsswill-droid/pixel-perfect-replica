@@ -152,6 +152,14 @@ function OrderPage() {
                 >
                   <span>
                     {item.quantity} × {item.name}
+                    {item.bundleComponents?.length ? (
+                      <span className="mt-1 block text-xs text-muted-foreground">
+                        Includes:{" "}
+                        {item.bundleComponents
+                          .map((component) => `${component.quantity} × ${component.label}`)
+                          .join(" · ")}
+                      </span>
+                    ) : null}
                     {item.summary.length > 0 && (
                       <span className="mt-1 block text-xs text-muted-foreground">
                         {item.summary.join(" · ")}
@@ -165,7 +173,7 @@ function OrderPage() {
               ))}
             </ul>
             <div className="mt-3 flex justify-between border-t border-border pt-4 font-bold">
-              <span>Total</span>
+              <span>Total ({order.currency ?? "USD"})</span>
               <span>{formatMoney(order.total_cents)}</span>
             </div>
             <p className="mt-4 rounded-xl bg-accent p-3 text-xs leading-relaxed text-muted-foreground">

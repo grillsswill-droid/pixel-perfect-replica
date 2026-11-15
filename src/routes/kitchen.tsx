@@ -274,6 +274,16 @@ function KitchenPage() {
                           {items.map((item, index) => (
                             <li key={`${item.itemId}-${index}`}>
                               <span className="font-bold">{item.quantity} ×</span> {item.name}
+                              {item.bundleComponents?.length ? (
+                                <span className="block pl-8 text-xs text-muted-foreground">
+                                  Includes:{" "}
+                                  {item.bundleComponents
+                                    .map(
+                                      (component) => `${component.quantity} × ${component.label}`,
+                                    )
+                                    .join(" · ")}
+                                </span>
+                              ) : null}
                               {item.summary.length > 0 && (
                                 <span className="block pl-8 text-xs text-muted-foreground">
                                   {item.summary.join(" · ")}

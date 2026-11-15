@@ -9,7 +9,7 @@ const cartLineSchema = z.object({
   key: z.string().max(500),
   itemId: z.string().uuid(),
   slug: z.string().max(100),
-  category: z.enum(["burgers", "chicken", "pizza", "sides", "drinks"]),
+  category: z.enum(["burgers", "chicken", "pizza", "sides", "drinks", "kids", "desserts"]),
   name: z.string().max(120),
   imageKey: z.string().max(100),
   quantity: z.number().int().min(1).max(20),
@@ -18,6 +18,15 @@ const cartLineSchema = z.object({
   note: z.string().max(140),
   unitPriceCents: z.number().int().min(0).max(100_000),
   summary: z.array(z.string().max(120)).max(40),
+  bundleComponents: z
+    .array(
+      z.object({
+        label: z.string().max(120),
+        quantity: z.number().int().min(1).max(20),
+      }),
+    )
+    .max(30)
+    .optional(),
 });
 
 export const saveCartSchema = z.object({

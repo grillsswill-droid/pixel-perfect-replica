@@ -58,6 +58,7 @@ export interface OrderDocument {
   store_id: string;
   address: OrderAddress | null;
   items: OrderLineSnapshot[];
+  currency: "USD";
   subtotal_cents: number;
   discount_cents: number;
   promo_code: string | null;

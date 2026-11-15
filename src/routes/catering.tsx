@@ -69,12 +69,14 @@ function CateringPage() {
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {data.packages.map((item) => (
                 <article key={item.id} className="overflow-hidden rounded-3xl bg-card shadow-card">
-                  <img
-                    src={foodImage(item.image_key)}
-                    alt=""
-                    loading="lazy"
-                    className="aspect-[1.4] w-full object-cover"
-                  />
+                  {foodImage(item.image_key) ? (
+                    <img
+                      src={foodImage(item.image_key)}
+                      alt=""
+                      loading="lazy"
+                      className="aspect-[1.4] w-full object-cover"
+                    />
+                  ) : null}
                   <div className="p-5">
                     {item.featured ? (
                       <p className="text-xs font-black uppercase tracking-wider text-primary">

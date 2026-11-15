@@ -14,8 +14,10 @@ import {
   FREE_DELIVERY_THRESHOLD_CENTS,
   PROMOS,
   PricingError,
+  bundleComponentsFor,
   computeTotals,
   selectionSummary,
+  validateMenuBundle,
   unitPriceCents,
 } from "./pricing";
 
@@ -147,7 +149,25 @@ export const placeOrder = createServerFn({ method: "POST" })
     ]);
     if (!store) return { ok: false as const, error: "Please choose a store." };
 
-    const byId = new Map(items.map((i) => [i.id, i]));
+    const linkedIds = [
+      ...new Set(
+        items.flatMap((item) => [
+          ...(item.bundle_components ?? []).flatMap((component) =>
+            component.menu_item_id ? [component.menu_item_id] : [],
+          ),
+          ...item.options.flatMap((group) =>
+            group.choices.flatMap((choice) => (choice.menu_item_id ? [choice.menu_item_id] : [])),
+          ),
+        ]),
+      ),
+    ];
+    const linkedItems = linkedIds.length
+      ? await collection<MenuItem>(db, "menu_items")
+          .find({ id: { $in: linkedIds } })
+          .project<MenuItem>({ _id: 0 })
+          .toArray()
+      : [];
+    const byId = new Map([...items, ...linkedItems].map((i) => [i.id, i]));
     const snapshots: OrderLineSnapshot[] = [];
     const priced: { category: CategoryId; lineTotalCents: number }[] = [];
     try {
@@ -157,6 +177,7 @@ export const placeOrder = createServerFn({ method: "POST" })
           return { ok: false as const, error: "An item in your bag is no longer on the menu." };
         if (!item.is_available)
           return { ok: false as const, error: `${item.name} is sold out right now.` };
+        validateMenuBundle(item, line.selections, byId);
         const options = item.options;
         const removed = line.removed.filter((r) => item.ingredients.includes(r));
         const unit = unitPriceCents({ price_cents: item.price_cents, options }, line.selections);
@@ -170,6 +191,7 @@ export const placeOrder = createServerFn({ method: "POST" })
           selections: line.selections,
           removed,
           note: line.note,
+          bundleComponents: bundleComponentsFor(item, line.selections),
         });
         priced.push({
           category: item.category,
@@ -264,6 +286,7 @@ export const placeOrder = createServerFn({ method: "POST" })
             store_id: data.storeId,
             address: data.fulfillment === "delivery" ? data.address : null,
             items: snapshots,
+            currency: "USD",
             subtotal_cents: totals.subtotalCents,
             discount_cents: totals.discountCents,
             promo_code: totals.promoCode,

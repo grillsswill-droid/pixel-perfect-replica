@@ -22,8 +22,9 @@ import { Button } from "@/components/ui/button";
 import { CATEGORY_IMAGES, foodImage } from "@/lib/food-images";
 import { categoriesQuery, menuQuery } from "@/lib/catalog.functions";
 import { useCart } from "@/hooks/use-cart";
-import { CATEGORIES, type MenuItem } from "@/lib/menu-types";
-import { defaultSelections, formatMoney, selectionSummary, unitPriceCents } from "@/lib/pricing";
+import { CATEGORIES, type MenuItem, type QuickOrderGroup } from "@/lib/menu-types";
+import { defaultSelections, formatMoney } from "@/lib/pricing";
+import { verifyQuickOrderSelection } from "@/lib/catalog.functions";
 import { useState } from "react";
 
 const rewardTiers = [
@@ -59,6 +60,7 @@ function HomePage() {
     <>
       <Hero />
       <QuickOrderMeals />
+      <QuickOrderCategoryShelves />
       <CategoryGrid />
       <Heritage />
       <RewardsTeaser />
@@ -66,42 +68,101 @@ function HomePage() {
   );
 }
 
-function QuickOrderMeals() {
-  const { data: menu } = useQuery(menuQuery());
+const QUICK_ORDER_TABS: { id: "popular" | QuickOrderGroup; label: string }[] = [
+  { id: "popular", label: "Popular Combos" },
+  { id: "burgers", label: "Burgers & Grill" },
+  { id: "pizza", label: "Pizza Deals" },
+  { id: "kids", label: "Kids' Meals" },
+  { id: "desserts", label: "Ice Cream & Desserts" },
+];
+
+const QUICK_ORDER_GROUPS: { id: QuickOrderGroup; label: string; description: string }[] = [
+  {
+    id: "burgers",
+    label: "Burgers & Grill",
+    description: "Complete grill meals, bundled and ready to order.",
+  },
+  {
+    id: "pizza",
+    label: "Pizza Deals",
+    description: "Choose an available pizza and make it a night in.",
+  },
+  {
+    id: "kids",
+    label: "Little Swillers",
+    description: "Simple, satisfying meals for younger guests.",
+  },
+  {
+    id: "desserts",
+    label: "Ice Cream & Sweet Treats",
+    description: "Leave room for a little something sweet.",
+  },
+];
+
+function orderedQuickOrderItems(menu: MenuItem[]) {
+  return menu
+    .filter((item) => item.is_quick_order && item.quick_order_group)
+    .sort(
+      (left, right) =>
+        (left.quick_order_order ?? left.sort_order) - (right.quick_order_order ?? right.sort_order),
+    );
+}
+
+function useQuickOrderActions() {
   const cart = useCart();
   const [selected, setSelected] = useState<MenuItem | null>(null);
+  const [addingId, setAddingId] = useState<string | null>(null);
 
-  const combos = (menu ?? [])
-    .filter((item) =>
-      item.options.some(
-        (group) => group.id === "combo" && group.choices.some((choice) => choice.price_cents > 0),
-      ),
-    )
-    .slice(0, 6);
+  async function order(item: MenuItem) {
+    if (!item.is_available || !cart.hydrated || addingId) return;
+    if (item.options.some((group) => group.required)) {
+      setSelected(item);
+      return;
+    }
 
-  if (!combos.length) return null;
-
-  const handleQuickAdd = (item: MenuItem) => {
     const selections = defaultSelections(item);
-    cart.addLine({
-      itemId: item.id,
-      slug: item.slug,
-      category: item.category,
-      name: item.name,
-      imageKey: item.image_key,
-      quantity: 1,
-      selections,
-      removed: [],
-      note: "",
-      unitPriceCents: unitPriceCents(item, selections),
-      summary: selectionSummary(item, selections, []),
-    });
-    cart.setOpen(true);
-    toast.success(`${item.name} added to your bag`, {
-      description: "Fast checkout is ready when you are.",
-      action: { label: "View bag", onClick: () => cart.setOpen(true) },
-    });
-  };
+    setAddingId(item.id);
+    try {
+      const verification = await verifyQuickOrderSelection({
+        data: { itemId: item.id, selections },
+      });
+      if (!verification.ok) {
+        toast.error(verification.error);
+        return;
+      }
+      cart.addLine({
+        ...verification.line,
+        quantity: 1,
+        selections,
+        removed: [],
+        note: "",
+      });
+      toast.success(`${item.name} added to your bag`, {
+        description: "Your combo is ready for checkout.",
+        action: { label: "View bag", onClick: () => cart.setOpen(true) },
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "The combo couldn't be added. Try again.",
+      );
+    } finally {
+      setAddingId(null);
+    }
+  }
+
+  return { cart, selected, setSelected, addingId, order };
+}
+
+function QuickOrderMeals() {
+  const { data: menu, isError, isLoading, refetch } = useQuery(menuQuery());
+  const { cart, selected, setSelected, addingId, order } = useQuickOrderActions();
+  const [activeTab, setActiveTab] = useState<"popular" | QuickOrderGroup>("popular");
+  const combos = orderedQuickOrderItems(menu ?? []);
+  const popular = combos.filter((item) => item.is_featured && item.is_available).slice(0, 6);
+  const visibleItems =
+    activeTab === "popular"
+      ? (popular.length ? popular : combos.filter((item) => item.is_available)).slice(0, 6)
+      : combos.filter((item) => item.quick_order_group === activeTab);
 
   return (
     <>
@@ -114,7 +175,7 @@ function QuickOrderMeals() {
               </p>
               <h2 className="mt-2 text-4xl font-black uppercase sm:text-5xl">QUICK ORDER MEALS</h2>
               <p className="mt-3 max-w-xl text-sm text-cream/70">
-                Ready-made combos built for fast cravings, bigger appetites and no wasted time.
+                Your favourites, bundled together. Pick your combo and order in seconds.
               </p>
             </div>
             <Link
@@ -126,105 +187,257 @@ function QuickOrderMeals() {
             </Link>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {combos.map((item) => {
-              const group = item.options.find((option) => option.id === "combo");
-              const comboPrice = Math.min(
-                ...(group?.choices ?? [])
-                  .filter((choice) => choice.price_cents > 0)
-                  .map((choice) => choice.price_cents),
-              );
-              const comboBadge =
-                group?.choices.find((choice) => choice.price_cents === comboPrice)?.label ??
-                "Popular";
-              const included = group?.choices
-                .filter((choice) => choice.price_cents > 0)
-                .slice(0, 2)
-                .map((choice) => choice.label)
-                .join(" + ");
+          <div
+            className="mb-7 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap"
+            role="tablist"
+            aria-label="Quick Order categories"
+          >
+            {QUICK_ORDER_TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                role="tab"
+                id={`quick-order-tab-${tab.id}`}
+                aria-controls="quick-order-panel"
+                aria-selected={activeTab === tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`min-h-11 rounded-full border px-4 py-2 text-sm font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:min-w-0 ${
+                  activeTab === tab.id
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-cream/25 text-cream hover:border-cream/60"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-              return (
-                <article
-                  key={item.id}
-                  className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-cream/10 bg-cream text-charcoal shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-lift"
-                >
-                  <button
-                    type="button"
-                    onClick={() => setSelected(item)}
-                    className="block overflow-hidden text-left"
-                    aria-label={`Open ${item.name} details`}
+          <div
+            id="quick-order-panel"
+            role="tabpanel"
+            aria-labelledby={`quick-order-tab-${activeTab}`}
+            tabIndex={0}
+          >
+            {isLoading ? (
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Loading meals">
+                {Array.from({ length: 3 }, (_, index) => (
+                  <div
+                    key={index}
+                    className="overflow-hidden rounded-[2rem] border border-cream/10 bg-cream"
                   >
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={foodImage(item.image_key)}
-                        alt={item.name}
-                        loading="lazy"
-                        className="aspect-[1.2] w-full object-cover transition duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
-                        <span className="rounded-full bg-charcoal/85 px-2.5 py-1 text-[10px] font-black tracking-[0.16em] text-cream uppercase backdrop-blur-sm">
-                          {comboBadge}
-                        </span>
-                        <span className="rounded-full bg-primary px-2.5 py-1 text-[10px] font-black tracking-[0.16em] text-cream uppercase">
-                          {item.is_available ? "Ready" : "Sold out"}
-                        </span>
-                      </div>
-                    </div>
-                  </button>
-
-                  <div className="flex flex-1 flex-col p-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h3 className="font-display text-2xl font-black uppercase leading-none">
-                          {item.name}
-                        </h3>
-                        <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
-                      </div>
-                    </div>
-
-                    <div className="mt-4 rounded-2xl bg-charcoal/5 px-3 py-2 text-sm text-charcoal/80">
-                      <span className="font-bold text-charcoal">Includes:</span>{" "}
-                      {included ?? "Meal deal"}
-                    </div>
-
-                    <div className="mt-5 flex items-end justify-between gap-3">
-                      <div>
-                        <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">
-                          Starting at
-                        </p>
-                        <p className="mt-1 font-display text-3xl font-black tabular-nums">
-                          {formatMoney(item.price_cents + comboPrice)}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          size="sm"
-                          className="h-11 px-3"
-                          onClick={() => setSelected(item)}
-                        >
-                          Customize
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="hero"
-                          size="sm"
-                          className="h-11 min-w-[118px]"
-                          onClick={() => handleQuickAdd(item)}
-                          disabled={!item.is_available || !cart.hydrated}
-                        >
-                          {item.is_available ? "Quick add" : "Sold out"}
-                        </Button>
-                      </div>
+                    <div className="aspect-[1.35] animate-pulse bg-muted" />
+                    <div className="space-y-3 p-5">
+                      <div className="h-6 w-3/4 animate-pulse rounded bg-muted" />
+                      <div className="h-4 w-full animate-pulse rounded bg-muted" />
+                      <div className="h-11 w-full animate-pulse rounded-full bg-muted" />
                     </div>
                   </div>
-                </article>
-              );
-            })}
+                ))}
+              </div>
+            ) : isError ? (
+              <div className="rounded-3xl border border-cream/15 bg-cream/5 p-6 text-center">
+                <p className="font-bold">The combo menu couldn’t load.</p>
+                <button
+                  type="button"
+                  onClick={() => void refetch()}
+                  className="mt-3 min-h-11 rounded-full border border-cream/40 px-5 text-sm font-bold hover:bg-cream/10"
+                >
+                  Try again
+                </button>
+              </div>
+            ) : visibleItems.length ? (
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {visibleItems.map((item) => (
+                  <QuickOrderCard
+                    key={item.id}
+                    item={item}
+                    adding={addingId === item.id}
+                    cartReady={cart.hydrated}
+                    onSelect={() => setSelected(item)}
+                    onOrder={() => void order(item)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-cream/15 bg-cream/5 p-6 text-center">
+                <p className="font-bold">
+                  {combos.length
+                    ? "No meals in this category yet."
+                    : "Signature combos are being prepared."}
+                </p>
+                <Link
+                  to="/menu"
+                  className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-primary"
+                >
+                  Browse the full menu <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>
+      <ItemCustomizer item={selected} onClose={() => setSelected(null)} />
+    </>
+  );
+}
+
+function QuickOrderCard({
+  item,
+  adding,
+  cartReady,
+  onSelect,
+  onOrder,
+}: {
+  item: MenuItem;
+  adding: boolean;
+  cartReady: boolean;
+  onSelect: () => void;
+  onOrder: () => void;
+}) {
+  const imageSrc = foodImage(item.image_key);
+  const needsCustomization = item.options.some((group) => group.required);
+  const hasPricedOptions = item.options.some((group) =>
+    group.choices.some((choice) => choice.price_cents > 0),
+  );
+  return (
+    <article className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-cream/10 bg-cream text-charcoal shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-lift">
+      <button
+        type="button"
+        onClick={onSelect}
+        className="relative block aspect-[1.35] w-full overflow-hidden bg-muted text-left focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-primary"
+        aria-label={`View ${item.name} details`}
+      >
+        {imageSrc ? (
+          <img
+            src={imageSrc}
+            alt={item.name}
+            loading="lazy"
+            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+          />
+        ) : null}
+        <span className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
+          <span className="rounded-full bg-charcoal/90 px-3 py-1.5 text-[10px] font-black tracking-[0.14em] text-cream uppercase">
+            {item.is_featured ? "Featured pick" : "Quick Order"}
+          </span>
+          <span
+            className={`rounded-full px-3 py-1.5 text-[10px] font-black tracking-[0.14em] uppercase ${
+              item.is_available ? "bg-success text-success-foreground" : "bg-destructive text-white"
+            }`}
+          >
+            {item.is_available ? "Available" : "Sold out"}
+          </span>
+        </span>
+      </button>
+      <div className="flex flex-1 flex-col p-5">
+        <h3 className="font-display text-2xl leading-tight font-black uppercase">{item.name}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+        {(item.bundle_components?.length ?? 0) > 0 ? (
+          <div className="mt-4 rounded-2xl bg-charcoal/5 p-3">
+            <p className="text-xs font-black tracking-wide text-charcoal uppercase">
+              Items included
+            </p>
+            <ul className="mt-2 space-y-1 text-sm text-charcoal/80">
+              {item.bundle_components?.map((component, index) => (
+                <li key={`${component.label}-${index}`}>
+                  <span className="font-semibold">{component.quantity} ×</span> {component.label}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-4 pt-5">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.16em] text-primary">
+              {hasPricedOptions ? "Starting at" : "Combo price"}
+            </p>
+            <p className="mt-1 font-display text-3xl font-black tabular-nums">
+              {formatMoney(item.price_cents)}{" "}
+              <span className="font-sans text-xs font-bold">USD</span>
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="hero"
+            size="sm"
+            className="h-11 min-w-32"
+            onClick={onOrder}
+            disabled={!item.is_available || !cartReady || adding}
+            loading={adding}
+          >
+            {!item.is_available
+              ? "Sold out"
+              : !cartReady
+                ? "Loading bag"
+                : needsCustomization
+                  ? "Choose options"
+                  : "Quick add"}
+          </Button>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+function QuickOrderCategoryShelves() {
+  const { data: menu = [] } = useQuery(menuQuery());
+  const { cart, selected, setSelected, addingId, order } = useQuickOrderActions();
+  const combos = orderedQuickOrderItems(menu);
+  const popularIds = new Set(
+    combos
+      .filter((item) => item.is_featured && item.is_available)
+      .slice(0, 6)
+      .map((item) => item.id),
+  );
+
+  return (
+    <>
+      {QUICK_ORDER_GROUPS.map((group) => {
+        const items = combos.filter(
+          (item) => item.quick_order_group === group.id && !popularIds.has(item.id),
+        );
+        if (!items.length) return null;
+        return (
+          <section key={group.id} className="bg-cream px-5 py-12 sm:px-8 sm:py-16">
+            <div className="mx-auto max-w-7xl">
+              <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
+                <div>
+                  <p className="text-xs font-black tracking-[0.18em] text-primary uppercase">
+                    Quick Order
+                  </p>
+                  <h2 className="mt-2 text-3xl font-black uppercase sm:text-4xl">{group.label}</h2>
+                  <p className="mt-2 text-sm text-muted-foreground">{group.description}</p>
+                </div>
+                <Link
+                  to="/menu"
+                  search={{
+                    cat:
+                      group.id === "kids" || group.id === "desserts"
+                        ? group.id
+                        : group.id === "burgers"
+                          ? "burgers"
+                          : "pizza",
+                  }}
+                  className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-primary hover:gap-3"
+                >
+                  Browse {group.label} <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {items.map((item) => (
+                  <QuickOrderCard
+                    key={item.id}
+                    item={item}
+                    adding={addingId === item.id}
+                    cartReady={cart.hydrated}
+                    onSelect={() => setSelected(item)}
+                    onOrder={() => void order(item)}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+        );
+      })}
       <ItemCustomizer item={selected} onClose={() => setSelected(null)} />
     </>
   );
@@ -369,12 +582,14 @@ function CategoryGrid() {
                 search={{ cat: category.id }}
                 className="group relative block aspect-[0.83] overflow-hidden rounded-3xl bg-charcoal shadow-card"
               >
-                <img
-                  src={CATEGORY_IMAGES[category.id]}
-                  alt={category.label}
-                  loading="lazy"
-                  className="absolute inset-0 h-full w-full object-cover opacity-85 transition duration-700 group-hover:scale-110 group-hover:opacity-70"
-                />
+                {CATEGORY_IMAGES[category.id] ? (
+                  <img
+                    src={CATEGORY_IMAGES[category.id]}
+                    alt={category.label}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover opacity-85 transition duration-700 group-hover:scale-110 group-hover:opacity-70"
+                  />
+                ) : null}
                 <div className="absolute inset-0 bg-gradient-to-t from-charcoal via-charcoal/10 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-4 text-cream sm:p-5">
                   <p className="text-xl leading-none font-black uppercase sm:text-2xl">
