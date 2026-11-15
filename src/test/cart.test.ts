@@ -27,11 +27,23 @@ describe("cart line identity", () => {
     );
   });
 
-  it("caps a combined line at the supported quantity", () => {
+  it("handles legacy lines with missing note or removed values without crashing", () => {
+    const key = lineKey({
+      ...line,
+      note: undefined,
+      removed: undefined,
+    });
+
+    expect(key).toContain("burger-1#");
+    expect(addLineTo([], { ...line, quantity: 1, note: undefined as never })).toHaveLength(1);
+  });
+
+  it("caps a combined line at the supported quantity and ignores invalid additions", () => {
     const many = addLineTo([{ ...line, key: lineKey(line), quantity: 19 }], {
       ...line,
       quantity: 4,
     });
     expect(many[0]?.quantity).toBe(20);
+    expect(addLineTo([{ ...line, key: lineKey(line), quantity: 1 }], { ...line, quantity: 0 })).toHaveLength(1);
   });
 });

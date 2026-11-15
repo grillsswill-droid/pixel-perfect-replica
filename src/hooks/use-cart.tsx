@@ -26,22 +26,29 @@ interface CartContextValue extends CartState {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-export function lineKey(line: Pick<CartLine, "itemId" | "selections" | "removed" | "note">): string {
-  const sel = Object.keys(line.selections)
+export function lineKey(
+  line: Pick<CartLine, "itemId" | "selections"> & Partial<Pick<CartLine, "removed" | "note">>,
+): string {
+  const sel = Object.keys(line.selections ?? {})
     .sort()
-    .map((k) => `${k}:${[...(line.selections[k] ?? [])].sort().join(",")}`)
+    .map((k) => `${k}:${[...((line.selections ?? {})[k] ?? [])].sort().join(",")}`)
     .join("|");
-  return `${line.itemId}#${sel}#${[...line.removed].sort().join(",")}#${line.note.trim()}`;
+  const removed = Array.isArray(line.removed) ? [...line.removed].sort().join(",") : "";
+  const note = typeof line.note === "string" ? line.note.trim() : "";
+  return `${line.itemId}#${sel}#${removed}#${note}`;
 }
 
 /** Pure cart reducer helpers, exported for tests. */
 export function addLineTo(lines: CartLine[], line: Omit<CartLine, "key">): CartLine[] {
+  const qty = Number.isFinite(line.quantity) ? Math.max(0, Math.floor(line.quantity)) : 0;
+  if (qty <= 0) return lines;
+
   const key = lineKey(line);
   const existing = lines.find((l) => l.key === key);
   if (existing) {
-    return lines.map((l) => (l.key === key ? { ...l, quantity: Math.min(20, l.quantity + line.quantity) } : l));
+    return lines.map((l) => (l.key === key ? { ...l, quantity: Math.min(20, l.quantity + qty) } : l));
   }
-  return [...lines, { ...line, key }];
+  return [...lines, { ...line, quantity: Math.min(20, qty), key }];
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
@@ -75,12 +82,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, lines: addLineTo(s.lines, line) }));
   }, []);
   const updateQuantity = useCallback((key: string, quantity: number) => {
+    const normalized = Number.isFinite(quantity) ? Math.max(0, Math.floor(quantity)) : 0;
     setState((s) => ({
       ...s,
       lines:
-        quantity <= 0
+        normalized <= 0
           ? s.lines.filter((l) => l.key !== key)
-          : s.lines.map((l) => (l.key === key ? { ...l, quantity: Math.min(20, quantity) } : l)),
+          : s.lines.map((l) => (l.key === key ? { ...l, quantity: Math.min(20, normalized) } : l)),
     }));
   }, []);
   const removeLine = useCallback((key: string) => {

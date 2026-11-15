@@ -185,7 +185,7 @@ function CheckoutPage() {
       cart.clear();
       await queryClient.invalidateQueries({ queryKey: ["guest-rewards"] });
       toast.success(`Order #${res.orderNumber} is in! +${res.pointsEarned} points`);
-      navigate({ to: "/order/$orderId", params: { orderId: res.orderId } });
+      navigate({ to: "/orders/$id", params: { id: res.orderId } });
     } catch (e) {
       console.error(e);
       setServerError("We couldn't place your order. You weren't charged — please try again.");
