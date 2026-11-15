@@ -142,7 +142,7 @@ export const placeOrder = createServerFn({ method: "POST" })
             usage_limit?: number;
             usage_count?: number;
             active: boolean;
-          }>({ code: data.promoCode.trim().toUpperCase(), active: true })
+          }>({ code: data.promoCode.trim().toUpperCase() })
         : Promise.resolve(null),
     ]);
     if (!store) return { ok: false as const, error: "Please choose a store." };
@@ -185,6 +185,9 @@ export const placeOrder = createServerFn({ method: "POST" })
         await session.withTransaction(async () => {
           const guests = collection<GuestDocument>(db, "guests");
           const guest = await guests.findOne({ id: data.guestId }, { session });
+          if (storedPromotion && !storedPromotion.active) {
+            throw new PricingError("That promo code is no longer active.");
+          }
           const databasePromotion = storedPromotion
             ? {
                 code: storedPromotion.code,

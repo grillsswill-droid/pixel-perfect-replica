@@ -17,6 +17,7 @@ import {
   FREE_DELIVERY_THRESHOLD_CENTS,
   POINTS_PER_DOLLAR,
   POINTS_PER_DOLLAR_REDEEMED,
+  PROMOS,
 } from "./pricing";
 
 type AdminSession = { admin?: boolean };
@@ -389,12 +390,12 @@ export const getCheckoutConfiguration = createServerFn({ method: "GET" }).handle
   const settings = await db
     .collection<StoreSettings>("site_settings")
     .findOne({ _id: "storefront" });
-  const customPromotions = await db
+  const promotionOverrides = await db
     .collection<PromotionDocument>("promotions")
-    .find({ active: true })
+    .find({})
     .project<PromotionDocument>({ _id: 0 })
     .toArray();
-  const customCodes = new Set(customPromotions.map((promo) => promo.code));
+  const overriddenCodes = new Set(promotionOverrides.map((promo) => promo.code));
   return {
     deliveryFeeCents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
     freeDeliveryThresholdCents:
@@ -403,8 +404,9 @@ export const getCheckoutConfiguration = createServerFn({ method: "GET" }).handle
     pointsPerDollarRedeemed: settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
     businessHours: settings?.business_hours ?? DEFAULT_HOURS,
     promotions: [
-      ...customPromotions.map(
-        ({ code, label, description, kind, value, minSubtotalCents, category }) => ({
+      ...promotionOverrides
+        .filter((promo) => promo.active)
+        .map(({ code, label, description, kind, value, minSubtotalCents, category }) => ({
           code,
           label,
           description,
@@ -412,9 +414,8 @@ export const getCheckoutConfiguration = createServerFn({ method: "GET" }).handle
           value,
           minSubtotalCents,
           category,
-        }),
-      ),
-      ...PROMOS.filter((promo) => !customCodes.has(promo.code)),
+        })),
+      ...PROMOS.filter((promo) => !overriddenCodes.has(promo.code)),
     ],
   };
 });
@@ -727,6 +728,7 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
       .toArray(),
   ]);
   const { createOrderAccessToken } = await import("./order-access.server");
+  const storedPromotionCodes = new Set(promotions.map((promo) => promo.code));
   return {
     authenticated: true as const,
     orders: orders.map((order) => ({
@@ -747,7 +749,19 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
       business_hours: settings?.business_hours ?? DEFAULT_HOURS,
     },
     stores,
-    promotions,
+    promotions: [
+      ...promotions.map((promo) => ({
+        ...promo,
+        is_builtin: PROMOS.some((builtIn) => builtIn.code === promo.code),
+      })),
+      ...PROMOS.filter((promo) => !storedPromotionCodes.has(promo.code)).map((promo) => ({
+        ...promo,
+        id: `builtin:${promo.code}`,
+        usage_count: 0,
+        active: true,
+        is_builtin: true,
+      })),
+    ],
     catering,
     cateringProteins,
     cateringInquiries,
@@ -888,19 +902,25 @@ export const saveAdminPromotion = createServerFn({ method: "POST" })
   .inputValidator((value: unknown) => promotionSchema.parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
-    if (PROMOS.some((promo) => promo.code === data.code)) {
-      throw new Error("That code is reserved for a built-in promotion.");
-    }
     const { randomUUID } = await import("node:crypto");
     const { getMongoDatabase } = await import("./mongodb.server");
     const { db } = await getMongoDatabase();
-    const id = data.id ?? randomUUID();
+    const promotions = db.collection<PromotionDocument>("promotions");
+    const existing = await promotions.findOne({ code: data.code });
+    const isBuiltIn = PROMOS.some((promo) => promo.code === data.code);
+    if (existing && !isBuiltIn && existing.id !== data.id) {
+      throw new Error("A coupon with that code already exists.");
+    }
+    if (data.id && existing && existing.id !== data.id) {
+      throw new Error("That coupon code belongs to a different promotion.");
+    }
+    const id = data.id ?? existing?.id ?? randomUUID();
     const now = new Date().toISOString();
-    await db.collection<PromotionDocument>("promotions").updateOne(
+    await promotions.updateOne(
       { id },
       {
         $set: { ...data, id, updated_at: now },
-        $setOnInsert: { created_at: now, usage_count: 0 },
+        $setOnInsert: { created_at: now, usage_count: existing?.usage_count ?? 0 },
       },
       { upsert: true },
     );
@@ -914,7 +934,18 @@ export const deleteAdminPromotion = createServerFn({ method: "POST" })
     await requireAdmin();
     const { getMongoDatabase } = await import("./mongodb.server");
     const { db } = await getMongoDatabase();
-    const result = await db.collection("promotions").deleteOne({ id: data.id });
+    const promotions = db.collection<PromotionDocument>("promotions");
+    const promotion = await promotions.findOne({ id: data.id });
+    if (!promotion) throw new Error("That promotion no longer exists.");
+    if (PROMOS.some((promo) => promo.code === promotion.code)) {
+      await promotions.updateOne(
+        { id: data.id },
+        { $set: { active: false, updated_at: new Date().toISOString() } },
+      );
+      await adminLog("promotion_deactivated", { promotion_id: data.id });
+      return { ok: true as const };
+    }
+    const result = await promotions.deleteOne({ id: data.id });
     if (!result.deletedCount) throw new Error("That promotion no longer exists.");
     await adminLog("promotion_deleted", { promotion_id: data.id });
     return { ok: true as const };

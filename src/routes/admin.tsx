@@ -1266,6 +1266,7 @@ function LocationsPanel({
 
 type PromotionDraft = {
   id?: string;
+  isBuiltin: boolean;
   code: string;
   label: string;
   description: string;
@@ -1277,6 +1278,7 @@ type PromotionDraft = {
   active: boolean;
 };
 const emptyPromotion: PromotionDraft = {
+  isBuiltin: false,
   code: "",
   label: "",
   description: "",
@@ -1300,7 +1302,8 @@ function PromotionsPanel({
   const [draft, setDraft] = useState<PromotionDraft>(emptyPromotion);
   function edit(promo: AdminWorkspaceData["promotions"][number]) {
     setDraft({
-      id: promo.id,
+      ...(promo.id.startsWith("builtin:") ? {} : { id: promo.id }),
+      isBuiltin: promo.is_builtin,
       code: promo.code,
       label: promo.label,
       description: promo.description,
@@ -1339,7 +1342,7 @@ function PromotionsPanel({
             active: draft.active,
           },
         }),
-      draft.id ? "Promotion updated" : "Promotion created",
+      draft.id || draft.isBuiltin ? "Promotion updated" : "Promotion created",
     );
     if (success) setDraft(emptyPromotion);
   }
@@ -1356,9 +1359,9 @@ function PromotionsPanel({
         >
           <div className="flex items-center justify-between gap-3">
             <h3 className="font-display text-xl font-black uppercase">
-              {draft.id ? "Edit coupon" : "New coupon"}
+              {draft.id || draft.isBuiltin ? "Edit coupon" : "New coupon"}
             </h3>
-            {draft.id ? (
+            {draft.id || draft.isBuiltin ? (
               <Button
                 type="button"
                 size="sm"
@@ -1374,6 +1377,7 @@ function PromotionsPanel({
             value={draft.code}
             onChange={(value) => setDraft({ ...draft, code: value.toUpperCase() })}
             required
+            disabled={draft.isBuiltin}
           />
           <TextInput
             label="Offer title"
@@ -1438,7 +1442,7 @@ function PromotionsPanel({
             onChange={(checked) => setDraft({ ...draft, active: checked })}
           />
           <Button type="submit" variant="hero" loading={busy}>
-            {draft.id ? "Save coupon" : "Create coupon"}
+            {draft.id || draft.isBuiltin ? "Save coupon" : "Create coupon"}
           </Button>
         </form>
         <div className="space-y-3">
@@ -1458,6 +1462,7 @@ function PromotionsPanel({
                     ? ` · ${promo.usage_count ?? 0}/${promo.usage_limit} uses`
                     : " · unlimited uses"}
                   {!promo.active ? " · inactive" : ""}
+                  {promo.is_builtin ? " · built-in" : ""}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -1467,23 +1472,46 @@ function PromotionsPanel({
                 <Button
                   size="sm"
                   variant="outline"
-                  disabled={busy}
+                  disabled={busy || (promo.is_builtin && !promo.active)}
                   onClick={() => {
-                    if (!window.confirm(`Delete ${promo.code}?`)) return;
-                    void runAction(
-                      () => deleteAdminPromotion({ data: { id: promo.id } }),
-                      "Promotion deleted",
-                    );
+                    if (promo.is_builtin) {
+                      if (!promo.active || !window.confirm(`Remove ${promo.code} from checkout?`))
+                        return;
+                      void runAction(
+                        () =>
+                          saveAdminPromotion({
+                            data: {
+                              ...(promo.id.startsWith("builtin:") ? {} : { id: promo.id }),
+                              code: promo.code,
+                              label: promo.label,
+                              description: promo.description,
+                              kind: promo.kind,
+                              value: promo.value,
+                              ...(promo.minSubtotalCents
+                                ? { minSubtotalCents: promo.minSubtotalCents }
+                                : {}),
+                              ...(promo.category ? { category: promo.category } : {}),
+                              ...(promo.usage_limit ? { usage_limit: promo.usage_limit } : {}),
+                              active: false,
+                            },
+                          }),
+                        "Coupon removed from checkout",
+                      );
+                    } else {
+                      if (!window.confirm(`Delete ${promo.code}?`)) return;
+                      void runAction(
+                        () => deleteAdminPromotion({ data: { id: promo.id } }),
+                        "Promotion deleted",
+                      );
+                    }
                   }}
                 >
-                  Delete
+                  {promo.is_builtin ? (promo.active ? "Remove" : "Removed") : "Delete"}
                 </Button>
               </div>
             </article>
           ))}
-          {!data.promotions.length ? (
-            <EmptyState>No custom promotions created yet.</EmptyState>
-          ) : null}
+          {!data.promotions.length ? <EmptyState>No promotions configured yet.</EmptyState> : null}
         </div>
       </div>
     </Panel>
@@ -2578,6 +2606,7 @@ function TextInput({
   type = "text",
   placeholder,
   required = false,
+  disabled,
   ...props
 }: {
   label: string;
@@ -2586,6 +2615,7 @@ function TextInput({
   type?: string;
   placeholder?: string;
   required?: boolean;
+  disabled?: boolean;
   min?: string;
   max?: string;
   step?: string;
@@ -2599,6 +2629,7 @@ function TextInput({
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         required={required}
+        disabled={disabled}
         {...props}
         className={`${inputClass} mt-1`}
       />
