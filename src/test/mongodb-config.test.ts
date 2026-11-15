@@ -1,18 +1,14 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { getMongoDatabase } from "@/lib/mongodb.server";
-
-const originalUri = process.env["MONGODB_URI"];
-
-afterEach(() => {
-  if (originalUri === undefined) delete process.env["MONGODB_URI"];
-  else process.env["MONGODB_URI"] = originalUri;
-});
+import { requireMongoUri } from "@/lib/mongodb.server";
 
 describe("MongoDB configuration", () => {
-  it("reports a missing server-side connection string before connecting", async () => {
-    delete process.env["MONGODB_URI"];
+  it("reports a missing server-side connection string before connecting", () => {
+    expect(() => requireMongoUri(undefined)).toThrow("Missing MONGODB_URI");
+    expect(() => requireMongoUri("  ")).toThrow("Missing MONGODB_URI");
+  });
 
-    await expect(getMongoDatabase()).rejects.toThrow("Missing MONGODB_URI");
+  it("trims a configured connection string", () => {
+    expect(requireMongoUri(" mongodb://localhost:27017 ")).toBe("mongodb://localhost:27017");
   });
 });

@@ -1,12 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-import type { MenuItem, OrderLineSnapshot, Store } from "./menu-types";
+import type { CategoryId, MenuItem, OrderLineSnapshot, Store } from "./menu-types";
 import type {
   AdminLogDocument,
   CounterDocument,
   GuestDocument,
   OrderDocument,
+  UserDocument,
 } from "./mongodb.server";
 import { PricingError, computeTotals, selectionSummary, unitPriceCents } from "./pricing";
 
@@ -187,6 +188,22 @@ export const placeOrder = createServerFn({ method: "POST" })
             },
             { upsert: true, session },
           );
+          await collection<UserDocument>(db, "users").updateOne(
+            { id: data.guestId },
+            {
+              $set: {
+                is_guest: true,
+                display_name: order.customer_name,
+                ...(data.fulfillment === "delivery" ? { phone: data.address!.phone } : {}),
+                updated_at: now,
+              },
+              $setOnInsert: {
+                created_at: now,
+                ...(data.fulfillment === "pickup" ? { phone: null } : {}),
+              },
+            },
+            { upsert: true, session },
+          );
 
           const log: AdminLogDocument = {
             id: randomUUID(),
@@ -259,18 +276,33 @@ export const getOrder = createServerFn({ method: "GET" })
   .handler(async ({ data }) => {
     const { collection, getMongoDatabase } = await import("./mongodb.server");
     const { db } = await getMongoDatabase();
-    const order = await collection<OrderDocument>(db, "orders").findOne(
-      { id: data.id },
-      { projection: { _id: 0 } },
-    );
+    const order = await collection<OrderDocument>(db, "orders")
+      .find({ id: data.id })
+      .project<OrderDocument>({ _id: 0 })
+      .next();
     if (!order) return null;
-    const store = await collection<Store>(db, "stores").findOne(
-      { id: order.store_id },
-      { projection: { _id: 0, name: 1, address: 1, city: 1, state: 1, phone: 1 } },
-    );
+    const store = await collection<Store>(db, "stores")
+      .find({ id: order.store_id })
+      .project<Pick<Store, "name" | "address" | "city" | "state" | "phone">>({
+        _id: 0,
+        name: 1,
+        address: 1,
+        city: 1,
+        state: 1,
+        phone: 1,
+      })
+      .next();
+    const stores = store
+      ? {
+          name: store.name,
+          address: store.address,
+          city: store.city,
+          state: store.state,
+          phone: store.phone,
+        }
+      : null;
     return {
       ...order,
-      address: order.address,
-      stores: store,
+      stores,
     };
   });

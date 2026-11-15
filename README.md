@@ -45,9 +45,12 @@ To load the starter menu and store locations into an empty database, run:
 npm run db:seed
 ```
 
-The seed command only inserts starter menu and store data when those collections
-are empty. Keep the MongoDB connection string, session secret, and staff passcode
-private. Checkout is a demo and does not charge a payment method.
+The seed command only inserts starter menu, category, and store data when each
+collection is empty. Guest carts are synchronized to MongoDB while retaining
+the local-device fallback; guest reward balances remain in `guests`, and order
+profiles are stored in `users`. Keep the MongoDB connection string, session
+secret, and staff passcode private. Checkout is a demo and does not charge a
+payment method.
 
 ## Storefront routes
 

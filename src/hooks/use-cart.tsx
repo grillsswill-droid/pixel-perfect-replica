@@ -1,6 +1,17 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { toast } from "sonner";
 
+import { getCart, saveCart } from "@/lib/cart.functions";
 import type { CartLine, Fulfillment } from "@/lib/menu-types";
+import { useGuestId } from "./use-guest";
 
 const STORAGE_KEY = "grill-swill-cart-v1";
 
@@ -27,7 +38,10 @@ interface CartContextValue extends CartState {
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function lineKey(
-  line: Pick<CartLine, "itemId" | "selections"> & Partial<Pick<CartLine, "removed" | "note">>,
+  line: Pick<CartLine, "itemId" | "selections"> & {
+    removed?: CartLine["removed"] | undefined;
+    note?: CartLine["note"] | undefined;
+  },
 ): string {
   const sel = Object.keys(line.selections ?? {})
     .sort()
@@ -46,14 +60,23 @@ export function addLineTo(lines: CartLine[], line: Omit<CartLine, "key">): CartL
   const key = lineKey(line);
   const existing = lines.find((l) => l.key === key);
   if (existing) {
-    return lines.map((l) => (l.key === key ? { ...l, quantity: Math.min(20, l.quantity + qty) } : l));
+    return lines.map((l) =>
+      l.key === key ? { ...l, quantity: Math.min(20, l.quantity + qty) } : l,
+    );
   }
   return [...lines, { ...line, quantity: Math.min(20, qty), key }];
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<CartState>({ lines: [], fulfillment: "delivery", storeId: null });
+  const guestId = useGuestId();
+  const [state, setState] = useState<CartState>({
+    lines: [],
+    fulfillment: "delivery",
+    storeId: null,
+  });
   const [hydrated, setHydrated] = useState(false);
+  const [remoteLoaded, setRemoteLoaded] = useState(false);
+  const [remoteAvailable, setRemoteAvailable] = useState(false);
   const [isOpen, setOpen] = useState(false);
 
   useEffect(() => {
@@ -78,6 +101,49 @@ export function CartProvider({ children }: { children: ReactNode }) {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }, [state, hydrated]);
 
+  useEffect(() => {
+    if (!hydrated || !guestId) return;
+    let active = true;
+    getCart({ data: { guestId } })
+      .then((saved) => {
+        if (!active) return;
+        if (saved) {
+          setState((current) =>
+            current.lines.length > 0
+              ? current
+              : { lines: saved.lines, fulfillment: saved.fulfillment, storeId: saved.storeId },
+          );
+        }
+        setRemoteAvailable(true);
+        setRemoteLoaded(true);
+      })
+      .catch(() => {
+        if (!active) return;
+        toast.error("Your saved bag couldn't be loaded. This device's bag is still available.");
+        setRemoteLoaded(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [guestId, hydrated]);
+
+  useEffect(() => {
+    if (!remoteLoaded || !remoteAvailable || !hydrated || !guestId) return;
+    const timer = window.setTimeout(() => {
+      void saveCart({
+        data: {
+          guestId,
+          lines: state.lines,
+          fulfillment: state.fulfillment,
+          storeId: state.storeId,
+        },
+      }).catch(() => {
+        toast.error("Your bag couldn't be saved online. It remains saved on this device.");
+      });
+    }, 350);
+    return () => window.clearTimeout(timer);
+  }, [guestId, hydrated, remoteAvailable, remoteLoaded, state]);
+
   const addLine = useCallback((line: Omit<CartLine, "key">) => {
     setState((s) => ({ ...s, lines: addLineTo(s.lines, line) }));
   }, []);
@@ -95,8 +161,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, lines: s.lines.filter((l) => l.key !== key) }));
   }, []);
   const clear = useCallback(() => setState((s) => ({ ...s, lines: [] })), []);
-  const setFulfillment = useCallback((fulfillment: Fulfillment) => setState((s) => ({ ...s, fulfillment })), []);
-  const setStoreId = useCallback((storeId: string | null) => setState((s) => ({ ...s, storeId })), []);
+  const setFulfillment = useCallback(
+    (fulfillment: Fulfillment) => setState((s) => ({ ...s, fulfillment })),
+    [],
+  );
+  const setStoreId = useCallback(
+    (storeId: string | null) => setState((s) => ({ ...s, storeId })),
+    [],
+  );
 
   const value = useMemo<CartContextValue>(
     () => ({
@@ -113,7 +185,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setFulfillment,
       setStoreId,
     }),
-    [state, hydrated, isOpen, addLine, updateQuantity, removeLine, clear, setFulfillment, setStoreId],
+    [
+      state,
+      hydrated,
+      isOpen,
+      addLine,
+      updateQuantity,
+      removeLine,
+      clear,
+      setFulfillment,
+      setStoreId,
+    ],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

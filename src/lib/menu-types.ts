@@ -1,12 +1,40 @@
 export type CategoryId = "burgers" | "chicken" | "pizza" | "sides" | "drinks";
 
 export const CATEGORIES: { id: CategoryId; label: string; short: string; blurb: string }[] = [
-  { id: "burgers", label: "Burgers & Combos", short: "Burgers", blurb: "Smashed to order on a 500° flat-top." },
-  { id: "chicken", label: "Crispy Chicken", short: "Chicken", blurb: "Buttermilk-brined, hand-breaded daily." },
-  { id: "pizza", label: "Fresh Pizzas", short: "Pizza", blurb: "48-hour dough, blistered in a wood oven." },
+  {
+    id: "burgers",
+    label: "Burgers & Combos",
+    short: "Burgers",
+    blurb: "Smashed to order on a 500° flat-top.",
+  },
+  {
+    id: "chicken",
+    label: "Crispy Chicken",
+    short: "Chicken",
+    blurb: "Buttermilk-brined, hand-breaded daily.",
+  },
+  {
+    id: "pizza",
+    label: "Fresh Pizzas",
+    short: "Pizza",
+    blurb: "48-hour dough, blistered in a wood oven.",
+  },
   { id: "sides", label: "Fries & Sides", short: "Sides", blurb: "Cut in-house. Never frozen." },
-  { id: "drinks", label: "Coffee & Drinks", short: "Drinks", blurb: "18-hour cold brew & hand-spun shakes." },
+  {
+    id: "drinks",
+    label: "Coffee & Drinks",
+    short: "Drinks",
+    blurb: "18-hour cold brew & hand-spun shakes.",
+  },
 ];
+
+export interface MenuCategory {
+  id: CategoryId;
+  label: string;
+  short: string;
+  blurb: string;
+  sort_order: number;
+}
 
 export interface OptionChoice {
   id: string;

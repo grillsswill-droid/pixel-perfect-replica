@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 
 import { ItemCustomizer } from "@/components/site/item-customizer";
 import { MenuCard } from "@/components/site/menu-card";
-import { menuQuery } from "@/lib/catalog.functions";
+import { categoriesQuery, menuQuery } from "@/lib/catalog.functions";
 import { CATEGORIES, type CategoryId, type MenuItem } from "@/lib/menu-types";
 import { cn } from "@/lib/utils";
 
@@ -14,17 +14,28 @@ const CATEGORY_IDS = CATEGORIES.map((c) => c.id) as string[];
 
 export const Route = createFileRoute("/menu")({
   validateSearch: (s: Record<string, unknown>): { cat?: CategoryId } =>
-    typeof s["cat"] === "string" && CATEGORY_IDS.includes(s["cat"]) ? { cat: s["cat"] as CategoryId } : {},
-  loader: ({ context }) => context.queryClient.ensureQueryData(menuQuery()),
+    typeof s["cat"] === "string" && CATEGORY_IDS.includes(s["cat"])
+      ? { cat: s["cat"] as CategoryId }
+      : {},
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(menuQuery()),
+      context.queryClient.ensureQueryData(categoriesQuery()),
+    ]);
+  },
   head: () => ({
     meta: [
       { title: "Menu — Burgers, Chicken, Pizza & Coffee | Grill & Swill" },
       {
         name: "description",
-        content: "Browse the full Grill & Swill menu: smash burgers, crispy chicken, wood-fired pizza, hand-cut fries and cold brew.",
+        content:
+          "Browse the full Grill & Swill menu: smash burgers, crispy chicken, wood-fired pizza, hand-cut fries and cold brew.",
       },
       { property: "og:title", content: "The Grill & Swill Menu" },
-      { property: "og:description", content: "Smash burgers, crispy chicken, wood-fired pizza, hand-cut fries and cold brew." },
+      {
+        property: "og:description",
+        content: "Smash burgers, crispy chicken, wood-fired pizza, hand-cut fries and cold brew.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -36,6 +47,7 @@ const FILTERS = ["Spicy", "Vegetarian", "Bestseller", "Signature", "Shareable"] 
 
 function MenuPage() {
   const { data: menu } = useSuspenseQuery(menuQuery());
+  const { data: categories } = useSuspenseQuery(categoriesQuery());
   const { cat } = Route.useSearch();
   const navigate = useNavigate({ from: "/menu" });
   const [query, setQuery] = useState("");
@@ -46,15 +58,23 @@ function MenuPage() {
     const q = query.trim().toLowerCase();
     return menu.filter((i) => {
       if (cat && i.category !== cat) return false;
-      if (tags.length && !tags.every((t) => i.tags.some((x) => x.toLowerCase() === t.toLowerCase()))) return false;
-      if (q && !`${i.name} ${i.description} ${i.ingredients.join(" ")}`.toLowerCase().includes(q)) return false;
+      if (
+        tags.length &&
+        !tags.every((t) => i.tags.some((x) => x.toLowerCase() === t.toLowerCase()))
+      )
+        return false;
+      if (q && !`${i.name} ${i.description} ${i.ingredients.join(" ")}`.toLowerCase().includes(q))
+        return false;
       return true;
     });
   }, [menu, cat, tags, query]);
 
-  const groups = CATEGORIES.map((c) => ({ ...c, items: filtered.filter((i) => i.category === c.id) })).filter(
-    (g) => g.items.length > 0,
-  );
+  const groups = categories
+    .map((category) => ({
+      ...category,
+      items: filtered.filter((item) => item.category === category.id),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <div className="mx-auto max-w-7xl px-4 pt-10 pb-24 sm:px-6">
@@ -62,10 +82,19 @@ function MenuPage() {
       <h1 className="mt-2 text-5xl font-black uppercase sm:text-7xl">The Menu</h1>
 
       <div className="sticky top-[100px] z-20 -mx-4 mt-8 bg-background/95 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
-        <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Menu categories">
+        <div
+          className="flex gap-2 overflow-x-auto pb-1"
+          role="tablist"
+          aria-label="Menu categories"
+        >
           <CategoryTab active={!cat} onClick={() => navigate({ search: {} })} label="Everything" />
-          {CATEGORIES.map((c) => (
-            <CategoryTab key={c.id} active={cat === c.id} onClick={() => navigate({ search: { cat: c.id } })} label={c.short} />
+          {categories.map((c) => (
+            <CategoryTab
+              key={c.id}
+              active={cat === c.id}
+              onClick={() => navigate({ search: { cat: c.id } })}
+              label={c.short}
+            />
           ))}
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -99,7 +128,9 @@ function MenuPage() {
                 onClick={() => setTags((t) => (on ? t.filter((x) => x !== f) : [...t, f]))}
                 className={cn(
                   "h-10 rounded-full border-2 px-4 text-sm font-semibold transition active:scale-95",
-                  on ? "border-charcoal bg-charcoal text-cream" : "border-input bg-card hover:border-charcoal",
+                  on
+                    ? "border-charcoal bg-charcoal text-cream"
+                    : "border-input bg-card hover:border-charcoal",
                 )}
               >
                 {f}
@@ -134,7 +165,10 @@ function MenuPage() {
               </h2>
               <p className="hidden text-sm text-muted-foreground sm:block">{g.blurb}</p>
             </div>
-            <motion.div layout className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <motion.div
+              layout
+              className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            >
               <AnimatePresence mode="popLayout">
                 {g.items.map((item) => (
                   <motion.div
@@ -158,7 +192,15 @@ function MenuPage() {
   );
 }
 
-function CategoryTab({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
+function CategoryTab({
+  active,
+  onClick,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+}) {
   return (
     <button
       type="button"
@@ -170,7 +212,12 @@ function CategoryTab({ active, onClick, label }: { active: boolean; onClick: () 
         active ? "text-primary-foreground" : "text-charcoal/70 hover:text-charcoal",
       )}
     >
-      {active && <motion.span layoutId="menu-tab" className="absolute inset-0 rounded-full bg-primary shadow-chunky" />}
+      {active && (
+        <motion.span
+          layoutId="menu-tab"
+          className="absolute inset-0 rounded-full bg-primary shadow-chunky"
+        />
+      )}
       <span className="relative">{label}</span>
     </button>
   );

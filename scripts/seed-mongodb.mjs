@@ -1,5 +1,10 @@
+import { existsSync } from "node:fs";
 import { randomUUID } from "node:crypto";
 import { MongoClient } from "mongodb";
+
+for (const path of [".env.local", ".env"]) {
+  if (existsSync(path)) process.loadEnvFile(path);
+}
 
 const uri = process.env.MONGODB_URI;
 if (!uri) {
@@ -7,6 +12,44 @@ if (!uri) {
 }
 
 const database = process.env.MONGODB_DATABASE;
+
+const categories = [
+  {
+    id: "burgers",
+    label: "Burgers & Combos",
+    short: "Burgers",
+    blurb: "Smashed to order on a 500° flat-top.",
+    sort_order: 1,
+  },
+  {
+    id: "chicken",
+    label: "Crispy Chicken",
+    short: "Chicken",
+    blurb: "Buttermilk-brined, hand-breaded daily.",
+    sort_order: 2,
+  },
+  {
+    id: "pizza",
+    label: "Fresh Pizzas",
+    short: "Pizza",
+    blurb: "48-hour dough, blistered in a wood oven.",
+    sort_order: 3,
+  },
+  {
+    id: "sides",
+    label: "Fries & Sides",
+    short: "Sides",
+    blurb: "Cut in-house. Never frozen.",
+    sort_order: 4,
+  },
+  {
+    id: "drinks",
+    label: "Coffee & Drinks",
+    short: "Drinks",
+    blurb: "18-hour cold brew & hand-spun shakes.",
+    sort_order: 5,
+  },
+];
 
 const burgerOptions = [
   {
@@ -609,16 +652,20 @@ try {
   await client.connect();
   const db = client.db(database || undefined);
   const menu = db.collection("menu_items");
+  const categoryCollection = db.collection("categories");
   const storeCollection = db.collection("stores");
 
   if ((await menu.countDocuments()) === 0) {
     await menu.insertMany(menuItems);
   }
+  if ((await categoryCollection.countDocuments()) === 0) {
+    await categoryCollection.insertMany(categories);
+  }
   if ((await storeCollection.countDocuments()) === 0) {
     await storeCollection.insertMany(stores);
   }
   console.log(
-    `MongoDB seed complete: ${await menu.countDocuments()} menu items, ${await storeCollection.countDocuments()} stores.`,
+    `MongoDB seed complete: ${await menu.countDocuments()} menu items, ${await categoryCollection.countDocuments()} categories, ${await storeCollection.countDocuments()} stores.`,
   );
 } finally {
   await client.close();

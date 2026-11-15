@@ -1,6 +1,14 @@
+import { existsSync } from "node:fs";
 import { MongoClient, ObjectId, type Db, type Document } from "mongodb";
 
-import type { MenuItem, OrderLineSnapshot, Store } from "./menu-types";
+import type {
+  CartLine,
+  Fulfillment,
+  MenuCategory,
+  MenuItem,
+  OrderLineSnapshot,
+  Store,
+} from "./menu-types";
 import type { OrderStatus } from "./order-status";
 
 export interface GuestDocument {
@@ -8,6 +16,23 @@ export interface GuestDocument {
   points: number;
   lifetime_points: number;
   created_at: string;
+}
+
+export interface UserDocument {
+  id: string;
+  is_guest: true;
+  display_name: string;
+  phone: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CartDocument {
+  id: string;
+  lines: CartLine[];
+  fulfillment: Fulfillment;
+  store_id: string | null;
+  updated_at: string;
 }
 
 export interface OrderAddress {
@@ -48,7 +73,7 @@ export interface AdminLogDocument {
   id: string;
   admin_id: string | null;
   action: string;
-  details: Record<string, unknown>;
+  details: Record<string, string | number | boolean | null>;
   created_at: string;
 }
 
@@ -67,13 +92,25 @@ const globalMongo = globalThis as typeof globalThis & {
 };
 const indexSetupByDb = new WeakMap<Db, Promise<void>>();
 
-function getClient(): MongoClient {
-  const uri = process.env["MONGODB_URI"]?.trim();
-  if (!uri) {
+export function requireMongoUri(uri: string | undefined): string {
+  const normalized = uri?.trim();
+  if (!normalized) {
     throw new Error(
       "Missing MONGODB_URI. Configure a MongoDB connection string in the server environment.",
     );
   }
+  return normalized;
+}
+
+function loadLocalEnvironment(): void {
+  for (const path of [".env.local", ".env"]) {
+    if (existsSync(path)) process.loadEnvFile(path);
+  }
+}
+
+function getClient(): MongoClient {
+  if (!process.env["MONGODB_URI"]?.trim()) loadLocalEnvironment();
+  const uri = requireMongoUri(process.env["MONGODB_URI"]);
 
   if (!globalMongo.__grillSwillMongoClient) {
     globalMongo.__grillSwillMongoClient = new MongoClient(uri, {
@@ -97,6 +134,13 @@ async function ensureIndexes(db: Db): Promise<void> {
         .createIndex({ category: 1, sort_order: 1 }),
       db.collection<MongoDocument<Store>>("stores").createIndex({ id: 1 }, { unique: true }),
       db.collection<MongoDocument<Store>>("stores").createIndex({ sort_order: 1 }),
+      db
+        .collection<MongoDocument<MenuCategory>>("categories")
+        .createIndex({ id: 1 }, { unique: true }),
+      db.collection<MongoDocument<MenuCategory>>("categories").createIndex({ sort_order: 1 }),
+      db.collection<MongoDocument<CartDocument>>("carts").createIndex({ id: 1 }, { unique: true }),
+      db.collection<MongoDocument<CartDocument>>("carts").createIndex({ updated_at: -1 }),
+      db.collection<MongoDocument<UserDocument>>("users").createIndex({ id: 1 }, { unique: true }),
       db
         .collection<MongoDocument<GuestDocument>>("guests")
         .createIndex({ id: 1 }, { unique: true }),
