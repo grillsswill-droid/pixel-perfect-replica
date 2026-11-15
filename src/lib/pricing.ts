@@ -8,6 +8,31 @@ export const POINTS_PER_DOLLAR = 10;
 export const POINTS_PER_DOLLAR_REDEEMED = 100;
 export const REDEEM_STEP = 100;
 
+export interface RewardTier {
+  points: number;
+  label: string;
+  value: string;
+}
+
+export const DEFAULT_REWARD_TIERS: RewardTier[] = [
+  { points: 250, label: "Hand-Cut Fries or Lemonade", value: "$2.50 off" },
+  { points: 500, label: "Any Coffee or Shake", value: "$5 off" },
+  { points: 900, label: "Any Burger or Sandwich", value: "$9 off" },
+  { points: 1500, label: 'Any 16" Pizza', value: "$15 off" },
+];
+
+export function getRewardTiers(value?: RewardTier[] | null): RewardTier[] {
+  return Array.isArray(value) && value.length > 0 ? value : DEFAULT_REWARD_TIERS;
+}
+
+export function getPointsPerDollar(value?: number | null): number {
+  return Number.isFinite(value) && (value as number) > 0 ? (value as number) : POINTS_PER_DOLLAR;
+}
+
+export function getPointsPerDollarRedeemed(value?: number | null): number {
+  return Number.isFinite(value) && (value as number) > 0 ? (value as number) : POINTS_PER_DOLLAR_REDEEMED;
+}
+
 export interface PromoDefinition {
   code: string;
   label: string;
@@ -140,6 +165,8 @@ export interface TotalsInput {
   promotions?: PromoDefinition[] | undefined;
   deliveryFeeCents?: number | undefined;
   freeDeliveryThresholdCents?: number | undefined;
+  pointsPerDollar?: number | undefined;
+  pointsPerDollarRedeemed?: number | undefined;
 }
 
 export interface Totals {
@@ -159,6 +186,9 @@ export function computeTotals(input: TotalsInput): Totals {
   const subtotalCents = input.lines.reduce((s, l) => s + l.lineTotalCents, 0);
   if (subtotalCents <= 0) throw new PricingError("Your bag is empty");
 
+  const pointsPerDollar = getPointsPerDollar(input.pointsPerDollar);
+  const pointsPerDollarRedeemed = getPointsPerDollarRedeemed(input.pointsPerDollarRedeemed);
+
   const promo = input.promoCode
     ? findPromo(input.promoCode, input.promotions ?? PROMOS)
     : undefined;
@@ -172,9 +202,9 @@ export function computeTotals(input: TotalsInput): Totals {
   if (requested > (input.availablePoints ?? 0))
     throw new PricingError("You don't have that many points");
   const afterPromo = subtotalCents - promoDiscount;
-  const maxRedeemable = Math.floor(afterPromo / 100) * POINTS_PER_DOLLAR_REDEEMED;
+  const maxRedeemable = Math.floor(afterPromo / 100) * pointsPerDollarRedeemed;
   const pointsRedeemed = Math.min(requested, maxRedeemable - (maxRedeemable % REDEEM_STEP));
-  const pointsDiscount = Math.round((pointsRedeemed / POINTS_PER_DOLLAR_REDEEMED) * 100);
+  const pointsDiscount = Math.round((pointsRedeemed / pointsPerDollarRedeemed) * 100);
 
   const discountCents = promoDiscount + pointsDiscount;
   const taxable = subtotalCents - discountCents;
@@ -185,7 +215,7 @@ export function computeTotals(input: TotalsInput): Totals {
       : 0;
   const taxCents = Math.round(taxable * TAX_RATE);
   const totalCents = taxable + taxCents + deliveryFeeCents;
-  const pointsEarned = Math.floor(taxable / 100) * POINTS_PER_DOLLAR;
+  const pointsEarned = Math.floor(taxable / 100) * pointsPerDollar;
 
   return {
     subtotalCents,
@@ -205,12 +235,7 @@ export function formatMoney(cents: number): string {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(cents / 100);
 }
 
-export const REWARD_TIERS = [
-  { points: 250, label: "Hand-Cut Fries or Lemonade", value: "$2.50 off" },
-  { points: 500, label: "Any Coffee or Shake", value: "$5 off" },
-  { points: 900, label: "Any Burger or Sandwich", value: "$9 off" },
-  { points: 1500, label: 'Any 16" Pizza', value: "$15 off" },
-];
+export const REWARD_TIERS = DEFAULT_REWARD_TIERS;
 
 export const MEMBER_LEVELS = [
   { name: "Spark", min: 0 },

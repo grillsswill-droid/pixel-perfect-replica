@@ -8,6 +8,7 @@ import {
   ClipboardList,
   ImagePlus,
   LockKeyhole,
+  MapPin,
   RefreshCw,
   Settings,
   ShieldCheck,
@@ -25,6 +26,7 @@ import {
   deleteAdminGalleryItem,
   deleteAdminMenuItem,
   deleteAdminPromotion,
+  deleteStoreLocation,
   getAdminSales,
   getAdminWorkspace,
   lockAdmin,
@@ -35,6 +37,7 @@ import {
   saveAdminMenuItem,
   saveAdminPromotion,
   saveAdminSettings,
+  saveStoreLocation,
   setAdminOrderStatus,
   updateAdminCateringInquiry,
   unlockAdmin,
@@ -53,6 +56,7 @@ type Tab =
   | "menu"
   | "categories"
   | "customers"
+  | "locations"
   | "promotions"
   | "catering"
   | "gallery"
@@ -66,6 +70,7 @@ const TABS: { id: Tab; label: string; icon: typeof Activity }[] = [
   { id: "menu", label: "Menu & combos", icon: Utensils },
   { id: "categories", label: "Categories", icon: Boxes },
   { id: "customers", label: "Customers", icon: Users },
+  { id: "locations", label: "Locations", icon: MapPin },
   { id: "promotions", label: "Promotions", icon: Tags },
   { id: "catering", label: "Catering", icon: ShoppingBag },
   { id: "gallery", label: "Gallery", icon: ImagePlus },
@@ -272,6 +277,9 @@ function AdminPage() {
           <CategoriesPanel data={data} runAction={runAction} busy={busy} />
         ) : null}
         {tab === "customers" ? <CustomersPanel data={data} /> : null}
+        {tab === "locations" ? (
+          <LocationsPanel data={data} runAction={runAction} busy={busy} />
+        ) : null}
         {tab === "promotions" ? (
           <PromotionsPanel data={data} runAction={runAction} busy={busy} />
         ) : null}
@@ -1084,6 +1092,173 @@ function CustomersPanel({ data }: { data: AdminWorkspaceData }) {
         {data.customers.length === 0 ? (
           <p className="py-8 text-center text-sm text-muted-foreground">No customer orders yet.</p>
         ) : null}
+      </div>
+    </Panel>
+  );
+}
+
+type StoreDraft = {
+  id?: string;
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  phone: string;
+  lat: string;
+  lng: string;
+  hours: string;
+  features: string;
+  sort_order: string;
+};
+const emptyStoreDraft: StoreDraft = {
+  name: "",
+  address: "",
+  city: "",
+  state: "",
+  zip: "",
+  phone: "",
+  lat: "30.2672",
+  lng: "-97.7431",
+  hours: "Daily 7am – 11pm",
+  features: "Drive-thru, Delivery",
+  sort_order: "0",
+};
+
+function LocationsPanel({
+  data,
+  runAction,
+  busy,
+}: {
+  data: AdminWorkspaceData;
+  runAction: (action: () => Promise<unknown>, message: string) => Promise<boolean>;
+  busy: boolean;
+}) {
+  const [draft, setDraft] = useState<StoreDraft>(emptyStoreDraft);
+
+  function edit(location: AdminWorkspaceData["stores"][number]) {
+    setDraft({
+      id: location.id,
+      name: location.name,
+      address: location.address,
+      city: location.city,
+      state: location.state,
+      zip: location.zip,
+      phone: location.phone,
+      lat: String(location.lat),
+      lng: String(location.lng),
+      hours: location.hours,
+      features: location.features.join(", "),
+      sort_order: String(location.sort_order ?? 0),
+    });
+  }
+
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const lat = Number(draft.lat);
+    const lng = Number(draft.lng);
+    const sortOrder = Number(draft.sort_order);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+      toast.error("Latitude and longitude must be valid numbers.");
+      return;
+    }
+    const success = await runAction(
+      () =>
+        saveStoreLocation({
+          data: {
+            ...(draft.id ? { id: draft.id } : {}),
+            name: draft.name,
+            address: draft.address,
+            city: draft.city,
+            state: draft.state,
+            zip: draft.zip,
+            phone: draft.phone,
+            lat,
+            lng,
+            hours: draft.hours,
+            features: draft.features
+              .split(",")
+              .map((feature) => feature.trim())
+              .filter(Boolean),
+            ...(Number.isFinite(sortOrder) ? { sort_order: sortOrder } : {}),
+          },
+        }),
+      draft.id ? "Location updated" : "Location created",
+    );
+    if (success) setDraft(emptyStoreDraft);
+  }
+
+  return (
+    <Panel
+      title="Locations"
+      description="Manage where customers can order pickup and delivery, plus the contact details and map metadata shown on the storefront."
+    >
+      <div className="grid gap-6 xl:grid-cols-[1fr_1.05fr]">
+        <form onSubmit={(event) => void submit(event)} className="space-y-4 rounded-2xl bg-background p-5">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="font-display text-xl font-black uppercase">
+              {draft.id ? "Edit location" : "New location"}
+            </h3>
+            {draft.id ? (
+              <Button type="button" size="sm" variant="outline" onClick={() => setDraft(emptyStoreDraft)}>
+                New
+              </Button>
+            ) : null}
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <TextInput label="Location name" value={draft.name} onChange={(value) => setDraft({ ...draft, name: value })} required />
+            <TextInput label="Sort order" type="number" min="0" value={draft.sort_order} onChange={(value) => setDraft({ ...draft, sort_order: value })} />
+          </div>
+          <TextInput label="Street address" value={draft.address} onChange={(value) => setDraft({ ...draft, address: value })} required />
+          <div className="grid gap-3 sm:grid-cols-[1fr_120px_120px]">
+            <TextInput label="City" value={draft.city} onChange={(value) => setDraft({ ...draft, city: value })} required />
+            <TextInput label="State" value={draft.state} onChange={(value) => setDraft({ ...draft, state: value })} required />
+            <TextInput label="ZIP" value={draft.zip} onChange={(value) => setDraft({ ...draft, zip: value })} required />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <TextInput label="Phone" value={draft.phone} onChange={(value) => setDraft({ ...draft, phone: value })} required />
+            <TextInput label="Hours" value={draft.hours} onChange={(value) => setDraft({ ...draft, hours: value })} required />
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <TextInput label="Latitude" type="number" step="0.0001" value={draft.lat} onChange={(value) => setDraft({ ...draft, lat: value })} required />
+            <TextInput label="Longitude" type="number" step="0.0001" value={draft.lng} onChange={(value) => setDraft({ ...draft, lng: value })} required />
+          </div>
+          <TextInput label="Features (comma separated)" value={draft.features} onChange={(value) => setDraft({ ...draft, features: value })} />
+          <Button type="submit" variant="hero" loading={busy}>
+            {draft.id ? "Save location" : "Create location"}
+          </Button>
+        </form>
+        <div className="space-y-3">
+          {data.stores.map((location) => (
+            <article key={location.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-card p-4 shadow-card">
+              <div>
+                <p className="font-display text-lg font-black uppercase">{location.name}</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {location.address}, {location.city}, {location.state} {location.zip}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{location.hours}</p>
+              </div>
+              <div className="flex gap-2">
+                <Button size="sm" variant="outline" onClick={() => edit(location)}>Edit</Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={busy}
+                  onClick={() => {
+                    if (!window.confirm(`Delete ${location.name}?`)) return;
+                    void runAction(
+                      () => deleteStoreLocation({ data: { id: location.id } }),
+                      "Location deleted",
+                    );
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            </article>
+          ))}
+          {!data.stores.length ? <EmptyState>No locations configured yet.</EmptyState> : null}
+        </div>
       </div>
     </Panel>
   );
@@ -2082,6 +2257,11 @@ function SettingsPanel({
   const [threshold, setThreshold] = useState(
     (data.settings.free_delivery_threshold_cents / 100).toFixed(2),
   );
+  const [pointsPerDollar, setPointsPerDollar] = useState(String(data.settings.points_per_dollar));
+  const [pointsPerDollarRedeemed, setPointsPerDollarRedeemed] = useState(
+    String(data.settings.points_per_dollar_redeemed),
+  );
+  const [rewardTiers, setRewardTiers] = useState(data.settings.reward_tiers);
   const [hours, setHours] = useState(data.settings.business_hours);
   const settingsSnapshot = JSON.stringify(data.settings);
   const parsedSettings = useMemo(
@@ -2090,6 +2270,15 @@ function SettingsPanel({
         .object({
           delivery_fee_cents: z.number(),
           free_delivery_threshold_cents: z.number(),
+          points_per_dollar: z.number(),
+          points_per_dollar_redeemed: z.number(),
+          reward_tiers: z.array(
+            z.object({
+              points: z.number(),
+              label: z.string(),
+              value: z.string(),
+            }),
+          ),
           business_hours: z.array(
             z.object({
               day: z.enum([
@@ -2114,13 +2303,16 @@ function SettingsPanel({
   useEffect(() => {
     setDeliveryFee((parsedSettings.delivery_fee_cents / 100).toFixed(2));
     setThreshold((parsedSettings.free_delivery_threshold_cents / 100).toFixed(2));
+    setPointsPerDollar(String(parsedSettings.points_per_dollar));
+    setPointsPerDollarRedeemed(String(parsedSettings.points_per_dollar_redeemed));
+    setRewardTiers(parsedSettings.reward_tiers);
     setHours(parsedSettings.business_hours);
   }, [parsedSettings]);
 
   return (
     <Panel
       title="Store settings"
-      description="Delivery pricing is applied by the server at checkout. Business hours are published operational details."
+      description="Delivery pricing is applied by the server at checkout. Business hours and reward configuration are published operational details."
     >
       <form
         className="space-y-6"
@@ -2132,6 +2324,13 @@ function SettingsPanel({
                 data: {
                   delivery_fee_cents: Math.round(Number(deliveryFee) * 100),
                   free_delivery_threshold_cents: Math.round(Number(threshold) * 100),
+                  points_per_dollar: Number(pointsPerDollar),
+                  points_per_dollar_redeemed: Number(pointsPerDollarRedeemed),
+                  reward_tiers: rewardTiers.map((tier) => ({
+                    points: Number(tier.points),
+                    label: tier.label,
+                    value: tier.value,
+                  })),
                   business_hours: hours,
                 },
               }),
@@ -2139,7 +2338,7 @@ function SettingsPanel({
           );
         }}
       >
-        <div className="grid max-w-xl gap-4 sm:grid-cols-2">
+        <div className="grid max-w-3xl gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <TextInput
             label="Delivery fee ($)"
             type="number"
@@ -2158,6 +2357,91 @@ function SettingsPanel({
             onChange={setThreshold}
             required
           />
+          <TextInput
+            label="Points per $1"
+            type="number"
+            min="1"
+            step="1"
+            value={pointsPerDollar}
+            onChange={setPointsPerDollar}
+            required
+          />
+          <TextInput
+            label="Points redeemed per $1"
+            type="number"
+            min="1"
+            step="1"
+            value={pointsPerDollarRedeemed}
+            onChange={setPointsPerDollarRedeemed}
+            required
+          />
+        </div>
+        <div>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <h3 className="font-display text-xl font-black uppercase">Reward tiers</h3>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                setRewardTiers((current) => [...current, { points: 250, label: "New reward", value: "$2.50 off" }])
+              }
+            >
+              Add reward
+            </Button>
+          </div>
+          <div className="space-y-3">
+            {rewardTiers.map((tier, index) => (
+              <div key={`${tier.label}-${index}`} className="grid gap-3 rounded-2xl bg-card p-3 shadow-card sm:grid-cols-[120px_1fr_1fr_auto]">
+                <TextInput
+                  label="Points"
+                  type="number"
+                  min="1"
+                  value={String(tier.points)}
+                  onChange={(value) =>
+                    setRewardTiers((current) =>
+                      current.map((item, itemIndex) =>
+                        itemIndex === index ? { ...item, points: Number(value) || 0 } : item,
+                      ),
+                    )
+                  }
+                />
+                <TextInput
+                  label="Reward name"
+                  value={tier.label}
+                  onChange={(value) =>
+                    setRewardTiers((current) =>
+                      current.map((item, itemIndex) =>
+                        itemIndex === index ? { ...item, label: value } : item,
+                      ),
+                    )
+                  }
+                />
+                <TextInput
+                  label="Perk"
+                  value={tier.value}
+                  onChange={(value) =>
+                    setRewardTiers((current) =>
+                      current.map((item, itemIndex) =>
+                        itemIndex === index ? { ...item, value } : item,
+                      ),
+                    )
+                  }
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="self-end"
+                  onClick={() =>
+                    setRewardTiers((current) => current.filter((_, itemIndex) => itemIndex !== index))
+                  }
+                >
+                  Remove
+                </Button>
+              </div>
+            ))}
+          </div>
         </div>
         <div>
           <h3 className="mb-3 font-display text-xl font-black uppercase">Business hours</h3>

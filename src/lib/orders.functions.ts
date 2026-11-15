@@ -217,6 +217,8 @@ export const placeOrder = createServerFn({ method: "POST" })
             deliveryFeeCents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
             freeDeliveryThresholdCents:
               settings?.free_delivery_threshold_cents ?? FREE_DELIVERY_THRESHOLD_CENTS,
+            pointsPerDollar: settings?.points_per_dollar,
+            pointsPerDollarRedeemed: settings?.points_per_dollar_redeemed,
           });
           if (storedPromotion) {
             const promotionUpdate = await db.collection("promotions").updateOne(

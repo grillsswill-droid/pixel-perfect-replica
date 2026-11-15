@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Stagger, StaggerItem } from "@/components/site/reveal";
 import { useCart } from "@/hooks/use-cart";
 import { useGuestId } from "@/hooks/use-guest";
+import { getStorefrontSettings } from "@/lib/admin.functions";
 import { getMenu } from "@/lib/catalog.functions";
 import { getGuestRewards } from "@/lib/orders.functions";
 import {
   formatMoney,
+  getPointsPerDollar,
+  getRewardTiers,
   memberLevel,
-  REWARD_TIERS,
   selectionSummary,
   unitPriceCents,
 } from "@/lib/pricing";
@@ -35,9 +37,40 @@ function RewardsPage() {
   const guestId = useGuestId();
   const cart = useCart();
   const [data, setData] = useState<RewardsData | null>(null);
+  const [settings, setSettings] = useState({
+    delivery_fee_cents: 399,
+    free_delivery_threshold_cents: 3500,
+    points_per_dollar: 10,
+    points_per_dollar_redeemed: 100,
+    reward_tiers: getRewardTiers(),
+    business_hours: [],
+  });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [reordering, setReordering] = useState<string | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    getStorefrontSettings()
+      .then((result) => {
+        if (active) setSettings(result);
+      })
+      .catch(() => {
+        if (active) {
+          setSettings({
+            delivery_fee_cents: 399,
+            free_delivery_threshold_cents: 3500,
+            points_per_dollar: 10,
+            points_per_dollar_redeemed: 100,
+            reward_tiers: getRewardTiers(),
+            business_hours: [],
+          });
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!guestId) return;
@@ -123,8 +156,7 @@ function RewardsPage() {
               Great perks.
             </h1>
             <p className="mt-5 max-w-xl text-cream/70">
-              Earn 10 points for every dollar. Your rewards are saved on this device—no account, no
-              fuss.
+              Earn {getPointsPerDollar(settings.points_per_dollar)} points for every dollar. Your rewards are saved on this device—no account, no fuss.
             </p>
           </div>
           <div className="min-w-60 rounded-3xl border border-cream/15 bg-cream/5 p-6">
@@ -167,8 +199,8 @@ function RewardsPage() {
           </p>
         </div>
         <Stagger className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {REWARD_TIERS.map((tier) => (
-            <StaggerItem key={tier.points} className="h-full">
+          {settings.reward_tiers.map((tier) => (
+            <StaggerItem key={`${tier.points}-${tier.label}`} className="h-full">
               <article className="h-full rounded-3xl bg-card p-5 shadow-card">
                 <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent text-primary">
                   <Gift />

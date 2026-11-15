@@ -11,7 +11,13 @@ import type {
   OrderDocument,
 } from "./mongodb.server";
 import { canTransitionOrder, type OrderStatus } from "./order-status";
-import { DELIVERY_FEE_CENTS, FREE_DELIVERY_THRESHOLD_CENTS } from "./pricing";
+import {
+  DEFAULT_REWARD_TIERS,
+  DELIVERY_FEE_CENTS,
+  FREE_DELIVERY_THRESHOLD_CENTS,
+  POINTS_PER_DOLLAR,
+  POINTS_PER_DOLLAR_REDEEMED,
+} from "./pricing";
 
 type AdminSession = { admin?: boolean };
 
@@ -123,10 +129,21 @@ const categorySchema = z
   })
   .strict();
 
+const rewardTierSchema = z
+  .object({
+    points: z.number().int().min(1).max(100_000),
+    label: z.string().trim().min(1).max(120),
+    value: z.string().trim().min(1).max(120),
+  })
+  .strict();
+
 const settingsSchema = z
   .object({
     delivery_fee_cents: z.number().int().min(0).max(20_000),
     free_delivery_threshold_cents: z.number().int().min(0).max(100_000),
+    points_per_dollar: z.number().int().min(1).max(1000),
+    points_per_dollar_redeemed: z.number().int().min(1).max(10_000),
+    reward_tiers: z.array(rewardTierSchema).min(1).max(20),
     business_hours: z
       .array(
         z.object({
@@ -261,6 +278,20 @@ const galleryLikeSchema = z
   .strict();
 
 type StoreSettings = z.infer<typeof settingsSchema> & { _id: "storefront" } & Document;
+type StoreLocation = {
+  id: string;
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  phone: string;
+  lat: number;
+  lng: number;
+  hours: string;
+  features: string[];
+  sort_order?: number;
+};
 type PromotionDocument = z.infer<typeof promotionSchema> & {
   id: string;
   usage_count: number;
@@ -295,6 +326,23 @@ const DEFAULT_HOURS: StoreSettings["business_hours"] = [
   open: "07:00",
   close: "23:00",
 }));
+
+const storeLocationSchema = z
+  .object({
+    id: z.string().uuid().optional(),
+    name: z.string().trim().min(1).max(120),
+    address: z.string().trim().min(1).max(200),
+    city: z.string().trim().min(1).max(80),
+    state: z.string().trim().min(2).max(60),
+    zip: z.string().trim().min(3).max(20),
+    phone: z.string().trim().min(7).max(40),
+    lat: z.number().finite().min(-90).max(90),
+    lng: z.number().finite().min(-180).max(180),
+    hours: z.string().trim().min(1).max(120),
+    features: z.array(z.string().trim().min(1).max(40)).max(20),
+    sort_order: z.number().int().min(0).max(1000).optional(),
+  })
+  .strict();
 
 async function adminLog(action: string, details: Record<string, string | number | boolean | null>) {
   const { randomUUID } = await import("node:crypto");
@@ -351,6 +399,8 @@ export const getCheckoutConfiguration = createServerFn({ method: "GET" }).handle
     deliveryFeeCents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
     freeDeliveryThresholdCents:
       settings?.free_delivery_threshold_cents ?? FREE_DELIVERY_THRESHOLD_CENTS,
+    pointsPerDollar: settings?.points_per_dollar ?? POINTS_PER_DOLLAR,
+    pointsPerDollarRedeemed: settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
     businessHours: settings?.business_hours ?? DEFAULT_HOURS,
     promotions: [
       ...customPromotions.map(
@@ -580,6 +630,7 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
     menu,
     categories,
     settings,
+    stores,
     promotions,
     catering,
     cateringProteins,
@@ -605,6 +656,12 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
       .sort({ sort_order: 1 })
       .toArray(),
     db.collection<StoreSettings>("site_settings").findOne({ _id: "storefront" }),
+    db
+      .collection<StoreLocation>("stores")
+      .find({})
+      .project<StoreLocation>({ _id: 0 })
+      .sort({ sort_order: 1, name: 1 })
+      .toArray(),
     db
       .collection<PromotionDocument>("promotions")
       .find({})
@@ -683,8 +740,13 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
       delivery_fee_cents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
       free_delivery_threshold_cents:
         settings?.free_delivery_threshold_cents ?? FREE_DELIVERY_THRESHOLD_CENTS,
+      points_per_dollar: settings?.points_per_dollar ?? POINTS_PER_DOLLAR,
+      points_per_dollar_redeemed:
+        settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
+      reward_tiers: settings?.reward_tiers?.length ? settings.reward_tiers : DEFAULT_REWARD_TIERS,
       business_hours: settings?.business_hours ?? DEFAULT_HOURS,
     },
+    stores,
     promotions,
     catering,
     cateringProteins,
@@ -692,6 +754,23 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
     gallery,
     customers,
     logs,
+  };
+});
+
+export const getStorefrontSettings = createServerFn({ method: "GET" }).handler(async () => {
+  const { getMongoDatabase } = await import("./mongodb.server");
+  const { db } = await getMongoDatabase();
+  const settings = await db.collection<StoreSettings>("site_settings").findOne({ _id: "storefront" });
+
+  return {
+    delivery_fee_cents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
+    free_delivery_threshold_cents:
+      settings?.free_delivery_threshold_cents ?? FREE_DELIVERY_THRESHOLD_CENTS,
+    points_per_dollar: settings?.points_per_dollar ?? POINTS_PER_DOLLAR,
+    points_per_dollar_redeemed:
+      settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
+    reward_tiers: settings?.reward_tiers?.length ? settings.reward_tiers : DEFAULT_REWARD_TIERS,
+    business_hours: settings?.business_hours ?? DEFAULT_HOURS,
   };
 });
 
@@ -766,7 +845,42 @@ export const saveAdminSettings = createServerFn({ method: "POST" })
     await adminLog("store_settings_updated", {
       delivery_fee_cents: data.delivery_fee_cents,
       free_delivery_threshold_cents: data.free_delivery_threshold_cents,
+      points_per_dollar: data.points_per_dollar,
+      reward_tiers_count: data.reward_tiers.length,
     });
+    return { ok: true as const };
+  });
+
+export const saveStoreLocation = createServerFn({ method: "POST" })
+  .inputValidator((value: unknown) => storeLocationSchema.parse(value))
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    const { randomUUID } = await import("node:crypto");
+    const { getMongoDatabase } = await import("./mongodb.server");
+    const { db } = await getMongoDatabase();
+    const id = data.id ?? randomUUID();
+    const store: StoreLocation = {
+      ...data,
+      id,
+      features: [...new Set(data.features.map((feature) => feature.trim()).filter(Boolean))],
+      sort_order: data.sort_order ?? 0,
+    };
+    await db.collection<StoreLocation>("stores").updateOne({ id }, { $set: store }, { upsert: true });
+    await adminLog(data.id ? "store_location_updated" : "store_location_created", {
+      location_id: id,
+    });
+    return { ok: true as const, location: store };
+  });
+
+export const deleteStoreLocation = createServerFn({ method: "POST" })
+  .inputValidator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
+  .handler(async ({ data }) => {
+    await requireAdmin();
+    const { getMongoDatabase } = await import("./mongodb.server");
+    const { db } = await getMongoDatabase();
+    const result = await db.collection("stores").deleteOne({ id: data.id });
+    if (!result.deletedCount) throw new Error("That location no longer exists.");
+    await adminLog("store_location_deleted", { location_id: data.id });
     return { ok: true as const };
   });
 

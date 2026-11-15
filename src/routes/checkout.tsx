@@ -142,6 +142,8 @@ function CheckoutPage() {
       deliveryFeeCents: checkoutConfiguration?.deliveryFeeCents ?? DELIVERY_FEE_CENTS,
       freeDeliveryThresholdCents:
         checkoutConfiguration?.freeDeliveryThresholdCents ?? FREE_DELIVERY_THRESHOLD_CENTS,
+      pointsPerDollar: checkoutConfiguration?.pointsPerDollar,
+      pointsPerDollarRedeemed: checkoutConfiguration?.pointsPerDollarRedeemed,
     };
     try {
       return { totals: computeTotals({ ...base, promoCode }), promoError: null };
