@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
+import { toast } from "sonner";
 
 import heroFeast from "@/assets/hero-feast.jpg";
 import kitchenGrill from "@/assets/kitchen-grill.jpg";
@@ -20,8 +21,9 @@ import { ItemCustomizer } from "@/components/site/item-customizer";
 import { Button } from "@/components/ui/button";
 import { CATEGORY_IMAGES, foodImage } from "@/lib/food-images";
 import { categoriesQuery, menuQuery } from "@/lib/catalog.functions";
+import { useCart } from "@/hooks/use-cart";
 import { CATEGORIES, type MenuItem } from "@/lib/menu-types";
-import { formatMoney } from "@/lib/pricing";
+import { defaultSelections, formatMoney, selectionSummary, unitPriceCents } from "@/lib/pricing";
 import { useState } from "react";
 
 const rewardTiers = [
@@ -56,26 +58,50 @@ function HomePage() {
   return (
     <>
       <Hero />
+      <QuickOrderMeals />
       <CategoryGrid />
-      <ComboShowcase />
       <Heritage />
       <RewardsTeaser />
     </>
   );
 }
 
-function ComboShowcase() {
+function QuickOrderMeals() {
   const { data: menu } = useQuery(menuQuery());
+  const cart = useCart();
   const [selected, setSelected] = useState<MenuItem | null>(null);
+
   const combos = (menu ?? [])
     .filter((item) =>
       item.options.some(
         (group) => group.id === "combo" && group.choices.some((choice) => choice.price_cents > 0),
       ),
     )
-    .slice(0, 4);
+    .slice(0, 6);
 
   if (!combos.length) return null;
+
+  const handleQuickAdd = (item: MenuItem) => {
+    const selections = defaultSelections(item);
+    cart.addLine({
+      itemId: item.id,
+      slug: item.slug,
+      category: item.category,
+      name: item.name,
+      imageKey: item.image_key,
+      quantity: 1,
+      selections,
+      removed: [],
+      note: "",
+      unitPriceCents: unitPriceCents(item, selections),
+      summary: selectionSummary(item, selections, []),
+    });
+    cart.setOpen(true);
+    toast.success(`${item.name} added to your bag`, {
+      description: "Fast checkout is ready when you are.",
+      action: { label: "View bag", onClick: () => cart.setOpen(true) },
+    });
+  };
 
   return (
     <>
@@ -84,11 +110,11 @@ function ComboShowcase() {
           <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.2em] text-primary">
-                Make it a meal
+                Quick order
               </p>
-              <h2 className="mt-2 text-4xl font-black uppercase sm:text-5xl">Combo meals</h2>
+              <h2 className="mt-2 text-4xl font-black uppercase sm:text-5xl">QUICK ORDER MEALS</h2>
               <p className="mt-3 max-w-xl text-sm text-cream/70">
-                Pair a favorite with fries and a drink, or go all in with a loaded side and shake.
+                Ready-made combos built for fast cravings, bigger appetites and no wasted time.
               </p>
             </div>
             <Link
@@ -99,7 +125,8 @@ function ComboShowcase() {
               Explore the menu <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {combos.map((item) => {
               const group = item.options.find((option) => option.id === "combo");
               const comboPrice = Math.min(
@@ -107,32 +134,92 @@ function ComboShowcase() {
                   .filter((choice) => choice.price_cents > 0)
                   .map((choice) => choice.price_cents),
               );
+              const comboBadge =
+                group?.choices.find((choice) => choice.price_cents === comboPrice)?.label ??
+                "Popular";
+              const included = group?.choices
+                .filter((choice) => choice.price_cents > 0)
+                .slice(0, 2)
+                .map((choice) => choice.label)
+                .join(" + ");
+
               return (
-                <button
+                <article
                   key={item.id}
-                  type="button"
-                  onClick={() => setSelected(item)}
-                  className="group overflow-hidden rounded-3xl bg-cream text-left text-charcoal shadow-card transition hover:-translate-y-1 hover:shadow-lift focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                  className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-cream/10 bg-cream text-charcoal shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-lift"
                 >
-                  <img
-                    src={foodImage(item.image_key)}
-                    alt=""
-                    loading="lazy"
-                    className="aspect-[1.25] w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
-                  <span className="block p-5">
-                    <span className="block text-xs font-black uppercase tracking-wider text-primary">
-                      {group?.choices.find((choice) => choice.price_cents === comboPrice)?.label ??
-                        "Combo available"}
-                    </span>
-                    <span className="mt-2 block font-display text-xl font-black uppercase">
-                      {item.name}
-                    </span>
-                    <span className="mt-3 block text-sm font-semibold text-muted-foreground">
-                      From {formatMoney(item.price_cents + comboPrice)}
-                    </span>
-                  </span>
-                </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelected(item)}
+                    className="block overflow-hidden text-left"
+                    aria-label={`Open ${item.name} details`}
+                  >
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={foodImage(item.image_key)}
+                        alt={item.name}
+                        loading="lazy"
+                        className="aspect-[1.2] w-full object-cover transition duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
+                        <span className="rounded-full bg-charcoal/85 px-2.5 py-1 text-[10px] font-black tracking-[0.16em] text-cream uppercase backdrop-blur-sm">
+                          {comboBadge}
+                        </span>
+                        <span className="rounded-full bg-primary px-2.5 py-1 text-[10px] font-black tracking-[0.16em] text-cream uppercase">
+                          {item.is_available ? "Ready" : "Sold out"}
+                        </span>
+                      </div>
+                    </div>
+                  </button>
+
+                  <div className="flex flex-1 flex-col p-5">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="font-display text-2xl font-black uppercase leading-none">
+                          {item.name}
+                        </h3>
+                        <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 rounded-2xl bg-charcoal/5 px-3 py-2 text-sm text-charcoal/80">
+                      <span className="font-bold text-charcoal">Includes:</span>{" "}
+                      {included ?? "Meal deal"}
+                    </div>
+
+                    <div className="mt-5 flex items-end justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">
+                          Starting at
+                        </p>
+                        <p className="mt-1 font-display text-3xl font-black tabular-nums">
+                          {formatMoney(item.price_cents + comboPrice)}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="sm"
+                          className="h-11 px-3"
+                          onClick={() => setSelected(item)}
+                        >
+                          Customize
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="hero"
+                          size="sm"
+                          className="h-11 min-w-[118px]"
+                          onClick={() => handleQuickAdd(item)}
+                          disabled={!item.is_available || !cart.hydrated}
+                        >
+                          {item.is_available ? "Quick add" : "Sold out"}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </article>
               );
             })}
           </div>
