@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ChefHat, LogOut, RefreshCw, ShieldCheck } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
@@ -210,52 +211,75 @@ function KitchenPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {openOrders.map((order) => {
-                  const status = order.status as OrderStatus;
-                  const next = nextStatus(status);
-                  const items = order.items as OrderLineSnapshot[];
-                  return (
-                    <article key={order.id} className="rounded-3xl bg-card p-5 shadow-card sm:p-6">
-                      <div className="flex flex-wrap items-start justify-between gap-3">
-                        <div>
-                          <p className="font-display text-2xl font-black">#{order.order_number}</p>
-                          <p className="mt-1 text-sm text-muted-foreground">
-                            {order.customer_name} · {order.fulfillment}
-                          </p>
+                <AnimatePresence initial={false} mode="popLayout">
+                  {openOrders.map((order) => {
+                    const status = order.status as OrderStatus;
+                    const next = nextStatus(status);
+                    const items = order.items as OrderLineSnapshot[];
+                    return (
+                      <motion.article
+                        key={order.id}
+                        layout
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                        className="rounded-3xl bg-card p-5 shadow-card sm:p-6"
+                      >
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div>
+                            <p className="font-display text-2xl font-black">
+                              #{order.order_number}
+                            </p>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                              {order.customer_name} · {order.fulfillment}
+                            </p>
+                          </div>
+                          <span className="rounded-full bg-accent px-3 py-1.5 text-xs font-bold text-primary">
+                            <AnimatePresence mode="wait" initial={false}>
+                              <motion.span
+                                key={status}
+                                initial={{ opacity: 0, y: -3 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: 3 }}
+                                transition={{ duration: 0.14 }}
+                                className="block"
+                              >
+                                {statusLabel(status, order.fulfillment as Fulfillment)}
+                              </motion.span>
+                            </AnimatePresence>
+                          </span>
                         </div>
-                        <span className="rounded-full bg-accent px-3 py-1.5 text-xs font-bold text-primary">
-                          {statusLabel(status, order.fulfillment as Fulfillment)}
-                        </span>
-                      </div>
-                      <ul className="mt-4 space-y-2 border-y border-border py-4 text-sm">
-                        {items.map((item, index) => (
-                          <li key={`${item.itemId}-${index}`}>
-                            <span className="font-bold">{item.quantity} ×</span> {item.name}
-                            {item.summary.length > 0 && (
-                              <span className="block pl-8 text-xs text-muted-foreground">
-                                {item.summary.join(" · ")}
-                              </span>
-                            )}
-                          </li>
-                        ))}
-                      </ul>
-                      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                        <span className="font-bold">{formatMoney(order.total_cents)}</span>
-                        {next && (
-                          <Button
-                            variant="hero"
-                            size="sm"
-                            onClick={() => void updateOrder(order.id, next)}
-                            disabled={busy}
-                          >
-                            Move to {statusLabel(next, order.fulfillment as Fulfillment)}{" "}
-                            <ArrowRight />
-                          </Button>
-                        )}
-                      </div>
-                    </article>
-                  );
-                })}
+                        <ul className="mt-4 space-y-2 border-y border-border py-4 text-sm">
+                          {items.map((item, index) => (
+                            <li key={`${item.itemId}-${index}`}>
+                              <span className="font-bold">{item.quantity} ×</span> {item.name}
+                              {item.summary.length > 0 && (
+                                <span className="block pl-8 text-xs text-muted-foreground">
+                                  {item.summary.join(" · ")}
+                                </span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                          <span className="font-bold">{formatMoney(order.total_cents)}</span>
+                          {next && (
+                            <Button
+                              variant="hero"
+                              size="sm"
+                              onClick={() => void updateOrder(order.id, next)}
+                              disabled={busy}
+                            >
+                              Move to {statusLabel(next, order.fulfillment as Fulfillment)}{" "}
+                              <ArrowRight />
+                            </Button>
+                          )}
+                        </div>
+                      </motion.article>
+                    );
+                  })}
+                </AnimatePresence>
               </div>
             )}
           </div>

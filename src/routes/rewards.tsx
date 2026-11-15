@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Flame, Gift, RotateCcw, Star } from "lucide-react";
+import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { Stagger, StaggerItem } from "@/components/site/reveal";
 import { useCart } from "@/hooks/use-cart";
 import { useGuestId } from "@/hooks/use-guest";
 import { getMenu } from "@/lib/catalog.functions";
@@ -135,9 +137,11 @@ function RewardsPage() {
             </p>
             <p className="mt-1 text-xs text-cream/60">Worth {formatMoney(data?.points ?? 0)}</p>
             <div className="mt-5 h-2 overflow-hidden rounded-full bg-cream/15">
-              <div
-                className="h-full rounded-full bg-primary transition-all"
-                style={{ width: `${levelProgress}%` }}
+              <motion.div
+                className="h-full origin-left rounded-full bg-primary"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: levelProgress / 100 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
             <p className="mt-2 text-xs text-cream/60">
@@ -162,20 +166,22 @@ function RewardsPage() {
             Current tier: <span className="font-bold text-charcoal">{level.current.name}</span>
           </p>
         </div>
-        <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Stagger className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {REWARD_TIERS.map((tier) => (
-            <article key={tier.points} className="rounded-3xl bg-card p-5 shadow-card">
-              <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent text-primary">
-                <Gift />
-              </span>
-              <p className="font-display mt-5 text-2xl font-black uppercase">{tier.label}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{tier.value}</p>
-              <p className="mt-5 border-t border-border pt-4 text-sm font-bold">
-                {tier.points} points
-              </p>
-            </article>
+            <StaggerItem key={tier.points} className="h-full">
+              <article className="h-full rounded-3xl bg-card p-5 shadow-card">
+                <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent text-primary">
+                  <Gift />
+                </span>
+                <p className="font-display mt-5 text-2xl font-black uppercase">{tier.label}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{tier.value}</p>
+                <p className="mt-5 border-t border-border pt-4 text-sm font-bold">
+                  {tier.points} points
+                </p>
+              </article>
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
         <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_0.8fr]">
           <div className="rounded-3xl bg-card p-6 shadow-card">
             <h2 className="font-display text-2xl font-black uppercase">Recent orders</h2>

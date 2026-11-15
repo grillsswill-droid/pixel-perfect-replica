@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Clock, MapPin, Phone } from "lucide-react";
+import { motion } from "motion/react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -41,16 +42,26 @@ function LocationsPage() {
         <ul className="space-y-3">
           {stores.map((s) => (
             <li key={s.id}>
-              <button
+              <motion.button
                 type="button"
                 onClick={() => setActiveId(s.id)}
                 aria-pressed={active?.id === s.id}
+                whileTap={{ scale: 0.99 }}
+                transition={{ duration: 0.12 }}
                 className={cn(
-                  "w-full rounded-3xl border-2 bg-card p-5 text-left shadow-card transition",
+                  "relative w-full rounded-3xl border-2 bg-card p-5 text-left shadow-card transition",
                   active?.id === s.id ? "border-primary" : "border-transparent hover:border-border",
                 )}
               >
-                <h2 className="text-xl font-black uppercase">{s.name}</h2>
+                {active?.id === s.id && (
+                  <motion.span
+                    layoutId="active-location"
+                    aria-hidden="true"
+                    className="absolute top-6 right-5 h-2.5 w-2.5 rounded-full bg-primary"
+                    transition={{ type: "spring", stiffness: 360, damping: 32 }}
+                  />
+                )}
+                <h2 className="pr-5 text-xl font-black uppercase">{s.name}</h2>
                 <p className="mt-2 flex items-start gap-2 text-sm"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{s.address}, {s.city}, {s.state} {s.zip}</p>
                 <p className="mt-1 flex items-center gap-2 text-sm"><Clock className="h-4 w-4 text-primary" />{s.hours}</p>
                 <p className="mt-1 flex items-center gap-2 text-sm"><Phone className="h-4 w-4 text-primary" />{s.phone}</p>
@@ -61,7 +72,7 @@ function LocationsPage() {
                     ))}
                   </div>
                 )}
-              </button>
+              </motion.button>
             </li>
           ))}
         </ul>

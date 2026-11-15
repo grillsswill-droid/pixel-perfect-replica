@@ -1,5 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Copy, Tag } from "lucide-react";
+import { motion } from "motion/react";
 import { toast } from "sonner";
 
 import { Stagger, StaggerItem } from "@/components/site/reveal";
@@ -35,8 +36,10 @@ function DealsPage() {
               <Tag className="h-6 w-6" />
               <h2 className="mt-4 text-3xl font-black uppercase">{p.label}</h2>
               <p className="mt-2 opacity-80">{p.description}</p>
-              <button
+              <motion.button
                 type="button"
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.12 }}
                 onClick={() => {
                   void navigator.clipboard?.writeText(p.code);
                   toast.success(`${p.code} copied — paste it at checkout`);
@@ -44,7 +47,7 @@ function DealsPage() {
                 className="mt-6 flex w-full items-center justify-between rounded-2xl border-2 border-dashed border-current px-5 py-3 font-display text-xl font-black tracking-widest"
               >
                 {p.code} <Copy className="h-5 w-5" />
-              </button>
+              </motion.button>
             </div>
           </StaggerItem>
         ))}

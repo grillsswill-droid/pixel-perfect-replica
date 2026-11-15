@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { Check, ChefHat, CircleDot, PackageCheck, Truck } from "lucide-react";
+import { motion } from "motion/react";
 import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -81,8 +82,16 @@ function OrderPage() {
                       />
                     )}
                     <span
-                      className={`relative mx-auto grid h-11 w-11 place-items-center rounded-full ${complete ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
+                      className={`relative mx-auto grid h-11 w-11 place-items-center rounded-full transition-colors duration-300 ${complete ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
                     >
+                      {index === activeStage && (
+                        <motion.span
+                          layoutId="active-order-stage"
+                          aria-hidden="true"
+                          className="absolute inset-0 rounded-full ring-4 ring-primary/25"
+                          transition={{ type: "spring", stiffness: 320, damping: 32 }}
+                        />
+                      )}
                       {index < activeStage ? (
                         <Check className="h-5 w-5" />
                       ) : (

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowRight, BadgeCheck, Clock3, Flame, MapPin, Sparkles, Truck } from "lucide-react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 
 import heroFeast from "@/assets/hero-feast.jpg";
@@ -48,7 +48,12 @@ function HomePage() {
 function Hero() {
   const heroRef = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const imageY = useTransform(scrollYProgress, [0, 1], ["0%", "16%"]);
+  const prefersReducedMotion = useReducedMotion();
+  const imageY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ["0%", prefersReducedMotion ? "0%" : "16%"],
+  );
 
   return (
     <section ref={heroRef} className="relative isolate min-h-[680px] overflow-hidden bg-charcoal text-cream sm:min-h-[760px]">
@@ -132,7 +137,7 @@ function Hero() {
       </div>
 
       <a href="#menu-favorites" className="absolute right-8 bottom-8 hidden items-center gap-2 text-xs font-bold tracking-widest text-cream/70 uppercase transition hover:text-cream sm:flex">
-        Scroll for the good stuff <ArrowDown className="h-4 w-4 animate-bounce" />
+        Scroll for the good stuff <ArrowDown className="h-4 w-4 motion-safe:animate-bounce" />
       </a>
     </section>
   );
