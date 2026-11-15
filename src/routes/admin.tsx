@@ -2766,7 +2766,7 @@ function SettingsPanel({
           <div className="space-y-3">
             {rewardTiers.map((tier, index) => (
               <div
-                key={`${tier.label}-${index}`}
+                key={index}
                 className="grid gap-3 rounded-2xl bg-card p-3 shadow-card sm:grid-cols-[120px_1fr_1fr_auto]"
               >
                 <TextInput

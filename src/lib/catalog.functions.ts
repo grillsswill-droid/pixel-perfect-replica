@@ -43,18 +43,14 @@ export const getCategories = createServerFn({ method: "GET" }).handler(
 );
 
 export const getMenu = createServerFn({ method: "GET" }).handler(async (): Promise<MenuItem[]> => {
-  try {
-    const { collection, getMongoDatabase } = await import("./mongodb.server");
-    const { db } = await getMongoDatabase();
-    const menu = await collection<MenuItem>(db, "menu_items")
-      .find({})
-      .project<MenuItem>({ _id: 0 })
-      .sort({ category: 1, sort_order: 1 })
-      .toArray();
-    return withMenuBundleAvailability(menu.length ? menu : getFallbackMenu());
-  } catch {
-    return withMenuBundleAvailability(getFallbackMenu());
-  }
+  const { collection, getMongoDatabase } = await import("./mongodb.server");
+  const { db } = await getMongoDatabase();
+  const menu = await collection<MenuItem>(db, "menu_items")
+    .find({})
+    .project<MenuItem>({ _id: 0 })
+    .sort({ category: 1, sort_order: 1 })
+    .toArray();
+  return withMenuBundleAvailability(menu.length ? menu : getFallbackMenu());
 });
 
 export const verifyQuickOrderSelection = createServerFn({ method: "POST" })

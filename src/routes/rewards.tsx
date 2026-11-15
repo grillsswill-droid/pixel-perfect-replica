@@ -156,7 +156,8 @@ function RewardsPage() {
               Great perks.
             </h1>
             <p className="mt-5 max-w-xl text-cream/70">
-              Earn {getPointsPerDollar(settings.points_per_dollar)} points for every dollar. Your rewards are saved on this device—no account, no fuss.
+              Earn {getPointsPerDollar(settings.points_per_dollar)} points for every dollar. Your
+              rewards are saved on this device—no account, no fuss.
             </p>
           </div>
           <div className="min-w-60 rounded-3xl border border-cream/15 bg-cream/5 p-6">
@@ -199,8 +200,8 @@ function RewardsPage() {
           </p>
         </div>
         <Stagger className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {settings.reward_tiers.map((tier) => (
-            <StaggerItem key={`${tier.points}-${tier.label}`} className="h-full">
+          {settings.reward_tiers.map((tier, index) => (
+            <StaggerItem key={index} className="h-full">
               <article className="h-full rounded-3xl bg-card p-5 shadow-card">
                 <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent text-primary">
                   <Gift />
