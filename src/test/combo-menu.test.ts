@@ -133,8 +133,8 @@ describe("combo menu validation", () => {
 
     expect(availableCombo).toBeDefined();
     if (!availableCombo) throw new Error("Expected the combo to remain in the menu.");
-    expect(availableCombo.is_available).toBe(false);
-    expect(defaultSelections(availableCombo)["pizza-variety"]).toEqual([]);
+    expect(availableCombo?.is_available).toBe(false);
+    expect(defaultSelections(availableCombo!)["pizza-variety"]).toEqual([]);
     expect(() =>
       validateMenuBundle(combo, selections, new Map([[pizza.id, soldOutPizza]])),
     ).toThrow(PricingError);

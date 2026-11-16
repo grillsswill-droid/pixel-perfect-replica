@@ -1,4 +1,4 @@
-import { normalizeOptionGroups, type MenuCategory, type MenuItem, type Store } from "./menu-types";
+import { normalizeOptionGroups, type MenuCategory, type MenuItem, OptionGroup, type Store } from "./menu-types";
 
 export const defaultCategories: MenuCategory[] = [
   {
@@ -52,7 +52,7 @@ export const defaultCategories: MenuCategory[] = [
   },
 ];
 
-const burgerOptions = [
+const burgerOptions: OptionGroup[] = [
   {
     id: "patty",
     label: "Patties",
@@ -98,9 +98,9 @@ const burgerOptions = [
       { id: "loaded", label: "+ Loaded fries & shake", price_cents: 699 },
     ],
   },
-] as const;
+];
 
-const chickenOptions = [
+const chickenOptions: OptionGroup[] = [
   {
     id: "heat",
     label: "Heat level",
@@ -133,9 +133,9 @@ const chickenOptions = [
       { id: "classic", label: "+ Fries & fountain drink", price_cents: 399 },
     ],
   },
-] as const;
+];
 
-const pizzaOptions = [
+const pizzaOptions: OptionGroup[] = [
   {
     id: "size",
     label: "Size",
@@ -168,9 +168,9 @@ const pizzaOptions = [
       { id: "honey", label: "Hot honey drizzle", price_cents: 100 },
     ],
   },
-] as const;
+];
 
-const sideOptions = [
+const sideOptions: OptionGroup[] = [
   {
     id: "size",
     label: "Size",
@@ -191,9 +191,9 @@ const sideOptions = [
       { id: "cheese", label: "Cheddar sauce", price_cents: 90 },
     ],
   },
-] as const;
+];
 
-const coffeeOptions = [
+const coffeeOptions: OptionGroup[] = [
   {
     id: "size",
     label: "Size",
@@ -217,7 +217,7 @@ const coffeeOptions = [
       { id: "none", label: "No milk", price_cents: 0 },
     ],
   },
-] as const;
+];
 
 export const defaultMenu: MenuItem[] = [
   {

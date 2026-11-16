@@ -585,11 +585,11 @@ export const getGalleryFeedback = createServerFn({ method: "GET" })
     return {
       likeCount,
       likedByMe: Boolean(liked),
-      comments: comments.map(({ id, author, text, created_at }) => ({
-        id,
-        author,
-        text,
-        created_at,
+      comments: comments.map((comment) => ({
+        id: String(comment.id),
+        author: String(comment.author),
+        text: String(comment.text),
+        created_at: String(comment.created_at),
       })),
     };
   });
@@ -804,6 +804,7 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
       ...PROMOS.filter((promo) => !storedPromotionCodes.has(promo.code)).map((promo) => ({
         ...promo,
         id: `builtin:${promo.code}`,
+        usage_limit: undefined as number | undefined,
         usage_count: 0,
         usage_limit: null,
         active: true,
