@@ -11,6 +11,18 @@ import type {
 } from "./menu-types";
 import type { OrderStatus } from "./order-status";
 
+export type PaymentProvider = "stripe" | "paypal";
+export type PaymentStatus =
+  | "not_charged"
+  | "pending"
+  | "processing"
+  | "paid"
+  | "failed"
+  | "cancelled"
+  | "partially_refunded"
+  | "refunded";
+export type CommerceEffectsStatus = "reserved" | "applied" | "released";
+
 export interface GuestDocument {
   id: string;
   points: number;
@@ -67,9 +79,20 @@ export interface OrderDocument {
   tax_cents: number;
   total_cents: number;
   points_earned: number;
-  payment_last4: string;
+  payment_last4?: string;
   payment_method?: string;
-  payment_status?: "not_charged" | "pending" | "paid" | "failed" | "refunded";
+  payment_provider?: PaymentProvider;
+  payment_status?: PaymentStatus;
+  payment_reference?: string;
+  payment_transaction_id?: string;
+  payment_checkout_url?: string;
+  payment_expires_at?: string;
+  payment_amount_cents?: number;
+  payment_currency?: "USD";
+  payment_refunded_cents?: number;
+  payment_failure_code?: string;
+  payment_updated_at?: string;
+  commerce_effects_status?: CommerceEffectsStatus;
   customer_name: string;
   customer_phone?: string | null;
   created_at: string;
@@ -82,6 +105,21 @@ export interface AdminLogDocument {
   action: string;
   details: Record<string, string | number | boolean | null>;
   created_at: string;
+}
+
+export interface PaymentEventDocument {
+  id: string;
+  provider: PaymentProvider;
+  provider_event_id: string;
+  type: string;
+  order_id?: string;
+  status: "processing" | "processed" | "failed";
+  attempts: number;
+  livemode?: boolean;
+  error_code?: string;
+  created_at: string;
+  processed_at?: string;
+  updated_at: string;
 }
 
 export interface GalleryLikeDocument {
@@ -199,7 +237,19 @@ async function ensureIndexes(db: Db): Promise<void> {
         .collection<MongoDocument<OrderDocument>>("orders")
         .createIndex({ guest_id: 1, created_at: -1 }),
       db.collection<MongoDocument<OrderDocument>>("orders").createIndex({ created_at: -1 }),
+      db
+        .collection<MongoDocument<OrderDocument>>("orders")
+        .createIndex({ payment_provider: 1, payment_reference: 1 }, { sparse: true }),
+      db
+        .collection<MongoDocument<OrderDocument>>("orders")
+        .createIndex({ payment_transaction_id: 1 }, { sparse: true }),
       db.collection<MongoDocument<AdminLogDocument>>("admin_logs").createIndex({ created_at: -1 }),
+      db
+        .collection<MongoDocument<PaymentEventDocument>>("payment_events")
+        .createIndex({ provider: 1, provider_event_id: 1 }, { unique: true }),
+      db
+        .collection<MongoDocument<PaymentEventDocument>>("payment_events")
+        .createIndex({ created_at: -1 }),
       db
         .collection<MongoDocument<GalleryLikeDocument>>("gallery_likes")
         .createIndex({ gallery_item_id: 1, visitor_hash: 1 }, { unique: true }),
