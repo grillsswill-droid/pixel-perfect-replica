@@ -84,11 +84,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const raw = window.localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as Partial<CartState>;
-        setState({
-          lines: Array.isArray(parsed.lines) ? parsed.lines : [],
-          fulfillment: parsed.fulfillment === "pickup" ? "pickup" : "delivery",
-          storeId: typeof parsed.storeId === "string" ? parsed.storeId : null,
-        });
+        setState((current) =>
+          current.lines.length
+            ? current
+            : {
+                lines: Array.isArray(parsed.lines) ? parsed.lines : [],
+                fulfillment: parsed.fulfillment === "pickup" ? "pickup" : "delivery",
+                storeId: typeof parsed.storeId === "string" ? parsed.storeId : null,
+              },
+        );
       }
     } catch {
       /* ignore corrupt storage */

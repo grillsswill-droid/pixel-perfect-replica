@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Phone, Utensils } from "lucide-react";
 import { useState, type FormEvent } from "react";
@@ -11,7 +11,15 @@ import { foodImage } from "@/lib/food-images";
 import { storesQuery } from "@/lib/catalog.functions";
 import { formatMoney } from "@/lib/pricing";
 
+const cateringMenuQuery = () =>
+  queryOptions({
+    queryKey: ["catering-menu"],
+    queryFn: () => getPublicCateringMenu(),
+    staleTime: 60_000,
+  });
+
 export const Route = createFileRoute("/catering")({
+  loader: ({ context }) => context.queryClient.ensureQueryData(cateringMenuQuery()),
   head: () => ({
     meta: [
       { title: "Catering | Grill & Swill" },
@@ -23,11 +31,7 @@ export const Route = createFileRoute("/catering")({
 
 function CateringPage() {
   const guestId = useGuestId();
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["catering-menu"],
-    queryFn: () => getPublicCateringMenu(),
-    staleTime: 60_000,
-  });
+  const { data, isLoading, isError } = useQuery(cateringMenuQuery());
   const { data: stores = [] } = useQuery(storesQuery());
 
   return (

@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Flame, Gift, ReceiptText, RotateCcw, Star } from "lucide-react";
 import { motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { useCart } from "@/hooks/use-cart";
 import { useGuestId } from "@/hooks/use-guest";
 import { getStorefrontSettings } from "@/lib/admin.functions";
 import { getMenu } from "@/lib/catalog.functions";
-import { getGuestRewards } from "@/lib/orders.functions";
+import { guestRewardsQuery } from "@/lib/order-queries";
 import {
   formatMoney,
   getPointsPerDollar,
@@ -21,8 +22,16 @@ import {
 } from "@/lib/pricing";
 import type { Fulfillment, OrderLineSnapshot } from "@/lib/menu-types";
 
-type RewardsData = Awaited<ReturnType<typeof getGuestRewards>>;
 type StorefrontSettings = Awaited<ReturnType<typeof getStorefrontSettings>>;
+
+const DEFAULT_REWARDS_SETTINGS: StorefrontSettings = {
+  delivery_fee_cents: 399,
+  free_delivery_threshold_cents: 3500,
+  points_per_dollar: 10,
+  points_per_dollar_redeemed: 100,
+  reward_tiers: getRewardTiers(),
+  business_hours: [],
+};
 
 export const Route = createFileRoute("/rewards")({
   head: () => ({
@@ -37,60 +46,19 @@ export const Route = createFileRoute("/rewards")({
 function RewardsPage() {
   const guestId = useGuestId();
   const cart = useCart();
-  const [data, setData] = useState<RewardsData | null>(null);
-  const [settings, setSettings] = useState<Awaited<ReturnType<typeof getStorefrontSettings>>>({
-    delivery_fee_cents: 399,
-    free_delivery_threshold_cents: 3500,
-    points_per_dollar: 10,
-    points_per_dollar_redeemed: 100,
-    reward_tiers: getRewardTiers(),
-    business_hours: [],
+  const { data: settings = DEFAULT_REWARDS_SETTINGS } = useQuery({
+    queryKey: ["storefront-settings"],
+    queryFn: () => getStorefrontSettings(),
+    staleTime: 60_000,
   });
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const {
+    data,
+    isLoading: loading,
+    isError,
+    isFetching,
+    refetch,
+  } = useQuery(guestRewardsQuery(guestId));
   const [reordering, setReordering] = useState<string | null>(null);
-
-  useEffect(() => {
-    let active = true;
-    getStorefrontSettings()
-      .then((result) => {
-        if (active) setSettings(result);
-      })
-      .catch(() => {
-        if (active) {
-          setSettings({
-            delivery_fee_cents: 399,
-            free_delivery_threshold_cents: 3500,
-            points_per_dollar: 10,
-            points_per_dollar_redeemed: 100,
-            reward_tiers: getRewardTiers(),
-            business_hours: [],
-          });
-        }
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!guestId) return;
-    let active = true;
-    setLoading(true);
-    getGuestRewards({ data: { guestId } })
-      .then((result) => {
-        if (active) setData(result);
-      })
-      .catch(() => {
-        if (active) setError("Rewards are having a little trouble loading. Please try again.");
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
-  }, [guestId]);
 
   const level = memberLevel(data?.lifetimePoints ?? 0);
   const toNextLevel = level.next ? Math.max(0, level.next.min - (data?.lifetimePoints ?? 0)) : 0;
@@ -219,12 +187,22 @@ function RewardsPage() {
         <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_0.8fr]">
           <div className="rounded-3xl bg-card p-6 shadow-card">
             <h2 className="font-display text-2xl font-black uppercase">Recent orders</h2>
-            {error ? (
-              <p role="alert" className="mt-5 text-sm text-destructive">
-                {error}
-              </p>
+            {isError ? (
+              <div role="alert" className="mt-5 text-sm text-destructive">
+                <p>Rewards are having a little trouble loading.</p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="mt-3"
+                  loading={isFetching}
+                  onClick={() => void refetch()}
+                >
+                  Try again
+                </Button>
+              </div>
             ) : null}
-            {!error && !loading && (data?.orders.length ?? 0) === 0 && (
+            {!isError && !loading && (data?.orders.length ?? 0) === 0 && (
               <p className="mt-5 text-sm text-muted-foreground">
                 Your next favorite is just around the corner.
               </p>

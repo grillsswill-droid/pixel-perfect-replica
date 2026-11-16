@@ -21,7 +21,7 @@ export const Route = createFileRoute("/account/orders")({
 
 function CustomerOrdersPage() {
   const guestId = useGuestId();
-  const { data, isLoading, isError } = useQuery(guestRewardsQuery(guestId));
+  const { data, isLoading, isError, isFetching, refetch } = useQuery(guestRewardsQuery(guestId));
 
   return (
     <main className="min-h-[65vh] bg-background">
@@ -43,9 +43,19 @@ function CustomerOrdersPage() {
       <section className="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
         {isLoading ? <p className="text-sm text-muted-foreground">Loading your orders…</p> : null}
         {isError ? (
-          <p role="alert" className="rounded-2xl bg-destructive/10 p-4 text-sm text-destructive">
-            We couldn’t load your order history. Please refresh and try again.
-          </p>
+          <div role="alert" className="rounded-2xl bg-destructive/10 p-4 text-sm text-destructive">
+            <p>We couldn’t load your order history.</p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-3"
+              loading={isFetching}
+              onClick={() => void refetch()}
+            >
+              Try again
+            </Button>
+          </div>
         ) : null}
         {!isLoading && !isError && (data?.orders.length ?? 0) === 0 ? (
           <div className="rounded-3xl bg-card p-8 text-center shadow-card">

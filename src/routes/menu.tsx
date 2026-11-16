@@ -69,7 +69,16 @@ function MenuPage() {
     });
   }, [menu, cat, tags, query]);
 
-  const groups = categories
+  const categoryMap = new Map(
+    CATEGORIES.map((category, index) => [category.id, { ...category, sort_order: index + 1 }]),
+  );
+  categories.forEach((category) => categoryMap.set(category.id, category));
+
+  const displayCategories = [...categoryMap.values()].sort(
+    (left, right) => left.sort_order - right.sort_order,
+  );
+
+  const groups = displayCategories
     .map((category) => ({
       ...category,
       items: filtered.filter((item) => item.category === category.id),
@@ -88,7 +97,7 @@ function MenuPage() {
           aria-label="Menu categories"
         >
           <CategoryTab active={!cat} onClick={() => navigate({ search: {} })} label="Everything" />
-          {categories.map((c) => (
+          {displayCategories.map((c) => (
             <CategoryTab
               key={c.id}
               active={cat === c.id}

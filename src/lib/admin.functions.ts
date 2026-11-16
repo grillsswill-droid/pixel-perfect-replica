@@ -365,6 +365,29 @@ const DEFAULT_HOURS: StoreSettings["business_hours"] = [
   close: "23:00",
 }));
 
+function fallbackCheckoutConfiguration() {
+  return {
+    deliveryFeeCents: DELIVERY_FEE_CENTS,
+    freeDeliveryThresholdCents: FREE_DELIVERY_THRESHOLD_CENTS,
+    pointsPerDollar: POINTS_PER_DOLLAR,
+    pointsPerDollarRedeemed: POINTS_PER_DOLLAR_REDEEMED,
+    businessHours: DEFAULT_HOURS,
+    tickerMessages: DEFAULT_TICKER_MESSAGES,
+    promotions: PROMOS,
+  };
+}
+
+function fallbackStorefrontSettings() {
+  return {
+    delivery_fee_cents: DELIVERY_FEE_CENTS,
+    free_delivery_threshold_cents: FREE_DELIVERY_THRESHOLD_CENTS,
+    points_per_dollar: POINTS_PER_DOLLAR,
+    points_per_dollar_redeemed: POINTS_PER_DOLLAR_REDEEMED,
+    reward_tiers: DEFAULT_REWARD_TIERS,
+    business_hours: DEFAULT_HOURS,
+  };
+}
+
 const storeLocationSchema = z
   .object({
     id: z.string().uuid().optional(),
@@ -420,84 +443,99 @@ export const lockAdmin = createServerFn({ method: "POST" }).handler(async () => 
 });
 
 export const getCheckoutConfiguration = createServerFn({ method: "GET" }).handler(async () => {
-  const { getMongoDatabase } = await import("./mongodb.server");
-  const { db } = await getMongoDatabase();
-  const settings = await db
-    .collection<StoreSettings>("site_settings")
-    .findOne({ _id: "storefront" });
-  const promotionOverrides = await db
-    .collection<PromotionDocument>("promotions")
-    .find({})
-    .project<PromotionDocument>({ _id: 0 })
-    .toArray();
-  const overriddenCodes = new Set(promotionOverrides.map((promo) => promo.code));
-  const promotions: PromoDefinition[] = [
-    ...promotionOverrides
-      .filter((promo) => promo.active)
-      .map(({ code, label, description, kind, value, minSubtotalCents, category }) => ({
-        code,
-        label,
-        description,
-        kind,
-        value,
-        ...(minSubtotalCents !== undefined ? { minSubtotalCents } : {}),
-        ...(category ? { category } : {}),
-      })),
-    ...PROMOS.filter((promo) => !overriddenCodes.has(promo.code)),
-  ];
-  return {
-    deliveryFeeCents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
-    freeDeliveryThresholdCents:
-      settings?.free_delivery_threshold_cents ?? FREE_DELIVERY_THRESHOLD_CENTS,
-    pointsPerDollar: settings?.points_per_dollar ?? POINTS_PER_DOLLAR,
-    pointsPerDollarRedeemed: settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
-    businessHours: settings?.business_hours ?? DEFAULT_HOURS,
-    tickerMessages: settings?.ticker_messages ?? DEFAULT_TICKER_MESSAGES,
-    promotions,
-  };
+  try {
+    const { getMongoDatabase } = await import("./mongodb.server");
+    const { db } = await getMongoDatabase();
+    const settings = await db
+      .collection<StoreSettings>("site_settings")
+      .findOne({ _id: "storefront" });
+    const promotionOverrides = await db
+      .collection<PromotionDocument>("promotions")
+      .find({})
+      .project<PromotionDocument>({ _id: 0 })
+      .toArray();
+    const overriddenCodes = new Set(promotionOverrides.map((promo) => promo.code));
+    const promotions: PromoDefinition[] = [
+      ...promotionOverrides
+        .filter((promo) => promo.active)
+        .map(({ code, label, description, kind, value, minSubtotalCents, category }) => ({
+          code,
+          label,
+          description,
+          kind,
+          value,
+          ...(minSubtotalCents !== undefined ? { minSubtotalCents } : {}),
+          ...(category ? { category } : {}),
+        })),
+      ...PROMOS.filter((promo) => !overriddenCodes.has(promo.code)),
+    ];
+    return {
+      deliveryFeeCents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
+      freeDeliveryThresholdCents:
+        settings?.free_delivery_threshold_cents ?? FREE_DELIVERY_THRESHOLD_CENTS,
+      pointsPerDollar: settings?.points_per_dollar ?? POINTS_PER_DOLLAR,
+      pointsPerDollarRedeemed: settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
+      businessHours: settings?.business_hours ?? DEFAULT_HOURS,
+      tickerMessages: settings?.ticker_messages ?? DEFAULT_TICKER_MESSAGES,
+      promotions,
+    };
+  } catch (error) {
+    console.error("Checkout configuration unavailable; using storefront defaults.", error);
+    return fallbackCheckoutConfiguration();
+  }
 });
 
 export const getPublicGalleryItems = createServerFn({ method: "GET" }).handler(async () => {
-  const { getMongoDatabase } = await import("./mongodb.server");
-  const { db } = await getMongoDatabase();
-  return db
-    .collection<GalleryDocument>("gallery_items")
-    .find({ active: true })
-    .project<
-      Pick<GalleryDocument, "id" | "url" | "media_type" | "caption" | "dish_id" | "created_at"> &
-        Document
-    >({
-      _id: 0,
-      id: 1,
-      url: 1,
-      media_type: 1,
-      caption: 1,
-      dish_id: 1,
-      created_at: 1,
-    })
-    .sort({ created_at: -1 })
-    .limit(100)
-    .toArray();
+  try {
+    const { getMongoDatabase } = await import("./mongodb.server");
+    const { db } = await getMongoDatabase();
+    return await db
+      .collection<GalleryDocument>("gallery_items")
+      .find({ active: true })
+      .project<
+        Pick<GalleryDocument, "id" | "url" | "media_type" | "caption" | "dish_id" | "created_at"> &
+          Document
+      >({
+        _id: 0,
+        id: 1,
+        url: 1,
+        media_type: 1,
+        caption: 1,
+        dish_id: 1,
+        created_at: 1,
+      })
+      .sort({ created_at: -1 })
+      .limit(100)
+      .toArray();
+  } catch (error) {
+    console.error("Gallery data unavailable; showing the empty state.", error);
+    return [];
+  }
 });
 
 export const getPublicCateringMenu = createServerFn({ method: "GET" }).handler(async () => {
-  const { getMongoDatabase } = await import("./mongodb.server");
-  const { db } = await getMongoDatabase();
-  const [packages, proteins] = await Promise.all([
-    db
-      .collection<CateringDocument>("catering_packages")
-      .find({ active: true })
-      .project<CateringDocument>({ _id: 0 })
-      .sort({ featured: -1, name: 1 })
-      .toArray(),
-    db
-      .collection<CateringProteinDocument>("catering_proteins")
-      .find({ active: true })
-      .project<CateringProteinDocument>({ _id: 0 })
-      .sort({ name: 1 })
-      .toArray(),
-  ]);
-  return { packages, proteins };
+  try {
+    const { getMongoDatabase } = await import("./mongodb.server");
+    const { db } = await getMongoDatabase();
+    const [packages, proteins] = await Promise.all([
+      db
+        .collection<CateringDocument>("catering_packages")
+        .find({ active: true })
+        .project<CateringDocument>({ _id: 0 })
+        .sort({ featured: -1, name: 1 })
+        .toArray(),
+      db
+        .collection<CateringProteinDocument>("catering_proteins")
+        .find({ active: true })
+        .project<CateringProteinDocument>({ _id: 0 })
+        .sort({ name: 1 })
+        .toArray(),
+    ]);
+    return { packages, proteins };
+  } catch (error) {
+    console.error("Catering data unavailable; showing the contact fallback.", error);
+    return { packages: [], proteins: [] };
+  }
 });
 
 export const submitCateringInquiry = createServerFn({ method: "POST" })
@@ -806,7 +844,6 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
         id: `builtin:${promo.code}`,
         usage_limit: undefined as number | undefined,
         usage_count: 0,
-        usage_limit: null,
         active: true,
         is_builtin: true,
       })),
@@ -821,21 +858,27 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
 });
 
 export const getStorefrontSettings = createServerFn({ method: "GET" }).handler(async () => {
-  const { getMongoDatabase } = await import("./mongodb.server");
-  const { db } = await getMongoDatabase();
-  const settings = await db
-    .collection<StoreSettings>("site_settings")
-    .findOne({ _id: "storefront" });
+  try {
+    const { getMongoDatabase } = await import("./mongodb.server");
+    const { db } = await getMongoDatabase();
+    const settings = await db
+      .collection<StoreSettings>("site_settings")
+      .findOne({ _id: "storefront" });
 
-  return {
-    delivery_fee_cents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
-    free_delivery_threshold_cents:
-      settings?.free_delivery_threshold_cents ?? FREE_DELIVERY_THRESHOLD_CENTS,
-    points_per_dollar: settings?.points_per_dollar ?? POINTS_PER_DOLLAR,
-    points_per_dollar_redeemed: settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
-    reward_tiers: settings?.reward_tiers?.length ? settings.reward_tiers : DEFAULT_REWARD_TIERS,
-    business_hours: settings?.business_hours ?? DEFAULT_HOURS,
-  };
+    return {
+      delivery_fee_cents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
+      free_delivery_threshold_cents:
+        settings?.free_delivery_threshold_cents ?? FREE_DELIVERY_THRESHOLD_CENTS,
+      points_per_dollar: settings?.points_per_dollar ?? POINTS_PER_DOLLAR,
+      points_per_dollar_redeemed:
+        settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
+      reward_tiers: settings?.reward_tiers?.length ? settings.reward_tiers : DEFAULT_REWARD_TIERS,
+      business_hours: settings?.business_hours ?? DEFAULT_HOURS,
+    };
+  } catch (error) {
+    console.error("Rewards settings unavailable; using storefront defaults.", error);
+    return fallbackStorefrontSettings();
+  }
 });
 
 export const saveAdminMenuItem = createServerFn({ method: "POST" })

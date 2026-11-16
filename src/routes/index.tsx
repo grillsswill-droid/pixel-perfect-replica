@@ -120,7 +120,7 @@ function useQuickOrderActions() {
   const [addingId, setAddingId] = useState<string | null>(null);
 
   async function order(item: MenuItem) {
-    if (!item.is_available || !cart.hydrated || addingId) return;
+    if (!item.is_available || addingId) return;
     if (item.options.some((group) => group.required)) {
       setSelected(item);
       return;
@@ -161,7 +161,7 @@ function useQuickOrderActions() {
 
 function QuickOrderMeals() {
   const { data: menu, isError, isLoading, refetch } = useQuery(menuQuery());
-  const { cart, selected, setSelected, addingId, order } = useQuickOrderActions();
+  const { selected, setSelected, addingId, order } = useQuickOrderActions();
   const [activeTab, setActiveTab] = useState<"popular" | QuickOrderGroup>("popular");
   const combos = orderedQuickOrderItems(menu ?? []);
   const popular = combos.filter((item) => item.is_featured && item.is_available).slice(0, 6);
@@ -258,7 +258,6 @@ function QuickOrderMeals() {
                     key={item.id}
                     item={item}
                     adding={addingId === item.id}
-                    cartReady={cart.hydrated}
                     onSelect={() => setSelected(item)}
                     onOrder={() => void order(item)}
                   />
@@ -290,13 +289,11 @@ function QuickOrderMeals() {
 function QuickOrderCard({
   item,
   adding,
-  cartReady,
   onSelect,
   onOrder,
 }: {
   item: MenuItem;
   adding: boolean;
-  cartReady: boolean;
   onSelect: () => void;
   onOrder: () => void;
 }) {
@@ -367,16 +364,10 @@ function QuickOrderCard({
             size="sm"
             className="h-11 min-w-32"
             onClick={onOrder}
-            disabled={!item.is_available || !cartReady || adding}
+            disabled={!item.is_available || adding}
             loading={adding}
           >
-            {!item.is_available
-              ? "Sold out"
-              : !cartReady
-                ? "Loading bag"
-                : needsCustomization
-                  ? "Choose options"
-                  : "Quick add"}
+            {!item.is_available ? "Sold out" : needsCustomization ? "Choose options" : "Quick add"}
           </Button>
         </div>
       </div>
@@ -386,7 +377,7 @@ function QuickOrderCard({
 
 function QuickOrderCategoryShelves() {
   const { data: menu = [] } = useQuery(menuQuery());
-  const { cart, selected, setSelected, addingId, order } = useQuickOrderActions();
+  const { selected, setSelected, addingId, order } = useQuickOrderActions();
   const combos = orderedQuickOrderItems(menu);
   const popularIds = new Set(
     combos
@@ -434,7 +425,6 @@ function QuickOrderCategoryShelves() {
                     key={item.id}
                     item={item}
                     adding={addingId === item.id}
-                    cartReady={cart.hydrated}
                     onSelect={() => setSelected(item)}
                     onOrder={() => void order(item)}
                   />

@@ -64,7 +64,7 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
   }
 
   async function add() {
-    if (adding || !cart.hydrated || !item.is_available) return;
+    if (adding || !item.is_available) return;
     setAdding(true);
     try {
       const currentLine = {
@@ -287,8 +287,8 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
           size="xl"
           className="flex-1"
           onClick={() => void add()}
-          disabled={!cart.hydrated || !item.is_available || added || adding}
-          loading={!cart.hydrated || adding}
+          disabled={!item.is_available || added || adding}
+          loading={adding}
         >
           <AnimatePresence mode="wait" initial={false}>
             {added ? (
@@ -306,13 +306,11 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
                 initial={{ y: -12, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
               >
-                {!cart.hydrated
-                  ? "Getting your bag ready…"
-                  : adding
-                    ? "Checking availability…"
-                    : item.is_available
-                      ? `Add to bag · ${formatMoney(unit * qty)}`
-                      : "Sold out today"}
+                {adding
+                  ? "Checking availability…"
+                  : item.is_available
+                    ? `Add to bag · ${formatMoney(unit * qty)}`
+                    : "Sold out today"}
               </motion.span>
             )}
           </AnimatePresence>

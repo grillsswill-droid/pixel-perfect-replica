@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Heart, Images, MessageCircle, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
@@ -13,7 +13,15 @@ import {
 } from "@/lib/admin.functions";
 import { foodImage } from "@/lib/food-images";
 
+const galleryQuery = () =>
+  queryOptions({
+    queryKey: ["gallery"],
+    queryFn: () => getPublicGalleryItems(),
+    staleTime: 60_000,
+  });
+
 export const Route = createFileRoute("/gallery")({
+  loader: ({ context }) => context.queryClient.ensureQueryData(galleryQuery()),
   head: () => ({
     meta: [
       { title: "Gallery | Grill & Swill" },
@@ -24,15 +32,7 @@ export const Route = createFileRoute("/gallery")({
 });
 
 function GalleryPage() {
-  const {
-    data = [],
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["gallery"],
-    queryFn: () => getPublicGalleryItems(),
-    staleTime: 60_000,
-  });
+  const { data = [], isLoading, isError, isFetching, refetch } = useQuery(galleryQuery());
 
   return (
     <main className="min-h-[65vh] bg-background">
@@ -52,9 +52,19 @@ function GalleryPage() {
       <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
         {isLoading ? <p className="text-sm text-muted-foreground">Loading the gallery…</p> : null}
         {isError ? (
-          <p role="alert" className="rounded-2xl bg-destructive/10 p-4 text-sm text-destructive">
-            The gallery couldn’t be loaded. Please try again later.
-          </p>
+          <div role="alert" className="rounded-2xl bg-destructive/10 p-4 text-sm text-destructive">
+            <p>The gallery couldn’t be loaded.</p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="mt-3"
+              loading={isFetching}
+              onClick={() => void refetch()}
+            >
+              Try again
+            </Button>
+          </div>
         ) : null}
         {!isLoading && !isError && data.length === 0 ? (
           <div className="rounded-3xl bg-card p-10 text-center shadow-card">
