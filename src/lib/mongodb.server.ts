@@ -166,6 +166,7 @@ type MongoDocument<T> = T &
 
 const globalMongo = globalThis as typeof globalThis & {
   __grillSwillMongoClient?: MongoClient;
+  __grillSwillMongoDatabase?: Promise<{ client: MongoClient; db: Db }>;
 };
 const indexSetupByDb = new WeakMap<Db, Promise<void>>();
 
@@ -192,7 +193,10 @@ function getClient(): MongoClient {
   if (!globalMongo.__grillSwillMongoClient) {
     globalMongo.__grillSwillMongoClient = new MongoClient(uri, {
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 10_000,
+      maxIdleTimeMS: 60_000,
+      connectTimeoutMS: 5_000,
+      serverSelectionTimeoutMS: 5_000,
+      socketTimeoutMS: 15_000,
     });
   }
   return globalMongo.__grillSwillMongoClient;
@@ -279,12 +283,25 @@ async function ensureIndexes(db: Db): Promise<void> {
 }
 
 export async function getMongoDatabase(): Promise<{ client: MongoClient; db: Db }> {
-  const client = getClient();
-  await client.connect();
-  const databaseName = process.env["MONGODB_DATABASE"]?.trim();
-  const db = databaseName ? client.db(databaseName) : client.db();
-  await ensureIndexes(db);
-  return { client, db };
+  if (!globalMongo.__grillSwillMongoDatabase) {
+    const connection = (async () => {
+      const client = getClient();
+      await client.connect();
+      const databaseName = process.env["MONGODB_DATABASE"]?.trim();
+      const db = databaseName ? client.db(databaseName) : client.db();
+      await ensureIndexes(db);
+      return { client, db };
+    })();
+
+    globalMongo.__grillSwillMongoDatabase = connection;
+    void connection.catch(() => {
+      if (globalMongo.__grillSwillMongoDatabase === connection) {
+        globalMongo.__grillSwillMongoDatabase = undefined;
+      }
+    });
+  }
+
+  return globalMongo.__grillSwillMongoDatabase;
 }
 
 export function collection<T>(db: Db, name: string) {

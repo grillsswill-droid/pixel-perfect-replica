@@ -43,14 +43,19 @@ export const getCategories = createServerFn({ method: "GET" }).handler(
 );
 
 export const getMenu = createServerFn({ method: "GET" }).handler(async (): Promise<MenuItem[]> => {
-  const { collection, getMongoDatabase } = await import("./mongodb.server");
-  const { db } = await getMongoDatabase();
-  const menu = await collection<MenuItem>(db, "menu_items")
-    .find({})
-    .project<MenuItem>({ _id: 0 })
-    .sort({ category: 1, sort_order: 1 })
-    .toArray();
-  return withMenuBundleAvailability(menu.length ? menu : getFallbackMenu());
+  try {
+    const { collection, getMongoDatabase } = await import("./mongodb.server");
+    const { db } = await getMongoDatabase();
+    const menu = await collection<MenuItem>(db, "menu_items")
+      .find({})
+      .project<MenuItem>({ _id: 0 })
+      .sort({ category: 1, sort_order: 1 })
+      .toArray();
+    return withMenuBundleAvailability(menu.length ? menu : getFallbackMenu());
+  } catch (error) {
+    console.error("Menu data unavailable; using the bundled catalog.", error);
+    return withMenuBundleAvailability(getFallbackMenu());
+  }
 });
 
 export const verifyQuickOrderSelection = createServerFn({ method: "POST" })
