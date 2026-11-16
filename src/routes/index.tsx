@@ -35,6 +35,12 @@ const rewardTiers = [
 ];
 
 export const Route = createFileRoute("/")({
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(menuQuery()),
+      context.queryClient.ensureQueryData(categoriesQuery()),
+    ]);
+  },
   head: () => ({
     meta: [
       { title: "Grill & Swill | Fast food, made the slow way" },
@@ -467,44 +473,24 @@ function Hero() {
 
       <div className="mx-auto flex min-h-[680px] max-w-7xl items-center px-5 py-20 sm:min-h-[760px] sm:px-8">
         <div className="max-w-3xl">
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-cream/30 bg-charcoal/35 px-4 py-2 text-xs font-bold tracking-[0.17em] text-cream uppercase backdrop-blur"
-          >
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cream/30 bg-charcoal/35 px-4 py-2 text-xs font-bold tracking-[0.17em] text-cream uppercase backdrop-blur">
             <Flame className="h-4 w-4 text-primary" /> Real food. No shortcuts.
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.08 }}
-            className="max-w-3xl text-6xl leading-[0.9] font-black tracking-[-0.06em] uppercase sm:text-8xl lg:text-[108px]"
-          >
+          <h1 className="max-w-3xl text-6xl leading-[0.9] font-black tracking-[-0.04em] uppercase sm:text-8xl lg:text-[108px]">
             Good food.
             <br />
             <span className="text-primary">No funny</span>
             <br />
             business.
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-7 max-w-lg text-base leading-relaxed text-cream/80 sm:text-lg"
-          >
+          <p className="mt-7 max-w-lg text-base leading-relaxed text-cream/80 sm:text-lg">
             Smash burgers, hand-breaded chicken, 48-hour pizza dough. Made fresh, served fast, and
             worth getting your hands messy for.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-9 flex flex-wrap items-center gap-4"
-          >
+          <div className="mt-9 flex flex-wrap items-center gap-4">
             <Button asChild variant="hero" size="xl">
               <Link to="/menu">
                 Start your order <ArrowRight />
@@ -516,7 +502,7 @@ function Hero() {
             >
               <MapPin className="h-4 w-4" /> Find your nearest grill
             </Link>
-          </motion.div>
+          </div>
 
           <div className="mt-12 flex items-center gap-3 text-xs font-semibold tracking-wide text-cream/65">
             <span className="flex -space-x-2">
@@ -638,7 +624,8 @@ function Heritage() {
           <img
             src={kitchenGrill}
             alt="Fresh ingredients cooking on the Grill & Swill flat top"
-            loading="lazy"
+            width={1536}
+            height={1024}
             className="relative aspect-[1.13] w-full rounded-[1.7rem] object-cover shadow-2xl"
           />
           <span className="absolute -bottom-5 -left-4 flex items-center gap-2 rounded-2xl bg-cream px-4 py-3 text-sm font-black text-charcoal shadow-lg">
