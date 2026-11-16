@@ -37,7 +37,7 @@ function RewardsPage() {
   const guestId = useGuestId();
   const cart = useCart();
   const [data, setData] = useState<RewardsData | null>(null);
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<Awaited<ReturnType<typeof getStorefrontSettings>>>({
     delivery_fee_cents: 399,
     free_delivery_threshold_cents: 3500,
     points_per_dollar: 10,

@@ -576,7 +576,16 @@ export const getGalleryFeedback = createServerFn({ method: "GET" })
         .limit(100)
         .toArray(),
     ]);
-    return { likeCount, likedByMe: Boolean(liked), comments };
+    return {
+      likeCount,
+      likedByMe: Boolean(liked),
+      comments: comments.map((comment) => ({
+        id: String(comment.id),
+        author: String(comment.author),
+        text: String(comment.text),
+        created_at: String(comment.created_at),
+      })),
+    };
   });
 
 export const toggleGalleryLike = createServerFn({ method: "POST" })
@@ -789,6 +798,7 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
       ...PROMOS.filter((promo) => !storedPromotionCodes.has(promo.code)).map((promo) => ({
         ...promo,
         id: `builtin:${promo.code}`,
+        usage_limit: undefined as number | undefined,
         usage_count: 0,
         active: true,
         is_builtin: true,
@@ -1143,8 +1153,7 @@ export const uploadAdminImage = createServerFn({ method: "POST" })
     const id = new ObjectId();
     const bucket = new GridFSBucket(db, { bucketName: "admin_media" });
     const upload = bucket.openUploadStreamWithId(id, id.toHexString(), {
-      contentType,
-      metadata: { kind: "admin-image" },
+      metadata: { kind: "admin-image", contentType },
     });
     await new Promise<void>((resolve, reject) => {
       Readable.from(image)

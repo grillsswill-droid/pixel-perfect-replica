@@ -127,10 +127,14 @@ export const placeOrder = createServerFn({ method: "POST" })
         { projection: { _id: 0, id: 1 } },
       ),
       db
-        .collection("site_settings")
-        .findOne<{ delivery_fee_cents?: number; free_delivery_threshold_cents?: number }>({
-          _id: "storefront",
-        }),
+        .collection<{
+          _id: string;
+          delivery_fee_cents?: number;
+          free_delivery_threshold_cents?: number;
+          points_per_dollar?: number;
+          points_per_dollar_redeemed?: number;
+        }>("site_settings")
+        .findOne({ _id: "storefront" }),
       data.promoCode
         ? db.collection("promotions").findOne<{
             id: string;
