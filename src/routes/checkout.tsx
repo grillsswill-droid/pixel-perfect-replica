@@ -687,9 +687,9 @@ function CheckoutPage() {
           <ul className="mt-4 space-y-3">
             {cart.lines.map((l) => (
               <li key={l.key} className="flex gap-3">
-                {foodImage(l.imageKey) ? (
+                {foodImage(l.imageKey, l.slug) ? (
                   <img
-                    src={foodImage(l.imageKey)}
+                    src={foodImage(l.imageKey, l.slug)}
                     alt=""
                     width={56}
                     height={56}

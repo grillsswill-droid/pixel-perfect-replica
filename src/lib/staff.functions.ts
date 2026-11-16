@@ -45,7 +45,7 @@ async function requireStaff() {
 }
 
 export const unlockKitchen = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => z.object({ passcode: z.string().min(1).max(200) }).parse(d))
+  .validator((d: unknown) => z.object({ passcode: z.string().min(1).max(200) }).parse(d))
   .handler(async ({ data }) => {
     const expected = process.env["STAFF_PASSCODE"];
     if (!expected) throw new Error("Staff passcode isn't set up");
@@ -115,7 +115,7 @@ export const getKitchenBoard = createServerFn({ method: "GET" }).handler(async (
 });
 
 export const setOrderStatus = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z
       .object({
         id: z.string().uuid(),
@@ -162,9 +162,7 @@ export const setOrderStatus = createServerFn({ method: "POST" })
   });
 
 export const setItemAvailability = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) =>
-    z.object({ id: z.string().uuid(), available: z.boolean() }).parse(d),
-  )
+  .validator((d: unknown) => z.object({ id: z.string().uuid(), available: z.boolean() }).parse(d))
   .handler(async ({ data }) => {
     await requireStaff();
     const { collection, getMongoDatabase } = await import("./mongodb.server");

@@ -12,7 +12,7 @@ export function MenuCard({
   item: MenuItem;
   onSelect: (item: MenuItem) => void;
 }) {
-  const imageSrc = foodImage(item.image_key);
+  const imageSrc = foodImage(item.image_key, item.slug);
   return (
     <button
       type="button"

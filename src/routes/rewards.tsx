@@ -22,6 +22,7 @@ import {
 import type { Fulfillment, OrderLineSnapshot } from "@/lib/menu-types";
 
 type RewardsData = Awaited<ReturnType<typeof getGuestRewards>>;
+type StorefrontSettings = Awaited<ReturnType<typeof getStorefrontSettings>>;
 
 export const Route = createFileRoute("/rewards")({
   head: () => ({
@@ -37,7 +38,7 @@ function RewardsPage() {
   const guestId = useGuestId();
   const cart = useCart();
   const [data, setData] = useState<RewardsData | null>(null);
-  const [settings, setSettings] = useState({
+  const [settings, setSettings] = useState<StorefrontSettings>({
     delivery_fee_cents: 399,
     free_delivery_threshold_cents: 3500,
     points_per_dollar: 10,

@@ -46,7 +46,7 @@ const products = [
     quick_order_group: "burgers",
     price_cents: 1299,
     description: "A signature beef burger with regular fries and a regular soft drink.",
-    image_key: "burger",
+    image_key: "combo_swillhouse_classic",
     bundle_components: [
       {
         quantity: 1,
@@ -65,7 +65,7 @@ const products = [
     price_cents: 1549,
     description:
       "A double beef burger with double cheese, smoky BBQ sauce and caramelized onions, plus fries and a drink.",
-    image_key: "bacon_burger",
+    image_key: "combo_double_stack_smokehouse",
     bundle_components: [
       {
         quantity: 1,
@@ -84,7 +84,7 @@ const products = [
     price_cents: 1399,
     description:
       "Crispy spicy chicken with lettuce and pepper mayonnaise, served with fries and a drink.",
-    image_key: "hot_chicken",
+    image_key: "combo_firecracker_chicken",
     bundle_components: [
       { quantity: 1, label: "Crispy spicy chicken fillet with lettuce and pepper mayonnaise" },
       { quantity: 1, label: "Regular fries" },
@@ -98,7 +98,7 @@ const products = [
     quick_order_group: "burgers",
     price_cents: 1499,
     description: "Eight BBQ-glazed chicken wings with fries, dipping sauce and a drink.",
-    image_key: "",
+    image_key: "combo_sticky_bbq_wings",
     bundle_components: [
       { quantity: 8, label: "BBQ-glazed chicken wings" },
       { quantity: 1, label: "Regular fries" },
@@ -113,7 +113,7 @@ const products = [
     quick_order_group: "burgers",
     price_cents: 1699,
     description: "A grilled chicken portion with regular fries, coleslaw and a drink.",
-    image_key: "",
+    image_key: "combo_flame_grilled_chicken",
     bundle_components: [
       { quantity: 1, label: "Grilled chicken portion" },
       { quantity: 1, label: "Regular fries" },
@@ -128,7 +128,7 @@ const products = [
     quick_order_group: "burgers",
     price_cents: 1449,
     description: "A crispy chicken burger with loaded fries and a regular soft drink.",
-    image_key: "chicken",
+    image_key: "combo_swill_crunch",
     bundle_components: [
       { quantity: 1, label: "Crispy chicken burger" },
       { quantity: 1, label: "Loaded fries" },
@@ -142,7 +142,7 @@ const products = [
     quick_order_group: "pizza",
     price_cents: 1299,
     description: "A personal pizza in your choice of available variety, with a soft drink.",
-    image_key: "pizza",
+    image_key: "combo_solo_pizza_box",
     bundle_components: [
       { quantity: 1, label: "12-inch personal pizza" },
       { quantity: 1, label: "Soft drink" },
@@ -156,7 +156,7 @@ const products = [
     quick_order_group: "pizza",
     price_cents: 2499,
     description: "A 16-inch share-size pizza of your choice, garlic bread and two soft drinks.",
-    image_key: "margherita",
+    image_key: "combo_pizza_for_two",
     bundle_components: [
       { quantity: 1, label: "16-inch share-size pizza" },
       { quantity: 1, label: "Garlic bread" },
@@ -172,7 +172,7 @@ const products = [
     price_cents: 3499,
     description:
       "A 16-inch share-size pizza of your choice, six chicken wings and two soft drinks.",
-    image_key: "",
+    image_key: "combo_swill_pizza_feast",
     bundle_components: [
       { quantity: 1, label: "16-inch share-size pizza" },
       { quantity: 6, label: "Chicken wings" },
@@ -186,7 +186,7 @@ const products = [
     quick_order_group: "pizza",
     price_cents: 3299,
     description: "A 16-inch share-size pizza of your choice, eight chicken wings and garlic bread.",
-    image_key: "",
+    image_key: "combo_pizza_wings_night",
     bundle_components: [
       { quantity: 1, label: "16-inch share-size pizza" },
       { quantity: 8, label: "Chicken wings" },
@@ -200,7 +200,7 @@ const products = [
     quick_order_group: "kids",
     price_cents: 799,
     description: "A mini cheeseburger with small fries and a kids' drink.",
-    image_key: "burger",
+    image_key: "kids_little_swill_burger_box",
     bundle_components: [
       { quantity: 1, label: "Mini cheeseburger" },
       { quantity: 1, label: "Small fries" },

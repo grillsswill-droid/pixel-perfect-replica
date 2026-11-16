@@ -2,7 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import type { Document } from "mongodb";
 import { z } from "zod";
 
-import type { CategoryId, MenuCategory, MenuItem } from "./menu-types";
+import {
+  normalizeBundleComponents,
+  normalizeOptionGroups,
+  type CategoryId,
+  type MenuCategory,
+  type MenuItem,
+} from "./menu-types";
 import type {
   AdminLogDocument,
   CateringInquiryDocument,
@@ -18,6 +24,7 @@ import {
   POINTS_PER_DOLLAR,
   POINTS_PER_DOLLAR_REDEEMED,
   PROMOS,
+  type PromoDefinition,
 } from "./pricing";
 import { DEFAULT_TICKER_MESSAGES } from "./site-content";
 
@@ -394,9 +401,7 @@ export const getAdminSessionState = createServerFn({ method: "GET" }).handler(as
 });
 
 export const unlockAdmin = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) =>
-    z.object({ passcode: z.string().min(1).max(200) }).parse(value),
-  )
+  .validator((value: unknown) => z.object({ passcode: z.string().min(1).max(200) }).parse(value))
   .handler(async ({ data }) => {
     const expected = process.env["ADMIN_PASSCODE"];
     if (!expected || expected.length < 16) {
@@ -426,6 +431,20 @@ export const getCheckoutConfiguration = createServerFn({ method: "GET" }).handle
     .project<PromotionDocument>({ _id: 0 })
     .toArray();
   const overriddenCodes = new Set(promotionOverrides.map((promo) => promo.code));
+  const promotions: PromoDefinition[] = [
+    ...promotionOverrides
+      .filter((promo) => promo.active)
+      .map(({ code, label, description, kind, value, minSubtotalCents, category }) => ({
+        code,
+        label,
+        description,
+        kind,
+        value,
+        ...(minSubtotalCents !== undefined ? { minSubtotalCents } : {}),
+        ...(category ? { category } : {}),
+      })),
+    ...PROMOS.filter((promo) => !overriddenCodes.has(promo.code)),
+  ];
   return {
     deliveryFeeCents: settings?.delivery_fee_cents ?? DELIVERY_FEE_CENTS,
     freeDeliveryThresholdCents:
@@ -434,20 +453,7 @@ export const getCheckoutConfiguration = createServerFn({ method: "GET" }).handle
     pointsPerDollarRedeemed: settings?.points_per_dollar_redeemed ?? POINTS_PER_DOLLAR_REDEEMED,
     businessHours: settings?.business_hours ?? DEFAULT_HOURS,
     tickerMessages: settings?.ticker_messages ?? DEFAULT_TICKER_MESSAGES,
-    promotions: [
-      ...promotionOverrides
-        .filter((promo) => promo.active)
-        .map(({ code, label, description, kind, value, minSubtotalCents, category }) => ({
-          code,
-          label,
-          description,
-          kind,
-          value,
-          minSubtotalCents,
-          category,
-        })),
-      ...PROMOS.filter((promo) => !overriddenCodes.has(promo.code)),
-    ],
+    promotions,
   };
 });
 
@@ -495,7 +501,7 @@ export const getPublicCateringMenu = createServerFn({ method: "GET" }).handler(a
 });
 
 export const submitCateringInquiry = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => cateringInquirySchema.parse(value))
+  .validator((value: unknown) => cateringInquirySchema.parse(value))
   .handler(async ({ data }) => {
     const { randomUUID } = await import("node:crypto");
     const { getMongoDatabase } = await import("./mongodb.server");
@@ -535,7 +541,7 @@ export const submitCateringInquiry = createServerFn({ method: "POST" })
   });
 
 export const getGalleryFeedback = createServerFn({ method: "GET" })
-  .inputValidator((value: unknown) =>
+  .validator((value: unknown) =>
     z
       .object({ item_id: galleryFeedbackId, guest_id: z.string().uuid().optional() })
       .strict()
@@ -576,11 +582,20 @@ export const getGalleryFeedback = createServerFn({ method: "GET" })
         .limit(100)
         .toArray(),
     ]);
-    return { likeCount, likedByMe: Boolean(liked), comments };
+    return {
+      likeCount,
+      likedByMe: Boolean(liked),
+      comments: comments.map(({ id, author, text, created_at }) => ({
+        id,
+        author,
+        text,
+        created_at,
+      })),
+    };
   });
 
 export const toggleGalleryLike = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => galleryLikeSchema.parse(value))
+  .validator((value: unknown) => galleryLikeSchema.parse(value))
   .handler(async ({ data }) => {
     const { createHash, randomUUID } = await import("node:crypto");
     const { getMongoDatabase } = await import("./mongodb.server");
@@ -611,7 +626,7 @@ export const toggleGalleryLike = createServerFn({ method: "POST" })
   });
 
 export const addGalleryComment = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => galleryCommentSchema.parse(value))
+  .validator((value: unknown) => galleryCommentSchema.parse(value))
   .handler(async ({ data }) => {
     const { randomUUID } = await import("node:crypto");
     const { getMongoDatabase } = await import("./mongodb.server");
@@ -790,6 +805,7 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
         ...promo,
         id: `builtin:${promo.code}`,
         usage_count: 0,
+        usage_limit: null,
         active: true,
         is_builtin: true,
       })),
@@ -822,7 +838,7 @@ export const getStorefrontSettings = createServerFn({ method: "GET" }).handler(a
 });
 
 export const saveAdminMenuItem = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => menuItemSchema.parse(value))
+  .validator((value: unknown) => menuItemSchema.parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { randomUUID } = await import("node:crypto");
@@ -836,7 +852,30 @@ export const saveAdminMenuItem = createServerFn({ method: "POST" })
       .replace(/[\u0300-\u036f]/g, "")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
-    const item: MenuItem & { updated_at: string } = { ...data, id, slug, updated_at: now };
+    const item: MenuItem & { updated_at: string } = {
+      id,
+      slug,
+      name: data.name,
+      category: data.category,
+      description: data.description,
+      price_cents: data.price_cents,
+      calories: data.calories,
+      image_key: data.image_key,
+      tags: data.tags,
+      ingredients: data.ingredients,
+      options: normalizeOptionGroups(data.options),
+      is_available: data.is_available,
+      is_featured: data.is_featured,
+      sort_order: data.sort_order,
+      currency: data.currency,
+      is_quick_order: data.is_quick_order,
+      ...(data.quick_order_group ? { quick_order_group: data.quick_order_group } : {}),
+      ...(data.quick_order_order !== undefined
+        ? { quick_order_order: data.quick_order_order }
+        : {}),
+      bundle_components: normalizeBundleComponents(data.bundle_components),
+      updated_at: now,
+    };
     await collection<MenuItem & { updated_at: string }>(db, "menu_items").updateOne(
       { id },
       { $set: item },
@@ -847,7 +886,7 @@ export const saveAdminMenuItem = createServerFn({ method: "POST" })
   });
 
 export const deleteAdminMenuItem = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
+  .validator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { collection, getMongoDatabase } = await import("./mongodb.server");
@@ -859,7 +898,7 @@ export const deleteAdminMenuItem = createServerFn({ method: "POST" })
   });
 
 export const saveAdminCategory = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => categorySchema.parse(value))
+  .validator((value: unknown) => categorySchema.parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { collection, getMongoDatabase } = await import("./mongodb.server");
@@ -874,7 +913,7 @@ export const saveAdminCategory = createServerFn({ method: "POST" })
   });
 
 export const saveAdminSettings = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => settingsSchema.parse(value))
+  .validator((value: unknown) => settingsSchema.parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { getMongoDatabase } = await import("./mongodb.server");
@@ -900,7 +939,7 @@ export const saveAdminSettings = createServerFn({ method: "POST" })
   });
 
 export const saveStoreLocation = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => storeLocationSchema.parse(value))
+  .validator((value: unknown) => storeLocationSchema.parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { randomUUID } = await import("node:crypto");
@@ -923,7 +962,7 @@ export const saveStoreLocation = createServerFn({ method: "POST" })
   });
 
 export const deleteStoreLocation = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
+  .validator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { getMongoDatabase } = await import("./mongodb.server");
@@ -935,7 +974,7 @@ export const deleteStoreLocation = createServerFn({ method: "POST" })
   });
 
 export const saveAdminPromotion = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => promotionSchema.parse(value))
+  .validator((value: unknown) => promotionSchema.parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { randomUUID } = await import("node:crypto");
@@ -965,7 +1004,7 @@ export const saveAdminPromotion = createServerFn({ method: "POST" })
   });
 
 export const deleteAdminPromotion = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
+  .validator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { getMongoDatabase } = await import("./mongodb.server");
@@ -988,7 +1027,7 @@ export const deleteAdminPromotion = createServerFn({ method: "POST" })
   });
 
 export const saveAdminCateringPackage = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => cateringSchema.parse(value))
+  .validator((value: unknown) => cateringSchema.parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { randomUUID } = await import("node:crypto");
@@ -1009,7 +1048,7 @@ export const saveAdminCateringPackage = createServerFn({ method: "POST" })
   });
 
 export const deleteAdminCateringPackage = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
+  .validator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { getMongoDatabase } = await import("./mongodb.server");
@@ -1021,7 +1060,7 @@ export const deleteAdminCateringPackage = createServerFn({ method: "POST" })
   });
 
 export const saveAdminCateringProtein = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => cateringProteinSchema.parse(value))
+  .validator((value: unknown) => cateringProteinSchema.parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { randomUUID } = await import("node:crypto");
@@ -1042,7 +1081,7 @@ export const saveAdminCateringProtein = createServerFn({ method: "POST" })
   });
 
 export const deleteAdminCateringProtein = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
+  .validator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { getMongoDatabase } = await import("./mongodb.server");
@@ -1054,7 +1093,7 @@ export const deleteAdminCateringProtein = createServerFn({ method: "POST" })
   });
 
 export const updateAdminCateringInquiry = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) =>
+  .validator((value: unknown) =>
     z
       .object({
         id: z.string().uuid(),
@@ -1082,7 +1121,7 @@ export const updateAdminCateringInquiry = createServerFn({ method: "POST" })
   });
 
 export const saveAdminGalleryItem = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => gallerySchema.parse(value))
+  .validator((value: unknown) => gallerySchema.parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { randomUUID } = await import("node:crypto");
@@ -1102,7 +1141,7 @@ export const saveAdminGalleryItem = createServerFn({ method: "POST" })
   });
 
 export const uploadAdminImage = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) =>
+  .validator((value: unknown) =>
     z
       .object({ dataUrl: z.string().max(3_000_000) })
       .strict()
@@ -1143,8 +1182,7 @@ export const uploadAdminImage = createServerFn({ method: "POST" })
     const id = new ObjectId();
     const bucket = new GridFSBucket(db, { bucketName: "admin_media" });
     const upload = bucket.openUploadStreamWithId(id, id.toHexString(), {
-      contentType,
-      metadata: { kind: "admin-image" },
+      metadata: { kind: "admin-image", contentType },
     });
     await new Promise<void>((resolve, reject) => {
       Readable.from(image)
@@ -1158,7 +1196,7 @@ export const uploadAdminImage = createServerFn({ method: "POST" })
   });
 
 export const deleteAdminGalleryItem = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
+  .validator((value: unknown) => z.object({ id: z.string().uuid() }).strict().parse(value))
   .handler(async ({ data }) => {
     await requireAdmin();
     const { getMongoDatabase } = await import("./mongodb.server");
@@ -1176,7 +1214,7 @@ export const deleteAdminGalleryItem = createServerFn({ method: "POST" })
   });
 
 export const setAdminOrderStatus = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) =>
+  .validator((value: unknown) =>
     z
       .object({
         id: z.string().uuid(),
@@ -1217,7 +1255,7 @@ export const setAdminOrderStatus = createServerFn({ method: "POST" })
   });
 
 export const getAdminSales = createServerFn({ method: "GET" })
-  .inputValidator((value: unknown) =>
+  .validator((value: unknown) =>
     z
       .object({ period: z.enum(["daily", "weekly", "monthly", "yearly"]) })
       .strict()

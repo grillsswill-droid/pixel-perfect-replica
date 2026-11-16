@@ -126,9 +126,9 @@ export function CartDrawer() {
                     exit={{ opacity: 0, x: -30, height: 0, marginTop: 0 }}
                     className="flex gap-3 rounded-2xl bg-card p-3 shadow-card"
                   >
-                    {foodImage(line.imageKey) ? (
+                    {foodImage(line.imageKey, line.slug) ? (
                       <img
-                        src={foodImage(line.imageKey)}
+                        src={foodImage(line.imageKey, line.slug)}
                         alt=""
                         width={80}
                         height={80}

@@ -294,7 +294,7 @@ function QuickOrderCard({
   onSelect: () => void;
   onOrder: () => void;
 }) {
-  const imageSrc = foodImage(item.image_key);
+  const imageSrc = foodImage(item.image_key, item.slug);
   const needsCustomization = item.options.some((group) => group.required);
   const hasPricedOptions = item.options.some((group) =>
     group.choices.some((choice) => choice.price_cents > 0),

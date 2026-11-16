@@ -80,6 +80,44 @@ export interface OptionGroup {
   choices: OptionChoice[];
 }
 
+type OptionChoiceInput = Omit<OptionChoice, "menu_item_id" | "bundle_quantity" | "is_available"> & {
+  menu_item_id?: string | undefined;
+  bundle_quantity?: number | undefined;
+  is_available?: boolean | undefined;
+};
+
+type OptionGroupInput = Omit<
+  OptionGroup,
+  "required" | "source_item_group_id" | "source_option_group_id" | "choices"
+> & {
+  required?: boolean | undefined;
+  source_item_group_id?: string | undefined;
+  source_option_group_id?: string | undefined;
+  choices: readonly OptionChoiceInput[];
+};
+
+/** Removes explicit undefined values so exact optional types serialize consistently. */
+export function normalizeOptionGroups(groups: readonly OptionGroupInput[]): OptionGroup[] {
+  return groups.map((group) => ({
+    id: group.id,
+    label: group.label,
+    type: group.type,
+    ...(group.required !== undefined ? { required: group.required } : {}),
+    ...(group.source_item_group_id ? { source_item_group_id: group.source_item_group_id } : {}),
+    ...(group.source_option_group_id
+      ? { source_option_group_id: group.source_option_group_id }
+      : {}),
+    choices: group.choices.map((choice) => ({
+      id: choice.id,
+      label: choice.label,
+      price_cents: choice.price_cents,
+      ...(choice.menu_item_id ? { menu_item_id: choice.menu_item_id } : {}),
+      ...(choice.bundle_quantity !== undefined ? { bundle_quantity: choice.bundle_quantity } : {}),
+      ...(choice.is_available !== undefined ? { is_available: choice.is_available } : {}),
+    })),
+  }));
+}
+
 export interface MenuItem {
   id: string;
   slug: string;
@@ -100,6 +138,18 @@ export interface MenuItem {
   quick_order_group?: QuickOrderGroup;
   quick_order_order?: number;
   bundle_components?: BundleComponent[];
+}
+
+export function normalizeBundleComponents(
+  components: readonly (Omit<BundleComponent, "menu_item_id"> & {
+    menu_item_id?: string | undefined;
+  })[],
+): BundleComponent[] {
+  return components.map((component) => ({
+    label: component.label,
+    quantity: component.quantity,
+    ...(component.menu_item_id ? { menu_item_id: component.menu_item_id } : {}),
+  }));
 }
 
 export interface Store {
@@ -140,6 +190,7 @@ export type Fulfillment = "delivery" | "pickup";
 
 export interface OrderLineSnapshot {
   itemId: string;
+  slug?: string;
   name: string;
   imageKey: string;
   quantity: number;

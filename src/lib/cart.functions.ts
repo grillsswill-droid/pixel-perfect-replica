@@ -37,7 +37,7 @@ export const saveCartSchema = z.object({
 });
 
 export const getCart = createServerFn({ method: "GET" })
-  .inputValidator((data: unknown) => z.object({ guestId: z.string().uuid() }).parse(data))
+  .validator((data: unknown) => z.object({ guestId: z.string().uuid() }).parse(data))
   .handler(async ({ data }) => {
     const { collection, getMongoDatabase } = await import("./mongodb.server");
     const { db } = await getMongoDatabase();
@@ -54,14 +54,28 @@ export const getCart = createServerFn({ method: "GET" })
   });
 
 export const saveCart = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => saveCartSchema.parse(data))
+  .validator((data: unknown) => saveCartSchema.parse(data))
   .handler(async ({ data }) => {
     const { collection, getMongoDatabase } = await import("./mongodb.server");
     const { db } = await getMongoDatabase();
     const now = new Date().toISOString();
     const cart: CartDocument = {
       id: data.guestId,
-      lines: data.lines,
+      lines: data.lines.map((line) => ({
+        key: line.key,
+        itemId: line.itemId,
+        slug: line.slug,
+        category: line.category,
+        name: line.name,
+        imageKey: line.imageKey,
+        quantity: line.quantity,
+        selections: line.selections,
+        removed: line.removed,
+        note: line.note,
+        unitPriceCents: line.unitPriceCents,
+        summary: line.summary,
+        ...(line.bundleComponents ? { bundleComponents: line.bundleComponents } : {}),
+      })),
       fulfillment: data.fulfillment,
       store_id: data.storeId,
       updated_at: now,

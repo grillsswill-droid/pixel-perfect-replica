@@ -131,6 +131,8 @@ describe("combo menu validation", () => {
       (item) => item.id === combo.id,
     );
 
+    expect(availableCombo).toBeDefined();
+    if (!availableCombo) throw new Error("Expected the combo to remain in the menu.");
     expect(availableCombo.is_available).toBe(false);
     expect(defaultSelections(availableCombo)["pizza-variety"]).toEqual([]);
     expect(() =>

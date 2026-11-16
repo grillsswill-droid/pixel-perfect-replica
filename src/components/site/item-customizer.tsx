@@ -50,7 +50,7 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
     );
     return requiredChoicesUnavailable ? item.price_cents : unitPriceCents(item, selections);
   }, [item, selections]);
-  const imageSrc = foodImage(item.image_key);
+  const imageSrc = foodImage(item.image_key, item.slug);
 
   function toggle(groupId: string, choiceId: string, type: "single" | "multi") {
     setSelections((s) => {

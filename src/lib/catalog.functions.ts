@@ -54,7 +54,7 @@ export const getMenu = createServerFn({ method: "GET" }).handler(async (): Promi
 });
 
 export const verifyQuickOrderSelection = createServerFn({ method: "POST" })
-  .inputValidator((value: unknown) =>
+  .validator((value: unknown) =>
     z
       .object({
         itemId: z.string().uuid(),

@@ -14,8 +14,9 @@ export const Route = createFileRoute("/receipts/$id")({
       .regex(/^[A-Za-z0-9_-]{43}$/)
       .optional(),
   }),
-  loader: ({ params, search }) =>
-    search.token ? getOrder({ data: { id: params.id, token: search.token } }) : null,
+  loaderDeps: ({ search }) => ({ token: search.token }),
+  loader: ({ params, deps }) =>
+    deps.token ? getOrder({ data: { id: params.id, token: deps.token } }) : null,
   head: () => ({
     meta: [
       { title: "Order receipt | Grill & Swill" },

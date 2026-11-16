@@ -15,29 +15,29 @@ describe("MongoDB configuration", () => {
 });
 
 describe("Staff session configuration", () => {
-  const originalNodeEnv = process.env.NODE_ENV;
-  const originalSessionSecret = process.env.SESSION_SECRET;
+  const originalNodeEnv = process.env["NODE_ENV"];
+  const originalSessionSecret = process.env["SESSION_SECRET"];
 
   afterEach(() => {
     if (originalNodeEnv === undefined) {
-      delete process.env.NODE_ENV;
+      delete process.env["NODE_ENV"];
     } else {
-      process.env.NODE_ENV = originalNodeEnv;
+      process.env["NODE_ENV"] = originalNodeEnv;
     }
 
     if (originalSessionSecret === undefined) {
-      delete process.env.SESSION_SECRET;
+      delete process.env["SESSION_SECRET"];
     } else {
-      process.env.SESSION_SECRET = originalSessionSecret;
+      process.env["SESSION_SECRET"] = originalSessionSecret;
     }
   });
 
   it("uses secure cookies only in production", () => {
-    process.env.SESSION_SECRET = "1234567890abcdefghijklmnopqrstuv";
-    process.env.NODE_ENV = "development";
+    process.env["SESSION_SECRET"] = "1234567890abcdefghijklmnopqrstuv";
+    process.env["NODE_ENV"] = "development";
     expect(staffSessionConfig().cookie.secure).toBe(false);
 
-    process.env.NODE_ENV = "production";
+    process.env["NODE_ENV"] = "production";
     expect(staffSessionConfig().cookie.secure).toBe(true);
   });
 });

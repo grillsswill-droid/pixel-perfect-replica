@@ -18,14 +18,16 @@ export const Route = createFileRoute("/api/media/$id")({
           .find({ _id: id, "metadata.kind": "admin-image" })
           .limit(1)
           .toArray();
-        if (!file || !["image/jpeg", "image/png", "image/webp"].includes(file.contentType ?? "")) {
+        const contentType =
+          typeof file?.metadata?.["contentType"] === "string" ? file.metadata["contentType"] : "";
+        if (!file || !["image/jpeg", "image/png", "image/webp"].includes(contentType)) {
           return new Response("Not found", { status: 404 });
         }
 
         const stream = bucket.openDownloadStream(id);
         return new Response(Readable.toWeb(stream) as ReadableStream, {
           headers: {
-            "content-type": file.contentType!,
+            "content-type": contentType,
             "content-length": String(file.length),
             "cache-control": "public, max-age=31536000, immutable",
             "x-content-type-options": "nosniff",

@@ -129,29 +129,6 @@ function CateringPage() {
         ) : null}
 
         <CateringInquiryForm packages={data?.packages ?? []} guestId={guestId} />
-
-        <section className="mt-8 rounded-3xl bg-charcoal p-6 text-cream sm:flex sm:items-center sm:justify-between sm:gap-6 sm:p-8">
-          <div>
-            <h2 className="font-display text-2xl font-black uppercase">Let’s plan your order</h2>
-            <p className="mt-2 max-w-xl text-sm text-cream/70">
-              Catering availability and final pricing are confirmed directly with the location.
-            </p>
-          </div>
-          <div className="mt-5 flex flex-wrap gap-2 sm:mt-0">
-            {stores[0] ? (
-              <Button asChild variant="hero">
-                <a href={`tel:${stores[0].phone.replace(/[^\d+]/g, "")}`}>
-                  <Phone className="h-4 w-4" /> Call {stores[0].name}
-                </a>
-              </Button>
-            ) : null}
-            <Button asChild variant="outline-light">
-              <Link to="/locations">
-                Find a location <ArrowRight />
-              </Link>
-            </Button>
-          </div>
-        </section>
       </section>
     </main>
   );

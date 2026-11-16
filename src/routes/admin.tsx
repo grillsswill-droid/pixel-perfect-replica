@@ -48,7 +48,14 @@ import {
 import { canTransitionOrder, nextStatus, statusLabel, type OrderStatus } from "@/lib/order-status";
 import { formatMoney } from "@/lib/pricing";
 import { foodImage } from "@/lib/food-images";
-import type { BundleComponent, CategoryId, MenuItem, QuickOrderGroup } from "@/lib/menu-types";
+import {
+  normalizeBundleComponents,
+  normalizeOptionGroups,
+  type BundleComponent,
+  type CategoryId,
+  type MenuItem,
+  type QuickOrderGroup,
+} from "@/lib/menu-types";
 
 type Workspace = Awaited<ReturnType<typeof getAdminWorkspace>>;
 type Tab =
@@ -781,7 +788,7 @@ function MenuPanel({
     event.preventDefault();
     let options: MenuItem["options"];
     try {
-      options = optionsSchema.parse(JSON.parse(draft.options));
+      options = normalizeOptionGroups(optionsSchema.parse(JSON.parse(draft.options)));
     } catch (reason) {
       toast.error(reason instanceof Error ? reason.message : "Enter valid options JSON.");
       return;
@@ -808,7 +815,7 @@ function MenuPanel({
             is_quick_order: draft.is_quick_order,
             ...(draft.is_quick_order ? { quick_order_group: draft.quick_order_group } : {}),
             quick_order_order: Number(draft.quick_order_order),
-            bundle_components: draft.bundle_components,
+            bundle_components: normalizeBundleComponents(draft.bundle_components),
           },
         }),
       draft.id ? "Menu item updated" : "Menu item created",
@@ -1005,7 +1012,12 @@ function MenuPanel({
                       ...current,
                       bundle_components: current.bundle_components.map((entry, entryIndex) =>
                         entryIndex === index
-                          ? { ...entry, menu_item_id: menu_item_id || undefined }
+                          ? menu_item_id
+                            ? { ...entry, menu_item_id }
+                            : {
+                                label: entry.label,
+                                quantity: entry.quantity,
+                              }
                           : entry,
                       ),
                     }))

@@ -19,7 +19,23 @@ import {
   selectionSummary,
   validateMenuBundle,
   unitPriceCents,
+  type PromoDefinition,
 } from "./pricing";
+
+type StorefrontPricingSettings = {
+  _id: string;
+  delivery_fee_cents?: number;
+  free_delivery_threshold_cents?: number;
+  points_per_dollar?: number;
+  points_per_dollar_redeemed?: number;
+};
+
+type StoredPromotion = PromoDefinition & {
+  id: string;
+  usage_limit?: number;
+  usage_count?: number;
+  active: boolean;
+};
 
 const addressSchema = z.object({
   name: z.string().trim().min(2, "Enter the recipient's name").max(80),
@@ -92,7 +108,7 @@ export type PlaceOrderInput = z.input<typeof placeOrderSchema>;
  * the client's numbers are display-only.
  */
 export const placeOrder = createServerFn({ method: "POST" })
-  .inputValidator((data: unknown) => placeOrderSchema.parse(data))
+  .validator((data: unknown) => placeOrderSchema.parse(data))
   .handler(async ({ data }) => {
     const { collection, getMongoDatabase } = await import("./mongodb.server");
     const { client, db } = await getMongoDatabase();
@@ -126,25 +142,11 @@ export const placeOrder = createServerFn({ method: "POST" })
         { id: data.storeId },
         { projection: { _id: 0, id: 1 } },
       ),
-      db
-        .collection("site_settings")
-        .findOne<{ delivery_fee_cents?: number; free_delivery_threshold_cents?: number }>({
-          _id: "storefront",
-        }),
+      db.collection<StorefrontPricingSettings>("site_settings").findOne({ _id: "storefront" }),
       data.promoCode
-        ? db.collection("promotions").findOne<{
-            id: string;
-            code: string;
-            label: string;
-            description: string;
-            kind: "amount" | "percent";
-            value: number;
-            minSubtotalCents?: number;
-            category?: CategoryId;
-            usage_limit?: number;
-            usage_count?: number;
-            active: boolean;
-          }>({ code: data.promoCode.trim().toUpperCase() })
+        ? db
+            .collection<StoredPromotion>("promotions")
+            .findOne({ code: data.promoCode.trim().toUpperCase() })
         : Promise.resolve(null),
     ]);
     if (!store) return { ok: false as const, error: "Please choose a store." };
@@ -183,6 +185,7 @@ export const placeOrder = createServerFn({ method: "POST" })
         const unit = unitPriceCents({ price_cents: item.price_cents, options }, line.selections);
         snapshots.push({
           itemId: item.id,
+          slug: item.slug,
           name: item.name,
           imageKey: item.image_key,
           quantity: line.quantity,
@@ -210,15 +213,17 @@ export const placeOrder = createServerFn({ method: "POST" })
           if (storedPromotion && !storedPromotion.active) {
             throw new PricingError("That promo code is no longer active.");
           }
-          const databasePromotion = storedPromotion
+          const databasePromotion: PromoDefinition | null = storedPromotion
             ? {
                 code: storedPromotion.code,
                 label: storedPromotion.label,
                 description: storedPromotion.description,
                 kind: storedPromotion.kind,
                 value: storedPromotion.value,
-                minSubtotalCents: storedPromotion.minSubtotalCents,
-                category: storedPromotion.category,
+                ...(storedPromotion.minSubtotalCents !== undefined
+                  ? { minSubtotalCents: storedPromotion.minSubtotalCents }
+                  : {}),
+                ...(storedPromotion.category ? { category: storedPromotion.category } : {}),
               }
             : null;
           if (
@@ -384,7 +389,7 @@ export const placeOrder = createServerFn({ method: "POST" })
   });
 
 export const getGuestRewards = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) => z.object({ guestId: z.string().uuid() }).parse(d))
+  .validator((d: unknown) => z.object({ guestId: z.string().uuid() }).parse(d))
   .handler(async ({ data }) => {
     const { collection, getMongoDatabase } = await import("./mongodb.server");
     const { db } = await getMongoDatabase();
@@ -428,7 +433,7 @@ export const getGuestRewards = createServerFn({ method: "GET" })
 
 /** A signed bearer token grants read-only access to this order's tracking and receipt data. */
 export const getOrder = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) =>
+  .validator((d: unknown) =>
     z.object({ id: z.string().uuid(), token: z.string().regex(/^[A-Za-z0-9_-]{43}$/) }).parse(d),
   )
   .handler(async ({ data }) => {
