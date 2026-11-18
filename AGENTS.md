@@ -28,3 +28,5 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+- Worker build: keep the `nitro.alias` mapping `"punycode/"` to the npm `punycode` package in vite.config.ts — tr46 (via the MongoDB driver) requires `"punycode/"`, which otherwise resolves to unenv's file path plus a slash and fails the publish build.
