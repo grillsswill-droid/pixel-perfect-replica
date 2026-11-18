@@ -113,7 +113,7 @@ type PayPalWebhookEvent = {
   resource?: Record<string, unknown>;
 };
 
-const STRIPE_API_VERSION = "2026-09-30.endive" as const;
+const STRIPE_API_VERSION = "2026-10-28.endive" as const;
 const CHECKOUT_EXPIRY_SECONDS = 30 * 60;
 
 let stripeClient: Stripe | undefined;

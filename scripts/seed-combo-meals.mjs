@@ -215,7 +215,7 @@ const products = [
     quick_order_group: "kids",
     price_cents: 849,
     description: "A personal mini pizza with a kids' drink.",
-    image_key: "pizza",
+    image_key: "kids_mini_pizza_pals",
     bundle_components: [
       { quantity: 1, label: "Personal mini pizza" },
       { quantity: 1, label: "Kids' drink" },
@@ -228,7 +228,7 @@ const products = [
     quick_order_group: "kids",
     price_cents: 799,
     description: "Four chicken dippers with small fries and a kids' drink.",
-    image_key: "chicken",
+    image_key: "kids_chicken_dippers_box",
     bundle_components: [
       { quantity: 4, label: "Chicken dippers" },
       { quantity: 1, label: "Small fries" },
@@ -242,7 +242,7 @@ const products = [
     quick_order_group: "kids",
     price_cents: 849,
     description: "Grilled chicken bites with small fries and a kids' drink.",
-    image_key: "",
+    image_key: "kids_little_grillers_box",
     bundle_components: [
       { quantity: 1, label: "Grilled chicken bites" },
       { quantity: 1, label: "Small fries" },
@@ -256,7 +256,7 @@ const products = [
     quick_order_group: "desserts",
     price_cents: 349,
     description: "One scoop of the available ice cream.",
-    image_key: "",
+    image_key: "dessert_swill_scoop_cup",
     bundle_components: [{ quantity: 1, label: "Scoop of available ice cream" }],
     is_featured: true,
   },
@@ -267,7 +267,7 @@ const products = [
     quick_order_group: "desserts",
     price_cents: 499,
     description: "Two scoops of the available ice cream.",
-    image_key: "",
+    image_key: "dessert_double_scoop_dream",
     bundle_components: [{ quantity: 2, label: "Scoop of available ice cream" }],
   },
   {
@@ -277,7 +277,7 @@ const products = [
     quick_order_group: "desserts",
     price_cents: 599,
     description: "Ice cream topped with cookie crumbs and chocolate sauce.",
-    image_key: "",
+    image_key: "dessert_cookie_crunch_sundae",
     bundle_components: [
       { quantity: 1, label: "Scoop of available ice cream" },
       { quantity: 1, label: "Cookie crumbs" },
@@ -291,7 +291,7 @@ const products = [
     quick_order_group: "desserts",
     price_cents: 649,
     description: "Ice cream with brownie pieces and chocolate fudge.",
-    image_key: "",
+    image_key: "dessert_brownie_blast_sundae",
     bundle_components: [
       { quantity: 1, label: "Scoop of available ice cream" },
       { quantity: 1, label: "Brownie pieces" },

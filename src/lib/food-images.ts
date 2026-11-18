@@ -9,19 +9,28 @@ import onionRings from "@/assets/food-onion-rings.jpg";
 import coldbrew from "@/assets/food-coldbrew.jpg";
 import shake from "@/assets/food-shake.jpg";
 import lemonade from "@/assets/food-lemonade.jpg";
-import comboDoubleStackSmokehouse from "../../lovimg/combo-double-stack-smokehouse.jpg";
-import comboFirecrackerChicken from "../../lovimg/combo-firecracker-chicken.jpg";
-import comboFlameGrilledChicken from "../../lovimg/combo-flame-grilled-chicken.jpg";
-import comboPizzaForTwo from "../../lovimg/combo-pizza-for-two.jpg";
-import comboPizzaWingsNight from "../../lovimg/combo-pizza-wings-night.jpg";
-import comboSoloPizzaBox from "../../lovimg/combo-solo-pizza-box.jpg";
-import comboStickyBbqWings from "../../lovimg/combo-sticky-bbq-wings.jpg";
-import comboSwillCrunch from "../../lovimg/combo-swill-crunch.jpg";
-import comboSwillPizzaFeast from "../../lovimg/combo-swill-pizza-feast.jpg";
-import comboSwillhouseClassic from "../../lovimg/combo-swillhouse-classic.jpg";
-import kidsLittleSwillBurgerBox from "../../lovimg/kids-little-swill-burger-box.jpg";
+import comboSwillhouseClassic from "@/assets/menu/combo-swillhouse-classic.webp";
+import comboDoubleStackSmokehouse from "@/assets/menu/combo-double-stack-smokehouse.webp";
+import comboFirecrackerChicken from "@/assets/menu/combo-firecracker-chicken.webp";
+import comboStickyBbqWings from "@/assets/menu/combo-sticky-bbq-wings.webp";
+import comboFlameGrilledChicken from "@/assets/menu/combo-flame-grilled-chicken.webp";
+import comboSwillCrunch from "@/assets/menu/combo-swill-crunch.webp";
+import comboSoloPizzaBox from "@/assets/menu/combo-solo-pizza-box.webp";
+import comboPizzaForTwo from "@/assets/menu/combo-pizza-for-two.webp";
+import comboSwillPizzaFeast from "@/assets/menu/combo-swill-pizza-feast.webp";
+import comboPizzaWingsNight from "@/assets/menu/combo-pizza-wings-night.webp";
+import kidsLittleSwillBurgerBox from "@/assets/menu/kids-little-swill-burger-box.webp";
+import kidsMiniPizzaPals from "@/assets/menu/kids-mini-pizza-pals.webp";
+import kidsChickenDippersBox from "@/assets/menu/kids-chicken-dippers-box.webp";
+import kidsLittleGrillersBox from "@/assets/menu/kids-little-grillers-box.webp";
+import dessertSwillScoopCup from "@/assets/menu/dessert-swill-scoop-cup.webp";
+import dessertDoubleScoopDream from "@/assets/menu/dessert-double-scoop-dream.webp";
+import dessertCookieCrunchSundae from "@/assets/menu/dessert-cookie-crunch-sundae.webp";
+import dessertBrownieBlastSundae from "@/assets/menu/dessert-brownie-blast-sundae.webp";
+import sideLoadedSwillFries from "@/assets/menu/side-loaded-swill-fries.webp";
 import type { CategoryId } from "./menu-types";
 
+/** Photos addressed by a menu item's image_key. */
 const MAP: Record<string, string> = {
   burger,
   bacon_burger: baconBurger,
@@ -34,20 +43,29 @@ const MAP: Record<string, string> = {
   coldbrew,
   shake,
   lemonade,
+  combo_swillhouse_classic: comboSwillhouseClassic,
   combo_double_stack_smokehouse: comboDoubleStackSmokehouse,
   combo_firecracker_chicken: comboFirecrackerChicken,
-  combo_flame_grilled_chicken: comboFlameGrilledChicken,
-  combo_pizza_for_two: comboPizzaForTwo,
-  combo_pizza_wings_night: comboPizzaWingsNight,
-  combo_solo_pizza_box: comboSoloPizzaBox,
   combo_sticky_bbq_wings: comboStickyBbqWings,
+  combo_flame_grilled_chicken: comboFlameGrilledChicken,
   combo_swill_crunch: comboSwillCrunch,
+  combo_solo_pizza_box: comboSoloPizzaBox,
+  combo_pizza_for_two: comboPizzaForTwo,
   combo_swill_pizza_feast: comboSwillPizzaFeast,
-  combo_swillhouse_classic: comboSwillhouseClassic,
+  combo_pizza_wings_night: comboPizzaWingsNight,
   kids_little_swill_burger_box: kidsLittleSwillBurgerBox,
+  kids_mini_pizza_pals: kidsMiniPizzaPals,
+  kids_chicken_dippers_box: kidsChickenDippersBox,
+  kids_little_grillers_box: kidsLittleGrillersBox,
+  dessert_swill_scoop_cup: dessertSwillScoopCup,
+  dessert_double_scoop_dream: dessertDoubleScoopDream,
+  dessert_cookie_crunch_sundae: dessertCookieCrunchSundae,
+  dessert_brownie_blast_sundae: dessertBrownieBlastSundae,
+  loaded_fries: sideLoadedSwillFries,
 };
 
-const PRODUCT_IMAGES: Record<string, string> = {
+/** Each product's own photo, addressed by its stable slug. */
+export const PRODUCT_IMAGES: Record<string, string> = {
   "swillhouse-classic-meal": comboSwillhouseClassic,
   "double-stack-smokehouse": comboDoubleStackSmokehouse,
   "firecracker-chicken-meal": comboFirecrackerChicken,
@@ -59,8 +77,17 @@ const PRODUCT_IMAGES: Record<string, string> = {
   "swill-pizza-feast": comboSwillPizzaFeast,
   "pizza-wings-night": comboPizzaWingsNight,
   "little-swill-burger-box": kidsLittleSwillBurgerBox,
+  "mini-pizza-pals": kidsMiniPizzaPals,
+  "chicken-dippers-box": kidsChickenDippersBox,
+  "little-grillers-box": kidsLittleGrillersBox,
+  "swill-scoop-cup": dessertSwillScoopCup,
+  "double-scoop-dream": dessertDoubleScoopDream,
+  "cookie-crunch-sundae": dessertCookieCrunchSundae,
+  "brownie-blast-sundae": dessertBrownieBlastSundae,
+  "loaded-fries": sideLoadedSwillFries,
 };
 
+/** Shared stock keys older records carry; a product's own photo replaces them. */
 const GENERIC_IMAGE_KEYS = new Set([
   "",
   "burger",
@@ -78,6 +105,8 @@ export const CATEGORY_IMAGES: Partial<Record<CategoryId, string>> = {
   pizza,
   sides: fries,
   drinks: coldbrew,
+  kids: kidsLittleSwillBurgerBox,
+  desserts: dessertBrownieBlastSundae,
 } as const;
 
 export function foodImage(key: string, productSlug?: string): string {
@@ -86,5 +115,5 @@ export function foodImage(key: string, productSlug?: string): string {
   if (productSlug && GENERIC_IMAGE_KEYS.has(key) && PRODUCT_IMAGES[productSlug]) {
     return PRODUCT_IMAGES[productSlug];
   }
-  return MAP[key] ?? (productSlug ? PRODUCT_IMAGES[productSlug] : "") ?? "";
+  return MAP[key] ?? (productSlug ? PRODUCT_IMAGES[productSlug] : undefined) ?? "";
 }

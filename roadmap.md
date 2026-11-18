@@ -11,3 +11,6 @@
 - [x] Admin kitchen dashboard (order queue, inventory toggle) behind staff passcode
 - [x] Food photos with Grill & Swill logo printed on the wrappers/packaging (user reference image)
 - [x] Unit tests for cart, pricing/promos, order status, and route matching
+- [x] Unique branded photos for every combo, kids' meal, dessert and loaded fries
+- [ ] Final premium polish pass (home, menu, cart, checkout, tracking, receipts, admin, kitchen, mobile audit)
+- [ ] Connect the menu/orders database (MongoDB connection not set; blocks combos quick add + orders)

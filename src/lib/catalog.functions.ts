@@ -3,6 +3,7 @@ import { queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
 
 import { defaultCategories, defaultMenu, defaultStores } from "./default-catalog";
+import { buildDefaultCombos } from "./default-combos";
 import type { MenuCategory, MenuItem, Store } from "./menu-types";
 import {
   PricingError,
@@ -18,7 +19,7 @@ function getFallbackCategories(): MenuCategory[] {
 }
 
 function getFallbackMenu(): MenuItem[] {
-  return defaultMenu;
+  return [...defaultMenu, ...buildDefaultCombos(defaultMenu)];
 }
 
 function getFallbackStores(): Store[] {
