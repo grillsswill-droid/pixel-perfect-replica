@@ -19,11 +19,15 @@ const punycodePackage = fileURLToPath(
 
 const nitroPreset = process.env["VERCEL"] === "1" ? "vercel" : "node-server";
 
+// The config wrapper's nitro type lists only a few keys, but it forwards every option to
+// Nitro, so `alias` is passed through a variable rather than an inline object literal.
+const nitroOptions = {
+  preset: nitroPreset,
+  alias: { "punycode/": punycodePackage },
+};
+
 export default defineConfig({
-  nitro: {
-    preset: nitroPreset,
-    alias: { "punycode/": punycodePackage },
-  },
+  nitro: nitroOptions,
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
