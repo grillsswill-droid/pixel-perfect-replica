@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
+import { resolveMenuCatalog, verifyQuickOrderSelectionFromMenu } from "@/lib/catalog.functions";
+import { defaultSelections } from "@/lib/pricing";
 import type { MenuItem, Selections } from "@/lib/menu-types";
 import {
   bundleComponentsFor,
-  defaultSelections,
   PricingError,
   unitPriceCents,
   validateMenuBundle,
@@ -111,6 +112,29 @@ const selections: Selections = {
 };
 
 describe("combo menu validation", () => {
+  it("verifies bundled Quick Order items when the database menu is unavailable", () => {
+    const menu = resolveMenuCatalog([]);
+    const fallbackCombo = menu.find(
+      (item) => item.is_quick_order && item.quick_order_group === "burgers",
+    );
+
+    expect(fallbackCombo).toBeDefined();
+    if (!fallbackCombo) throw new Error("Expected a bundled Quick Order item.");
+
+    const result = verifyQuickOrderSelectionFromMenu(menu, {
+      itemId: fallbackCombo.id,
+      selections: defaultSelections(fallbackCombo),
+    });
+
+    expect(result).toMatchObject({
+      ok: true,
+      line: {
+        itemId: fallbackCombo.id,
+        unitPriceCents: fallbackCombo.price_cents,
+      },
+    });
+  });
+
   it("uses configured pizza options to price and snapshot a selected combo", () => {
     const items = new Map([
       [pizza.id, pizza],

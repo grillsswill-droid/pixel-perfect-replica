@@ -22,8 +22,28 @@ function getFallbackMenu(): MenuItem[] {
   return [...defaultMenu, ...buildDefaultCombos(defaultMenu)];
 }
 
+export function resolveMenuCatalog(menu: MenuItem[]): MenuItem[] {
+  return withMenuBundleAvailability(menu.length ? menu : getFallbackMenu());
+}
+
 function getFallbackStores(): Store[] {
   return defaultStores;
+}
+
+async function loadMenuCatalog(): Promise<MenuItem[]> {
+  try {
+    const { collection, getMongoDatabase } = await import("./mongodb.server");
+    const { db } = await getMongoDatabase();
+    const menu = await collection<MenuItem>(db, "menu_items")
+      .find({})
+      .project<MenuItem>({ _id: 0 })
+      .sort({ category: 1, sort_order: 1 })
+      .toArray();
+    return resolveMenuCatalog(menu);
+  } catch (error) {
+    console.error("Menu data unavailable; using the bundled catalog.", error);
+    return resolveMenuCatalog([]);
+  }
 }
 
 export const getCategories = createServerFn({ method: "GET" }).handler(
@@ -43,21 +63,45 @@ export const getCategories = createServerFn({ method: "GET" }).handler(
   },
 );
 
-export const getMenu = createServerFn({ method: "GET" }).handler(async (): Promise<MenuItem[]> => {
-  try {
-    const { collection, getMongoDatabase } = await import("./mongodb.server");
-    const { db } = await getMongoDatabase();
-    const menu = await collection<MenuItem>(db, "menu_items")
-      .find({})
-      .project<MenuItem>({ _id: 0 })
-      .sort({ category: 1, sort_order: 1 })
-      .toArray();
-    return withMenuBundleAvailability(menu.length ? menu : getFallbackMenu());
-  } catch (error) {
-    console.error("Menu data unavailable; using the bundled catalog.", error);
-    return withMenuBundleAvailability(getFallbackMenu());
+export const getMenu = createServerFn({ method: "GET" }).handler(loadMenuCatalog);
+
+interface QuickOrderSelectionInput {
+  itemId: string;
+  selections: Record<string, string[]>;
+}
+
+export function verifyQuickOrderSelectionFromMenu(
+  menu: MenuItem[],
+  data: QuickOrderSelectionInput,
+) {
+  const item = menu.find((entry) => entry.id === data.itemId);
+  if (!item?.is_quick_order) {
+    return { ok: false as const, error: "This Quick Order item is no longer available." };
   }
-});
+
+  try {
+    if (!item.is_available) throw new PricingError(`${item.name} is sold out right now.`);
+    const itemsById = new Map(menu.map((entry) => [entry.id, entry]));
+    validateMenuBundle(item, data.selections, itemsById);
+    const unitPriceCentsValue = unitPriceCents(item, data.selections);
+    return {
+      ok: true as const,
+      line: {
+        itemId: item.id,
+        slug: item.slug,
+        category: item.category,
+        name: item.name,
+        imageKey: item.image_key,
+        unitPriceCents: unitPriceCentsValue,
+        summary: selectionSummary(item, data.selections, []),
+        bundleComponents: bundleComponentsFor(item, data.selections),
+      },
+    };
+  } catch (error) {
+    if (error instanceof PricingError) return { ok: false as const, error: error.message };
+    throw error;
+  }
+}
 
 export const verifyQuickOrderSelection = createServerFn({ method: "POST" })
   .validator((value: unknown) =>
@@ -70,54 +114,8 @@ export const verifyQuickOrderSelection = createServerFn({ method: "POST" })
       .parse(value),
   )
   .handler(async ({ data }) => {
-    const { collection, getMongoDatabase } = await import("./mongodb.server");
-    const { db } = await getMongoDatabase();
-    const item = await collection<MenuItem>(db, "menu_items").findOne(
-      { id: data.itemId },
-      { projection: { _id: 0 } },
-    );
-    if (!item || !item.is_quick_order) {
-      return { ok: false as const, error: "This Quick Order item is no longer available." };
-    }
-
-    try {
-      if (!item.is_available) throw new PricingError(`${item.name} is sold out right now.`);
-      const linkedIds = [
-        ...new Set([
-          ...(item.bundle_components ?? []).flatMap((component) =>
-            component.menu_item_id ? [component.menu_item_id] : [],
-          ),
-          ...item.options.flatMap((group) =>
-            group.choices.flatMap((choice) => (choice.menu_item_id ? [choice.menu_item_id] : [])),
-          ),
-        ]),
-      ];
-      const linkedItems = linkedIds.length
-        ? await collection<MenuItem>(db, "menu_items")
-            .find({ id: { $in: linkedIds } })
-            .project<MenuItem>({ _id: 0 })
-            .toArray()
-        : [];
-      const itemsById = new Map([...linkedItems, item].map((entry) => [entry.id, entry]));
-      validateMenuBundle(item, data.selections, itemsById);
-      const unitPriceCentsValue = unitPriceCents(item, data.selections);
-      return {
-        ok: true as const,
-        line: {
-          itemId: item.id,
-          slug: item.slug,
-          category: item.category,
-          name: item.name,
-          imageKey: item.image_key,
-          unitPriceCents: unitPriceCentsValue,
-          summary: selectionSummary(item, data.selections, []),
-          bundleComponents: bundleComponentsFor(item, data.selections),
-        },
-      };
-    } catch (error) {
-      if (error instanceof PricingError) return { ok: false as const, error: error.message };
-      throw error;
-    }
+    const menu = await loadMenuCatalog();
+    return verifyQuickOrderSelectionFromMenu(menu, data);
   });
 
 export const getStores = createServerFn({ method: "GET" }).handler(async (): Promise<Store[]> => {
