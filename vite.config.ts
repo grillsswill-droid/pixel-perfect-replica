@@ -7,13 +7,22 @@
 // the build fails. Never add compression (compressPublicAssets, vite-plugin-compression):
 // hosting already compresses at the edge.
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+
+// tr46 (pulled in by the MongoDB driver) requires "punycode/" — the npm package, not the
+// Node built-in. The Worker build aliases bare "punycode" to unenv's .mjs file, and the
+// trailing slash then resolves to "<file>.mjs/" and fails. Point it at the npm package.
+const punycodePackage = fileURLToPath(
+  new URL("./node_modules/punycode/punycode.js", import.meta.url),
+);
 
 const nitroPreset = process.env["VERCEL"] === "1" ? "vercel" : "node-server";
 
 export default defineConfig({
   nitro: {
     preset: nitroPreset,
+    alias: { "punycode/": punycodePackage },
   },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
