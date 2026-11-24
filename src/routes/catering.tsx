@@ -24,6 +24,10 @@ export const Route = createFileRoute("/catering")({
     meta: [
       { title: "Catering | Grill & Swill" },
       { name: "description", content: "Plan your next gathering with Grill & Swill catering." },
+      { property: "og:title", content: "Catering | Grill & Swill" },
+      { property: "og:description", content: "Plan your next gathering with Grill & Swill catering." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: CateringPage,

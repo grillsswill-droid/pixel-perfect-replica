@@ -38,6 +38,10 @@ export const Route = createFileRoute("/rewards")({
     meta: [
       { title: "Swill Club Rewards | Grill & Swill" },
       { name: "description", content: "Earn points every time you eat well." },
+      { property: "og:title", content: "Swill Club Rewards | Grill & Swill" },
+      { property: "og:description", content: "Earn points every time you eat well at Grill & Swill." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: RewardsPage,

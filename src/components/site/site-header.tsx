@@ -105,18 +105,18 @@ export function SiteHeader() {
         className={cn(
           "border-b transition-all duration-300",
           scrolled
-            ? "border-border bg-background/90 backdrop-blur-md"
-            : "border-transparent bg-background",
+            ? "border-border bg-card/95 backdrop-blur-md"
+            : "border-border bg-card",
         )}
       >
-        <div className="mx-auto flex h-16 max-w-7xl items-center gap-6 px-4 sm:px-6">
+        <div className="mx-auto flex h-20 max-w-7xl items-center gap-4 px-4 sm:px-6">
           <Logo />
           <nav className="ml-6 hidden items-center gap-1 lg:flex" aria-label="Main">
             {NAV.filter((item) => item.to !== "/").map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="relative rounded-full px-4 py-2 text-sm font-semibold text-charcoal/80 transition hover:text-charcoal focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="relative px-3 py-2 text-sm font-bold text-charcoal/80 transition hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 activeProps={{ className: "text-charcoal" }}
               >
                 {({ isActive }) => (
@@ -134,7 +134,8 @@ export function SiteHeader() {
             ))}
           </nav>
           <div className="ml-auto flex items-center gap-2">
-            <button
+            <Button
+              variant="ghost"
               type="button"
               onClick={() => setOpen(true)}
               className="relative grid h-11 w-11 place-items-center rounded-full bg-card text-charcoal shadow-card transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:scale-90"
@@ -155,11 +156,12 @@ export function SiteHeader() {
                   </motion.span>
                 )}
               </AnimatePresence>
-            </button>
+            </Button>
             <Button asChild variant="hero" size="default" className="hidden sm:inline-flex">
               <Link to="/menu">Order Now</Link>
             </Button>
-            <button
+            <Button
+              variant="ghost"
               ref={menuButtonRef}
               type="button"
               className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary lg:hidden"
@@ -169,7 +171,7 @@ export function SiteHeader() {
               aria-controls="mobile-navigation"
             >
               <MenuIcon className="h-5 w-5" />
-            </button>
+            </Button>
           </div>
         </div>
       </div>

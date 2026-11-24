@@ -20,6 +20,11 @@ export const Route = createFileRoute("/receipts/$id")({
   head: () => ({
     meta: [
       { title: "Order receipt | Grill & Swill" },
+      { name: "description", content: "Your Grill & Swill order receipt and payment summary." },
+      { property: "og:title", content: "Order receipt | Grill & Swill" },
+      { property: "og:description", content: "Your Grill & Swill order receipt and payment summary." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

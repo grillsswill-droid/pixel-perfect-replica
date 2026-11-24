@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 import { foodImage } from "@/lib/food-images";
 import type { MenuItem } from "@/lib/menu-types";
@@ -14,12 +15,13 @@ export function MenuCard({
 }) {
   const imageSrc = foodImage(item.image_key, item.slug);
   return (
-    <button
+    <Button
+      variant="ghost"
       type="button"
       onClick={() => onSelect(item)}
       data-testid="menu-card"
       className={cn(
-        "group flex h-full w-full flex-col overflow-hidden rounded-3xl bg-card text-left shadow-card transition duration-300 hover:-translate-y-1.5 hover:shadow-lift active:scale-[0.98]",
+        "menu-product-card group flex h-full w-full flex-col items-stretch justify-start gap-0 overflow-hidden whitespace-normal rounded-lg border border-border bg-card p-0 text-left transition duration-300 hover:-translate-y-1.5 hover:bg-card hover:shadow-lift active:scale-[0.98]",
         !item.is_available && "opacity-70",
       )}
     >
@@ -68,6 +70,6 @@ export function MenuCard({
           </span>
         </div>
       </div>
-    </button>
+    </Button>
   );
 }
