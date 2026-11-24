@@ -11,7 +11,7 @@ import type {
 } from "./menu-types";
 import type { OrderStatus } from "./order-status";
 
-export type PaymentProvider = "stripe" | "paypal";
+export type PaymentProvider = "stripe" | "paypal" | "flutterwave";
 export type PaymentStatus =
   | "not_charged"
   | "pending"
@@ -35,6 +35,7 @@ export interface UserDocument {
   is_guest: true;
   display_name: string;
   phone: string | null;
+  email?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -94,6 +95,7 @@ export interface OrderDocument {
   payment_updated_at?: string;
   commerce_effects_status?: CommerceEffectsStatus;
   customer_name: string;
+  customer_email?: string;
   customer_phone?: string | null;
   created_at: string;
   updated_at: string;

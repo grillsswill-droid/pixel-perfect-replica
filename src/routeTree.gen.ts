@@ -23,6 +23,9 @@ import { Route as AccountOrdersRouteImport } from './routes/account.orders'
 import { Route as OrdersIdRouteImport } from './routes/orders.$id'
 import { Route as ReceiptsIdRouteImport } from './routes/receipts.$id'
 import { Route as ApiMediaIdRouteImport } from './routes/api.media.$id'
+import { Route as ApiPaymentsInitializeRouteImport } from './routes/api.payments.initialize'
+import { Route as ApiPaymentsVerifyRouteImport } from './routes/api.payments.verify'
+import { Route as ApiWebhooksFlutterwaveRouteImport } from './routes/api.webhooks.flutterwave'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -94,6 +97,21 @@ const ApiMediaIdRoute = ApiMediaIdRouteImport.update({
   path: '/api/media/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPaymentsInitializeRoute = ApiPaymentsInitializeRouteImport.update({
+  id: '/api/payments/initialize',
+  path: '/api/payments/initialize',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPaymentsVerifyRoute = ApiPaymentsVerifyRouteImport.update({
+  id: '/api/payments/verify',
+  path: '/api/payments/verify',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiWebhooksFlutterwaveRoute = ApiWebhooksFlutterwaveRouteImport.update({
+  id: '/api/webhooks/flutterwave',
+  path: '/api/webhooks/flutterwave',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -110,6 +128,9 @@ export interface FileRoutesByFullPath {
   '/orders/$id': typeof OrdersIdRoute
   '/receipts/$id': typeof ReceiptsIdRoute
   '/api/media/$id': typeof ApiMediaIdRoute
+  '/api/payments/initialize': typeof ApiPaymentsInitializeRoute
+  '/api/payments/verify': typeof ApiPaymentsVerifyRoute
+  '/api/webhooks/flutterwave': typeof ApiWebhooksFlutterwaveRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -126,6 +147,9 @@ export interface FileRoutesByTo {
   '/orders/$id': typeof OrdersIdRoute
   '/receipts/$id': typeof ReceiptsIdRoute
   '/api/media/$id': typeof ApiMediaIdRoute
+  '/api/payments/initialize': typeof ApiPaymentsInitializeRoute
+  '/api/payments/verify': typeof ApiPaymentsVerifyRoute
+  '/api/webhooks/flutterwave': typeof ApiWebhooksFlutterwaveRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -143,6 +167,9 @@ export interface FileRoutesById {
   '/orders/$id': typeof OrdersIdRoute
   '/receipts/$id': typeof ReceiptsIdRoute
   '/api/media/$id': typeof ApiMediaIdRoute
+  '/api/payments/initialize': typeof ApiPaymentsInitializeRoute
+  '/api/payments/verify': typeof ApiPaymentsVerifyRoute
+  '/api/webhooks/flutterwave': typeof ApiWebhooksFlutterwaveRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,6 +188,9 @@ export interface FileRouteTypes {
     | '/orders/$id'
     | '/receipts/$id'
     | '/api/media/$id'
+    | '/api/payments/initialize'
+    | '/api/payments/verify'
+    | '/api/webhooks/flutterwave'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -177,6 +207,9 @@ export interface FileRouteTypes {
     | '/orders/$id'
     | '/receipts/$id'
     | '/api/media/$id'
+    | '/api/payments/initialize'
+    | '/api/payments/verify'
+    | '/api/webhooks/flutterwave'
   id:
     | '__root__'
     | '/'
@@ -193,6 +226,9 @@ export interface FileRouteTypes {
     | '/orders/$id'
     | '/receipts/$id'
     | '/api/media/$id'
+    | '/api/payments/initialize'
+    | '/api/payments/verify'
+    | '/api/webhooks/flutterwave'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -210,6 +246,9 @@ export interface RootRouteChildren {
   OrdersIdRoute: typeof OrdersIdRoute
   ReceiptsIdRoute: typeof ReceiptsIdRoute
   ApiMediaIdRoute: typeof ApiMediaIdRoute
+  ApiPaymentsInitializeRoute: typeof ApiPaymentsInitializeRoute
+  ApiPaymentsVerifyRoute: typeof ApiPaymentsVerifyRoute
+  ApiWebhooksFlutterwaveRoute: typeof ApiWebhooksFlutterwaveRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -312,6 +351,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiMediaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/payments/initialize': {
+      id: '/api/payments/initialize'
+      path: '/api/payments/initialize'
+      fullPath: '/api/payments/initialize'
+      preLoaderRoute: typeof ApiPaymentsInitializeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payments/verify': {
+      id: '/api/payments/verify'
+      path: '/api/payments/verify'
+      fullPath: '/api/payments/verify'
+      preLoaderRoute: typeof ApiPaymentsVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/webhooks/flutterwave': {
+      id: '/api/webhooks/flutterwave'
+      path: '/api/webhooks/flutterwave'
+      fullPath: '/api/webhooks/flutterwave'
+      preLoaderRoute: typeof ApiWebhooksFlutterwaveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -330,6 +390,9 @@ const rootRouteChildren: RootRouteChildren = {
   OrdersIdRoute: OrdersIdRoute,
   ReceiptsIdRoute: ReceiptsIdRoute,
   ApiMediaIdRoute: ApiMediaIdRoute,
+  ApiPaymentsInitializeRoute: ApiPaymentsInitializeRoute,
+  ApiPaymentsVerifyRoute: ApiPaymentsVerifyRoute,
+  ApiWebhooksFlutterwaveRoute: ApiWebhooksFlutterwaveRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

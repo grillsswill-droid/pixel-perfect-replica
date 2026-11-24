@@ -85,7 +85,7 @@ export function SiteFooter() {
       <div className="border-t border-cream/10">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-xs text-cream/50 sm:flex-row sm:justify-between sm:px-6">
           <span>© {new Date().getFullYear()} Grill & Swill Fast Food. All rights reserved.</span>
-          <span>Payments on this site are simulated. No card is charged.</span>
+          <span>Payments are securely processed by Flutterwave.</span>
         </div>
       </div>
     </footer>

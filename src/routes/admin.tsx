@@ -319,7 +319,11 @@ function Overview({
   busy: boolean;
 }) {
   const orders = data.orders;
-  const open = orders.filter((order) => !["completed", "cancelled"].includes(order.status));
+  const open = orders.filter(
+    (order) =>
+      (!order.payment_provider || order.payment_status === "paid") &&
+      !["completed", "cancelled"].includes(order.status),
+  );
   const completedValue = orders
     .filter((order) => order.status === "completed")
     .reduce((sum, order) => sum + order.total_cents, 0);
@@ -332,7 +336,7 @@ function Overview({
     {
       label: "Completed order value",
       value: formatMoney(completedValue),
-      help: "Demo payments are not collected",
+      help: "Verified payment status is shown per order",
     },
     { label: "Average order", value: formatMoney(average), help: "Recent orders" },
   ];
@@ -382,7 +386,7 @@ function Overview({
             </Link>
           </div>
           <p className="mt-5 rounded-xl bg-cream/10 p-3 text-xs leading-relaxed text-cream/70">
-            Order totals are snapshots from demo checkout. No card payments are processed.
+            Flutterwave payments are verified server-side before orders enter the kitchen queue.
           </p>
         </section>
       </div>
@@ -2518,7 +2522,7 @@ function SalesPanel() {
       "",
       "",
       "",
-      "Completed order value (demo)",
+      "Completed order value",
       "",
       (sales.completedOrderValueCents / 100).toFixed(2),
       "",
@@ -2538,7 +2542,7 @@ function SalesPanel() {
   return (
     <Panel
       title="Sales reports"
-      description="Period totals are based on completed order values, not captured payments. Checkout is currently a demo and no payments are processed."
+      description="Period totals are based on completed order values. Review each order's payment status when reconciling against Flutterwave settlements."
     >
       <style>{`@media print { body * { visibility: hidden !important; } #sales-print, #sales-print * { visibility: visible !important; } #sales-print { position: absolute; inset: 0; width: 100%; padding: 24px; background: white; color: black; } }`}</style>
       <div className="mb-5 flex flex-wrap items-center gap-2 print:hidden">
@@ -2575,7 +2579,7 @@ function SalesPanel() {
               {new Date(sales.start).toLocaleString()} – {new Date(sales.end).toLocaleString()}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
-              Completed order value only. Demo checkout means no payment has been collected.
+              Completed order value only; settlement and fee reconciliation remains in Flutterwave.
             </p>
           </div>
           <div className="mb-6 grid gap-3 sm:grid-cols-3">

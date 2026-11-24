@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { Check, ChefHat, CircleDot, PackageCheck, Truck } from "lucide-react";
 import { motion } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/hooks/use-cart";
 import { getOrder } from "@/lib/orders.functions";
 import { STATUS_FLOW, statusLabel } from "@/lib/order-status";
 import { formatMoney } from "@/lib/pricing";
@@ -16,6 +18,7 @@ export const Route = createFileRoute("/orders/$id")({
       .string()
       .regex(/^[A-Za-z0-9_-]{43}$/)
       .optional(),
+    payment: z.literal("successful").optional(),
   }),
   loaderDeps: ({ search }) => ({ token: search.token }),
   loader: ({ params, deps }) =>
@@ -28,8 +31,25 @@ const STAGE_ICONS = [CircleDot, ChefHat, Truck, PackageCheck];
 
 function OrderPage() {
   const order = Route.useLoaderData();
-  const { token } = Route.useSearch();
+  const { id } = Route.useParams();
+  const { token, payment } = Route.useSearch();
   const router = useRouter();
+  const { clear: clearCart } = useCart();
+  const handledPaymentReturn = useRef(false);
+
+  useEffect(() => {
+    if (payment !== "successful" || handledPaymentReturn.current) return;
+    handledPaymentReturn.current = true;
+    clearCart();
+    window.sessionStorage.removeItem("grill-swill-checkout-request-v1");
+    toast.success("Payment confirmed. Your order is in!");
+    void router.navigate({
+      to: "/orders/$id",
+      params: { id },
+      search: { token },
+      replace: true,
+    });
+  }, [clearCart, id, payment, router, token]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -53,6 +73,7 @@ function OrderPage() {
   }
 
   const status = order.status;
+  const paymentStatus = order.payment_status ?? "not_charged";
   const activeStage = STATUS_FLOW.indexOf(status as (typeof STATUS_FLOW)[number]);
   const items = order.items as OrderLineSnapshot[];
 
@@ -178,7 +199,11 @@ function OrderPage() {
               <span>{formatMoney(order.total_cents)}</span>
             </div>
             <p className="mt-4 rounded-xl bg-accent p-3 text-xs leading-relaxed text-muted-foreground">
-              Demo checkout: no payment was processed or charged.
+              {paymentStatus === "paid"
+                ? `Payment verified${order.payment_method ? ` via ${order.payment_method}` : " via Flutterwave"}.`
+                : paymentStatus === "pending" || paymentStatus === "processing"
+                  ? "Payment confirmation is still pending. The kitchen will receive the order after verification."
+                  : "No verified payment is attached to this order."}
             </p>
           </div>
           <aside className="rounded-3xl bg-accent p-6">

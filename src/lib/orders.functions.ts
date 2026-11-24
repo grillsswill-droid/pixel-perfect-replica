@@ -407,7 +407,13 @@ export const getGuestRewards = createServerFn({ method: "GET" })
         { projection: { _id: 0, points: 1, lifetime_points: 1, created_at: 1 } },
       ),
       collection<OrderDocument>(db, "orders")
-        .find({ guest_id: data.guestId })
+        .find({
+          guest_id: data.guestId,
+          $or: [
+            { payment_status: { $exists: false } },
+            { payment_status: { $in: ["not_charged", "paid"] } },
+          ],
+        })
         .project<
           Pick<
             OrderDocument,

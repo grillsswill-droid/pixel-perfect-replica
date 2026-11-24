@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const paymentProviderSchema = z.enum(["stripe", "paypal"]);
+export const paymentProviderSchema = z.enum(["stripe", "paypal", "flutterwave"]);
 export type PaymentProvider = z.infer<typeof paymentProviderSchema>;
 
 export const paymentStatusSchema = z.enum([
@@ -76,4 +76,3 @@ export function centsToDecimal(cents: number): string {
 export function normalizedCurrency(value: string | null | undefined): string {
   return value?.trim().toUpperCase() ?? "";
 }
-

@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -78,6 +79,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [remoteLoaded, setRemoteLoaded] = useState(false);
   const [remoteAvailable, setRemoteAvailable] = useState(false);
   const [isOpen, setOpen] = useState(false);
+  const clearedWhileLoading = useRef(false);
 
   useEffect(() => {
     try {
@@ -111,7 +113,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     getCart({ data: { guestId } })
       .then((saved) => {
         if (!active) return;
-        if (saved) {
+        if (saved && !clearedWhileLoading.current) {
           setState((current) =>
             current.lines.length > 0
               ? current
@@ -164,7 +166,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const removeLine = useCallback((key: string) => {
     setState((s) => ({ ...s, lines: s.lines.filter((l) => l.key !== key) }));
   }, []);
-  const clear = useCallback(() => setState((s) => ({ ...s, lines: [] })), []);
+  const clear = useCallback(() => {
+    clearedWhileLoading.current = true;
+    setState((s) => ({ ...s, lines: [] }));
+  }, []);
   const setFulfillment = useCallback(
     (fulfillment: Fulfillment) => setState((s) => ({ ...s, fulfillment })),
     [],

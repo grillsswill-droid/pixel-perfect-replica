@@ -787,6 +787,14 @@ export const getAdminWorkspace = createServerFn({ method: "GET" }).handler(async
         last_order_at: string;
         order_value_cents: number;
       }>([
+        {
+          $match: {
+            $or: [
+              { payment_status: { $exists: false } },
+              { payment_status: { $in: ["not_charged", "paid"] } },
+            ],
+          },
+        },
         { $sort: { created_at: -1 } },
         {
           $group: {
@@ -1274,6 +1282,9 @@ export const setAdminOrderStatus = createServerFn({ method: "POST" })
     const orders = collection<OrderDocument>(db, "orders");
     const order = await orders.findOne({ id: data.id });
     if (!order) throw new Error("That order no longer exists.");
+    if (order.payment_provider && order.payment_status !== "paid" && data.status !== "cancelled") {
+      throw new Error("Payment must be verified before this order can enter fulfillment.");
+    }
     if (order.status === data.status) return { ok: true as const };
     if (!canTransitionOrder(order.status, data.status)) {
       throw new Error(`Cannot move an order from ${order.status} to ${data.status}.`);

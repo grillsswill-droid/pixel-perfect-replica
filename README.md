@@ -1,8 +1,8 @@
 # Grill & Swill
 
 A fast-casual restaurant storefront built with React, TypeScript, TanStack Start,
-Tailwind CSS, and MongoDB. Guests can browse and customize menu items, place
-simulated delivery or pickup orders, securely track orders, print itemized
+Tailwind CSS, and MongoDB. Guests can browse and customize menu items, pay for
+delivery or pickup orders through Flutterwave, securely track orders, print itemized
 receipts, browse combo meals, and collect rewards. Staff have a live kitchen
 board; administrators have separate access to catalog, operations, reports,
 promotions, catering, gallery media, and store settings.
@@ -27,7 +27,8 @@ npm run lint
 ## Environment
 
 Configure `MONGODB_URI`, `MONGODB_DATABASE`, `SESSION_SECRET`, `STAFF_PASSCODE`,
-and `ADMIN_PASSCODE` in a private local `.env` file using [`.env.example`](./.env.example)
+`ADMIN_PASSCODE`, `PUBLIC_SITE_URL`, and the `FLW_*` variables in a private local
+`.env` file using [`.env.example`](./.env.example)
 as a template. `SESSION_SECRET` must contain at least 32 characters;
 `ADMIN_PASSCODE` must be a unique secret of at least 16 characters. Keep both
 passcodes private and distinct.
@@ -39,6 +40,31 @@ do not override it to `dist`.
 The MongoDB deployment must support transactions (MongoDB Atlas does). The app
 creates its required indexes when it connects. Admin-uploaded JPEG, PNG, and
 WebP images (up to 2 MB each) are stored in MongoDB GridFS.
+
+## Flutterwave payments
+
+Checkout uses Flutterwave Standard (hosted checkout) in USD. The browser calls
+`POST /api/payments/initialize`; the server recomputes the order total and uses
+`FLW_SECRET_KEY` to create the hosted payment link. The secret key is never sent
+to browser code. `FLW_PUBLIC_KEY` and `FLW_ENCRYPTION_KEY` are included as
+placeholders for a future Inline/direct-charge flow but are not required by the
+current hosted flow.
+
+Set the Flutterwave redirect/callback URL to the app-generated
+`/api/payments/verify` URL by configuring `PUBLIC_SITE_URL` to the deployed HTTPS
+origin. In the Flutterwave dashboard, configure the webhook URL as:
+
+```text
+https://your-domain.example/api/webhooks/flutterwave
+```
+
+Set the same random secret hash in Flutterwave and `FLW_SECRET_HASH`. The webhook
+checks the `verif-hash` header before accepting `charge.completed` events. Both
+the redirect and webhook re-fetch the transaction from Flutterwave, compare its
+status, amount, currency, and `tx_ref`, then use one atomic paid transition so
+retries cannot award rewards or fulfill an order twice. See the
+[Flutterwave v3 API docs](https://developer.flutterwave.com/api) for dashboard
+and test-mode details.
 
 For a production Node.js server, build and start with:
 
@@ -90,9 +116,9 @@ The seed command only inserts starter menu, category, and store data when each
 collection is empty. Guest carts are synchronized to MongoDB while retaining
 the local-device fallback; guest reward balances remain in `guests`, and order
 profiles are stored in `users`. Keep the MongoDB connection string, session
-secret, and staff passcode private. Checkout is a demo and does not charge a
-payment method; USD amounts are displayed and recorded, but no live USD payment
-is charged until a payment provider is configured.
+secret, staff passcode, Flutterwave secret key, encryption key, and webhook hash
+private. Pending or failed payment attempts remain out of the kitchen queue;
+only verified payments are fulfilled and credited with rewards.
 
 ## Storefront routes
 

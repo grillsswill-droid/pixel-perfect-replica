@@ -180,12 +180,15 @@ function ReceiptPage() {
 
           <footer className="mt-6 border-t border-dashed border-border pt-5 text-sm">
             <p className="font-semibold">
-              Payment status: {paymentStatus === "paid" ? "Paid" : "Not charged"}
+              Payment status:{" "}
+              {paymentStatus === "paid" ? "Paid" : paymentStatus.replaceAll("_", " ")}
             </p>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-              This checkout is a demo. No payment was processed or charged
-              {order.payment_last4 ? `; card ending in ${order.payment_last4} was not charged` : ""}
-              . This receipt records the order totals and is not proof of payment.
+              {paymentStatus === "paid"
+                ? `Verified ${order.payment_method ? `through ${order.payment_method}` : "through Flutterwave"}${order.payment_transaction_id ? ` · Transaction ${order.payment_transaction_id}` : ""}.`
+                : paymentStatus === "not_charged"
+                  ? "This legacy demo order was not charged."
+                  : "This receipt is not proof of payment until the payment status is Paid."}
             </p>
           </footer>
         </article>

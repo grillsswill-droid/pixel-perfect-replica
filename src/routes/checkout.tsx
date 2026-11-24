@@ -1,5 +1,5 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
@@ -13,8 +13,16 @@ import {
   Store as StoreIcon,
   Tag,
 } from "lucide-react";
-import { useEffect, useMemo, useRef, useState, type ComponentProps, type ReactNode } from "react";
-import { toast } from "sonner";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentProps,
+  type FormEvent,
+  type ReactNode,
+} from "react";
+import { z } from "zod";
 
 import { Field } from "@/components/site/field";
 import { Button } from "@/components/ui/button";
@@ -24,7 +32,7 @@ import { getCheckoutConfiguration } from "@/lib/admin.functions";
 import { storesQuery } from "@/lib/catalog.functions";
 import { foodImage } from "@/lib/food-images";
 import { guestRewardsQuery } from "@/lib/order-queries";
-import { deliveryAddressSchema, placeOrder, type DeliveryAddress } from "@/lib/orders.functions";
+import { deliveryAddressSchema, type DeliveryAddress } from "@/lib/orders.functions";
 import {
   DELIVERY_FEE_CENTS,
   FREE_DELIVERY_THRESHOLD_CENTS,
@@ -38,6 +46,9 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/checkout")({
+  validateSearch: z.object({
+    payment: z.enum(["cancelled", "failed", "verification_error"]).optional(),
+  }),
   head: () => ({
     meta: [
       { title: "Checkout | Grill & Swill" },
@@ -57,8 +68,11 @@ export const Route = createFileRoute("/checkout")({
 });
 
 const ADDRESS_KEY = "grill-swill-address-v1";
+const CONTACT_KEY = "grill-swill-contact-v1";
 const CHECKOUT_REQUEST_KEY = "grill-swill-checkout-request-v1";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_PATTERN = /^[\d\s()+.-]{10,20}$/;
 const STEPS = ["Where", "Details", "Pay"] as const;
 
 const EMPTY_ADDRESS: DeliveryAddress = {
@@ -75,8 +89,7 @@ const EMPTY_ADDRESS: DeliveryAddress = {
 function CheckoutPage() {
   const cart = useCart();
   const guestId = useGuestId();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const { payment } = Route.useSearch();
   const { data: stores = [] } = useQuery(storesQuery());
   const { data: rewards } = useQuery(guestRewardsQuery(guestId));
   const { data: checkoutConfiguration } = useQuery({
@@ -85,6 +98,7 @@ function CheckoutPage() {
     staleTime: 60_000,
   });
   const requestId = useRef<string | null>(null);
+  const serverErrorRef = useRef<HTMLParagraphElement | null>(null);
 
   const [step, setStep] = useState(0);
   const [address, setAddress] = useState<DeliveryAddress>(EMPTY_ADDRESS);
@@ -93,11 +107,13 @@ function CheckoutPage() {
   >({});
   const [pickupName, setPickupName] = useState("");
   const [pickupError, setPickupError] = useState<string>();
+  const [pickupPhone, setPickupPhone] = useState("");
+  const [pickupPhoneError, setPickupPhoneError] = useState<string>();
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState<string>();
   const [promoInput, setPromoInput] = useState("");
   const [promoCode, setPromoCode] = useState<string | null>(null);
   const [points, setPoints] = useState(0);
-  const [card, setCard] = useState({ number: "", exp: "", cvc: "" });
-  const [cardErrors, setCardErrors] = useState<{ number?: string; exp?: string; cvc?: string }>({});
   const [placing, setPlacing] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -108,11 +124,36 @@ function CheckoutPage() {
         const parsed = { ...EMPTY_ADDRESS, ...(JSON.parse(saved) as Partial<DeliveryAddress>) };
         setAddress(parsed);
         setPickupName(parsed.name);
+        setPickupPhone(parsed.phone);
+      }
+      const savedContact = window.localStorage.getItem(CONTACT_KEY);
+      if (savedContact) {
+        const parsed = JSON.parse(savedContact) as { email?: unknown; phone?: unknown };
+        if (typeof parsed.email === "string") setEmail(parsed.email);
+        if (typeof parsed.phone === "string") setPickupPhone(parsed.phone);
       }
     } catch {
       /* ignore */
     }
   }, []);
+
+  useEffect(() => {
+    if (!payment) return;
+    requestId.current = null;
+    window.sessionStorage.removeItem(CHECKOUT_REQUEST_KEY);
+    setStep(2);
+    setServerError(
+      payment === "cancelled"
+        ? "Payment was cancelled. Your bag is still here when you're ready to try again."
+        : payment === "failed"
+          ? "Flutterwave did not complete the payment. Check your details and try again."
+          : "We couldn't confirm the payment yet. If you were charged, don't retry immediately—contact support with your Flutterwave receipt.",
+    );
+  }, [payment]);
+
+  useEffect(() => {
+    if (serverError) serverErrorRef.current?.focus();
+  }, [serverError]);
 
   useEffect(() => {
     if (!cart.storeId && stores[0]) cart.setStoreId(stores[0].id);
@@ -190,12 +231,21 @@ function CheckoutPage() {
   const maxRedeem = maxPoints - (maxPoints % REDEEM_STEP);
 
   function validateDetails(): boolean {
+    const normalizedEmail = email.trim().toLowerCase();
+    const validEmail = EMAIL_PATTERN.test(normalizedEmail) && normalizedEmail.length <= 254;
+    setEmailError(validEmail ? undefined : "Enter a valid email address");
+
     if (cart.fulfillment === "pickup") {
-      if (pickupName.trim().length < 2) {
-        setPickupError("Add a name for pickup");
-        return false;
-      }
-      setPickupError(undefined);
+      const validName = pickupName.trim().length >= 2;
+      const validPhone = PHONE_PATTERN.test(pickupPhone.trim());
+      setPickupError(validName ? undefined : "Add a name for pickup");
+      setPickupPhoneError(validPhone ? undefined : "Enter a valid phone number");
+      if (!validName || !validPhone || !validEmail) return false;
+      setEmail(normalizedEmail);
+      window.localStorage.setItem(
+        CONTACT_KEY,
+        JSON.stringify({ email: normalizedEmail, phone: pickupPhone.trim() }),
+      );
       return true;
     }
     const res = deliveryAddressSchema.safeParse(address);
@@ -206,30 +256,21 @@ function CheckoutPage() {
       setAddressErrors(errs);
       return false;
     }
+    if (!validEmail) return false;
     setAddressErrors({});
     setAddress(res.data);
+    setEmail(normalizedEmail);
     window.localStorage.setItem(ADDRESS_KEY, JSON.stringify(res.data));
+    window.localStorage.setItem(
+      CONTACT_KEY,
+      JSON.stringify({ email: normalizedEmail, phone: res.data.phone }),
+    );
     return true;
   }
 
-  function validateCard(): boolean {
-    const digits = card.number.replace(/\D/g, "");
-    const errs: typeof cardErrors = {};
-    if (digits.length < 15 || digits.length > 16)
-      errs.number = "Enter a 15 or 16 digit card number";
-    const m = card.exp.match(/^(\d{2})\s*\/\s*(\d{2})$/);
-    if (!m || Number(m[1]) < 1 || Number(m[1]) > 12) errs.exp = "Use MM/YY";
-    else {
-      const expEnd = new Date(2000 + Number(m[2]), Number(m[1]), 1);
-      if (expEnd <= new Date()) errs.exp = "This card has expired";
-    }
-    if (!/^\d{3,4}$/.test(card.cvc)) errs.cvc = "3 or 4 digits";
-    setCardErrors(errs);
-    return Object.keys(errs).length === 0;
-  }
-
-  async function submit() {
-    if (!validateCard() || !guestId || !cart.storeId) return;
+  async function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!validateDetails() || !guestId || !cart.storeId || !totals) return;
     const savedRequestId = window.sessionStorage.getItem(CHECKOUT_REQUEST_KEY);
     const checkoutRequestId =
       requestId.current ??
@@ -241,8 +282,14 @@ function CheckoutPage() {
     setPlacing(true);
     setServerError(null);
     try {
-      const res = await placeOrder({
-        data: {
+      const customerName =
+        cart.fulfillment === "delivery" ? address.name.trim() : pickupName.trim();
+      const customerPhone =
+        cart.fulfillment === "delivery" ? address.phone.trim() : pickupPhone.trim();
+      const response = await fetch("/api/payments/initialize", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
           guestId,
           requestId: checkoutRequestId,
           lines: cart.lines.map((l) => ({
@@ -255,35 +302,29 @@ function CheckoutPage() {
           fulfillment: cart.fulfillment,
           storeId: cart.storeId,
           address: cart.fulfillment === "delivery" ? address : null,
-          pickupName: cart.fulfillment === "pickup" ? pickupName.trim() : undefined,
           promoCode: promoError ? null : promoCode,
-          pointsToRedeem: totals?.pointsRedeemed ?? 0,
-          paymentLast4: card.number.replace(/\D/g, "").slice(-4),
-        },
+          pointsToRedeem: totals.pointsRedeemed,
+          email: email.trim().toLowerCase(),
+          name: customerName,
+          phone_number: customerPhone,
+          amount: totals.totalCents / 100,
+          currency: "USD",
+        }),
       });
-      if (!res.ok) {
-        setServerError(res.error);
+      const payload = (await response.json().catch(() => null)) as
+        { ok: true; link: string } | { ok: false; error?: string } | null;
+      if (!response.ok || !payload?.ok || !payload.link) {
+        setServerError(
+          payload && "error" in payload && payload.error
+            ? payload.error
+            : "We couldn't start Flutterwave checkout. Please try again.",
+        );
         return;
       }
-      if (cart.fulfillment === "pickup") {
-        window.localStorage.setItem(
-          ADDRESS_KEY,
-          JSON.stringify({ ...address, name: pickupName.trim() }),
-        );
-      }
-      cart.clear();
-      await queryClient.invalidateQueries({ queryKey: ["guest-rewards"] });
-      toast.success(`Order #${res.orderNumber} is in! +${res.pointsEarned} points`);
-      requestId.current = null;
-      window.sessionStorage.removeItem(CHECKOUT_REQUEST_KEY);
-      navigate({
-        to: "/orders/$id",
-        params: { id: res.orderId },
-        search: { token: res.accessToken },
-      });
+      window.location.assign(payload.link);
     } catch (e) {
       console.error(e);
-      setServerError("We couldn't place your order. You weren't charged — please try again.");
+      setServerError("We couldn't start payment. You weren't charged—please try again.");
     } finally {
       setPlacing(false);
     }
@@ -444,6 +485,17 @@ function CheckoutPage() {
                         className="sm:col-span-3"
                         {...{ address, setAddress, addressErrors }}
                       />
+                      <Field
+                        label="Email"
+                        type="email"
+                        autoComplete="email"
+                        inputMode="email"
+                        className="sm:col-span-6"
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
+                        error={emailError}
+                        hint="Flutterwave sends the payment receipt to this address."
+                      />
                       <AddrField
                         k="street"
                         label="Street address"
@@ -491,7 +543,7 @@ function CheckoutPage() {
                       />
                     </div>
                   ) : (
-                    <div className="max-w-sm">
+                    <div className="max-w-sm space-y-4">
                       <Field
                         label="Name for the order"
                         autoComplete="name"
@@ -500,8 +552,26 @@ function CheckoutPage() {
                         error={pickupError}
                         hint="We'll call this name at the counter."
                       />
+                      <Field
+                        label="Phone"
+                        type="tel"
+                        autoComplete="tel"
+                        value={pickupPhone}
+                        onChange={(event) => setPickupPhone(event.target.value)}
+                        error={pickupPhoneError}
+                      />
+                      <Field
+                        label="Email"
+                        type="email"
+                        inputMode="email"
+                        autoComplete="email"
+                        value={email}
+                        onChange={(event) => setEmail(event.target.value)}
+                        error={emailError}
+                        hint="Flutterwave sends the payment receipt to this address."
+                      />
                       {store && (
-                        <p className="mt-6 flex items-start gap-2 rounded-2xl bg-card p-4 text-sm">
+                        <p className="flex items-start gap-2 rounded-2xl bg-card p-4 text-sm">
                           <StoreIcon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                           <span>
                             <b>{store.name}</b>
@@ -520,162 +590,126 @@ function CheckoutPage() {
 
               {step === 2 && (
                 <Panel title="Payment">
-                  <div className="rounded-2xl bg-card p-5">
-                    <h3 className="flex items-center gap-2 font-display text-sm font-black tracking-wider uppercase">
-                      <Tag className="h-4 w-4 text-primary" /> Promo code
-                    </h3>
-                    <form
-                      className="mt-3 flex gap-2"
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        setPromoCode(promoInput.trim() ? promoInput.trim().toUpperCase() : null);
-                      }}
-                    >
-                      <input
-                        value={promoInput}
-                        onChange={(e) => setPromoInput(e.target.value)}
-                        placeholder="e.g. SWILL5"
-                        aria-label="Promo code"
-                        className="h-11 flex-1 rounded-xl border-2 border-input bg-background px-4 font-semibold uppercase outline-none focus:border-primary"
-                      />
-                      <Button type="submit" variant="charcoal" className="h-11">
-                        Apply
-                      </Button>
-                    </form>
-                    {promoCode && !promoError && (
-                      <p className="mt-2 flex items-center justify-between text-sm font-semibold text-success">
-                        <span>
-                          <Check className="mr-1 inline h-4 w-4" />
-                          {promoCode} applied
-                        </span>
-                        <button
-                          type="button"
-                          className="text-muted-foreground underline"
-                          onClick={() => {
-                            setPromoCode(null);
-                            setPromoInput("");
-                          }}
-                        >
-                          Remove
-                        </button>
-                      </p>
-                    )}
-                    {promoError && (
-                      <p className="mt-2 text-sm font-semibold text-destructive">{promoError}</p>
-                    )}
-                  </div>
-
-                  <div className="mt-4 rounded-2xl bg-card p-5">
-                    <h3 className="flex items-center gap-2 font-display text-sm font-black tracking-wider uppercase">
-                      <Gift className="h-4 w-4 text-primary" /> Swill points
-                    </h3>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      You have <b className="text-charcoal">{availablePoints}</b> points. 100 points
-                      = $1 off.
-                    </p>
-                    {maxRedeem >= REDEEM_STEP ? (
-                      <div className="mt-3 flex items-center gap-3">
+                  <form onSubmit={submit}>
+                    <div className="rounded-2xl bg-card p-5">
+                      <h3 className="flex items-center gap-2 font-display text-sm font-black tracking-wider uppercase">
+                        <Tag className="h-4 w-4 text-primary" /> Promo code
+                      </h3>
+                      <div className="mt-3 flex gap-2">
                         <input
-                          type="range"
-                          min={0}
-                          max={maxRedeem}
-                          step={REDEEM_STEP}
-                          value={Math.min(points, maxRedeem)}
-                          onChange={(e) => setPoints(Number(e.target.value))}
-                          aria-label="Points to redeem"
-                          className="flex-1 accent-primary"
+                          value={promoInput}
+                          onChange={(e) => setPromoInput(e.target.value)}
+                          onKeyDown={(event) => {
+                            if (event.key !== "Enter") return;
+                            event.preventDefault();
+                            setPromoCode(
+                              promoInput.trim() ? promoInput.trim().toUpperCase() : null,
+                            );
+                          }}
+                          placeholder="e.g. SWILL5"
+                          aria-label="Promo code"
+                          className="h-11 flex-1 rounded-xl border-2 border-input bg-background px-4 font-semibold uppercase outline-none focus:border-primary"
                         />
-                        <span className="w-28 text-right text-sm font-bold tabular-nums">
-                          {Math.min(points, maxRedeem)} pts ·{" "}
-                          {formatMoney(Math.min(points, maxRedeem))}
-                        </span>
+                        <Button
+                          type="button"
+                          variant="charcoal"
+                          className="h-11"
+                          onClick={() =>
+                            setPromoCode(promoInput.trim() ? promoInput.trim().toUpperCase() : null)
+                          }
+                        >
+                          Apply
+                        </Button>
                       </div>
-                    ) : (
-                      <p className="mt-2 text-xs text-muted-foreground">
-                        Earn 100 points to start redeeming.
+                      {promoCode && !promoError && (
+                        <p className="mt-2 flex items-center justify-between text-sm font-semibold text-success">
+                          <span>
+                            <Check className="mr-1 inline h-4 w-4" />
+                            {promoCode} applied
+                          </span>
+                          <button
+                            type="button"
+                            className="text-muted-foreground underline"
+                            onClick={() => {
+                              setPromoCode(null);
+                              setPromoInput("");
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </p>
+                      )}
+                      {promoError && (
+                        <p className="mt-2 text-sm font-semibold text-destructive">{promoError}</p>
+                      )}
+                    </div>
+
+                    <div className="mt-4 rounded-2xl bg-card p-5">
+                      <h3 className="flex items-center gap-2 font-display text-sm font-black tracking-wider uppercase">
+                        <Gift className="h-4 w-4 text-primary" /> Swill points
+                      </h3>
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        You have <b className="text-charcoal">{availablePoints}</b> points. 100
+                        points = $1 off.
+                      </p>
+                      {maxRedeem >= REDEEM_STEP ? (
+                        <div className="mt-3 flex items-center gap-3">
+                          <input
+                            type="range"
+                            min={0}
+                            max={maxRedeem}
+                            step={REDEEM_STEP}
+                            value={Math.min(points, maxRedeem)}
+                            onChange={(e) => setPoints(Number(e.target.value))}
+                            aria-label="Points to redeem"
+                            className="flex-1 accent-primary"
+                          />
+                          <span className="w-28 text-right text-sm font-bold tabular-nums">
+                            {Math.min(points, maxRedeem)} pts ·{" "}
+                            {formatMoney(Math.min(points, maxRedeem))}
+                          </span>
+                        </div>
+                      ) : (
+                        <p className="mt-2 text-xs text-muted-foreground">
+                          Earn 100 points to start redeeming.
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="mt-4 rounded-2xl border-2 border-primary/20 bg-card p-5">
+                      <h3 className="flex items-center gap-2 font-display text-sm font-black tracking-wider uppercase">
+                        <CreditCard className="h-4 w-4 text-primary" aria-hidden="true" /> Secure
+                        Flutterwave checkout
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                        Continue to Flutterwave to choose a supported payment method. Card and bank
+                        details are entered on Flutterwave's hosted checkout and never pass through
+                        this website.
+                      </p>
+                    </div>
+
+                    {serverError && (
+                      <p
+                        ref={serverErrorRef}
+                        role="alert"
+                        tabIndex={-1}
+                        className="mt-4 rounded-xl bg-destructive/10 p-4 text-sm font-semibold text-destructive outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      >
+                        {serverError}
                       </p>
                     )}
-                  </div>
-
-                  <div className="mt-4 rounded-2xl bg-card p-5">
-                    <h3 className="flex items-center gap-2 font-display text-sm font-black tracking-wider uppercase">
-                      <CreditCard className="h-4 w-4 text-primary" /> Card
-                    </h3>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Payments are simulated — no card is charged. Try 4242 4242 4242 4242.
-                    </p>
-                    <div className="mt-3 grid grid-cols-6 gap-3">
-                      <Field
-                        label="Card number"
-                        className="col-span-6"
-                        inputMode="numeric"
-                        autoComplete="cc-number"
-                        placeholder="4242 4242 4242 4242"
-                        value={card.number}
-                        onChange={(e) =>
-                          setCard((c) => ({
-                            ...c,
-                            number: e.target.value
-                              .replace(/[^\d]/g, "")
-                              .slice(0, 16)
-                              .replace(/(\d{4})(?=\d)/g, "$1 "),
-                          }))
-                        }
-                        error={cardErrors.number}
-                      />
-                      <Field
-                        label="Expiry"
-                        className="col-span-3"
-                        inputMode="numeric"
-                        autoComplete="cc-exp"
-                        placeholder="MM/YY"
-                        value={card.exp}
-                        onChange={(e) => {
-                          const d = e.target.value.replace(/\D/g, "").slice(0, 4);
-                          setCard((c) => ({
-                            ...c,
-                            exp: d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d,
-                          }));
-                        }}
-                        error={cardErrors.exp}
-                      />
-                      <Field
-                        label="CVC"
-                        className="col-span-3"
-                        inputMode="numeric"
-                        autoComplete="cc-csc"
-                        placeholder="123"
-                        value={card.cvc}
-                        onChange={(e) =>
-                          setCard((c) => ({
-                            ...c,
-                            cvc: e.target.value.replace(/\D/g, "").slice(0, 4),
-                          }))
-                        }
-                        error={cardErrors.cvc}
-                      />
-                    </div>
-                  </div>
-
-                  {serverError && (
-                    <p
-                      role="alert"
-                      className="mt-4 rounded-xl bg-destructive/10 p-4 text-sm font-semibold text-destructive"
+                    <Button
+                      type="submit"
+                      variant="hero"
+                      size="xl"
+                      className="mt-6 w-full"
+                      loading={placing}
+                      disabled={!guestId || !totals}
                     >
-                      {serverError}
-                    </p>
-                  )}
-                  <Button
-                    variant="hero"
-                    size="xl"
-                    className="mt-6 w-full"
-                    onClick={submit}
-                    loading={placing}
-                    disabled={!guestId || !totals}
-                  >
-                    <Lock className="h-4 w-4" /> Place order{" "}
-                    {totals ? `· ${formatMoney(totals.totalCents)}` : ""}
-                  </Button>
+                      <Lock className="h-4 w-4" aria-hidden="true" /> Continue to Flutterwave{" "}
+                      {totals ? `· ${formatMoney(totals.totalCents)}` : ""}
+                    </Button>
+                  </form>
                 </Panel>
               )}
             </motion.div>

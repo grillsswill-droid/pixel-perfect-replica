@@ -70,7 +70,13 @@ export const getKitchenBoard = createServerFn({ method: "GET" }).handler(async (
   const since = new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString();
   const [orders, menu, logs] = await Promise.all([
     collection<OrderDocument>(db, "orders")
-      .find({ created_at: { $gte: since } })
+      .find({
+        created_at: { $gte: since },
+        $or: [
+          { payment_status: { $exists: false } },
+          { payment_status: { $in: ["not_charged", "paid"] } },
+        ],
+      })
       .project<OrderDocument>({ _id: 0 })
       .sort({ created_at: -1 })
       .limit(80)
@@ -130,6 +136,9 @@ export const setOrderStatus = createServerFn({ method: "POST" })
     const orders = collection<OrderDocument>(db, "orders");
     const order = await orders.findOne({ id: data.id });
     if (!order) throw new Error("That order couldn't be found.");
+    if (order.payment_provider && order.payment_status !== "paid" && data.status !== "cancelled") {
+      throw new Error("Payment must be verified before this order can enter fulfillment.");
+    }
     if (!canTransitionOrder(order.status, data.status)) {
       throw new Error(`Cannot move an order from ${order.status} to ${data.status}.`);
     }
