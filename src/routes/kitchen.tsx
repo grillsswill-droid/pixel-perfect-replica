@@ -20,7 +20,15 @@ type Board = Awaited<ReturnType<typeof getKitchenBoard>>;
 type UnlockedBoard = Extract<Board, { unlocked: true }>;
 
 export const Route = createFileRoute("/kitchen")({
-  head: () => ({ meta: [{ title: "Kitchen | Grill & Swill" }] }),
+  head: () => ({ meta: [
+    { title: "Kitchen | Grill & Swill" },
+    { name: "description", content: "Grill & Swill kitchen order queue." },
+    { property: "og:title", content: "Kitchen | Grill & Swill" },
+    { property: "og:description", content: "Grill & Swill kitchen order queue." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex, nofollow" },
+  ] }),
   component: KitchenPage,
 });
 

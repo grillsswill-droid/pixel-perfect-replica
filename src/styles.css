@@ -139,7 +139,7 @@
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     font-stretch: 112%;
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
   ::selection {
     background: var(--primary);
@@ -150,7 +150,7 @@
 @utility font-display {
   font-family: var(--font-display);
   font-stretch: 115%;
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
 }
 
 @utility font-condensed {
@@ -212,7 +212,62 @@
   animation: spin-flame 0.7s linear infinite;
 }
 
+.storefront-hero { height: clamp(560px, calc(100svh - 210px), 760px); }
+.hero-inner { height: 100%; padding-top: 40px; padding-bottom: 60px; }
+.hero-title { font-size: 88px; line-height: .98; font-stretch: 100%; }
+.hero-copy { width: 52%; }
+.hero-food { object-position: 64% center; }
+.hero-shade { background: linear-gradient(90deg, var(--charcoal) 0%, color-mix(in oklab, var(--charcoal) 92%, transparent) 28%, color-mix(in oklab, var(--charcoal) 45%, transparent) 49%, transparent 76%); }
+.flavor-strip { display: flex; justify-content: space-around; align-items: center; gap: 32px; overflow: hidden; padding: 19px 24px; background: var(--primary); color: var(--primary-foreground); font-family: var(--font-display); font-size: 15px; font-weight: 800; text-transform: uppercase; white-space: nowrap; }
+.flavor-strip svg { width: 22px; height: 22px; flex-shrink: 0; }
+.quick-order-tab { border-radius: 4px; }
+.quick-meal-card { box-shadow: none; }
+.quick-meal-card h3 { font-size: 23px; }
+.combo-inclusions ul { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; }
+.category-shelf-grid { grid-auto-flow: column; grid-auto-columns: minmax(280px, 31%); grid-template-columns: none; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 0 20px; scrollbar-width: thin; }
+.category-shelf-grid > * { scroll-snap-align: start; }
+.category-shelf-grid .quick-meal-card h3 { font-size: 20px; }
+.menu-product-card > div:first-child { aspect-ratio: 1.2; }
+.menu-product-card h3 { font-size: 20px; }
+.reading-progress { position: fixed; inset: 0 0 auto; height: 3px; background: var(--ember); transform-origin: left; z-index: 60; pointer-events: none; }
+.loading-overlay { position: fixed; inset: 0; z-index: 100; background: var(--charcoal); animation: loading-failsafe 3.2s steps(1) forwards; }
+.brand-loading { min-height: 60vh; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--charcoal); color: var(--cream); }
+.loading-mark { display: flex; flex-direction: column; align-items: center; width: 120px; height: 142px; }
+.loading-mark img { object-fit: contain; animation: flame-rise 1.1s ease-in-out infinite; }
+.loading-grill { display: flex; gap: 5px; margin-top: 10px; transform: skewX(-18deg); }
+.loading-grill span { width: 14px; height: 4px; background: var(--ember); animation: grill-heat 1.1s ease-in-out infinite; }
+.loading-grill span:nth-child(2) { animation-delay: .12s; }
+.loading-grill span:nth-child(3) { animation-delay: .24s; }
+.loading-grill span:nth-child(4) { animation-delay: .36s; }
+.loading-grill span:nth-child(5) { animation-delay: .48s; }
+.loading-track { width: 160px; height: 2px; margin-top: 32px; background: color-mix(in oklab, var(--cream) 15%, transparent); overflow: hidden; }
+.loading-track span { display: block; width: 45%; height: 100%; background: var(--ember); animation: loading-sweep 1s ease-in-out infinite; }
+.route-loading { position: fixed; right: 24px; bottom: 24px; z-index: 60; border: 1px solid var(--primary); border-radius: 8px; background: var(--charcoal); padding: 10px; pointer-events: none; }
+.route-loading .loading-mark { width: 52px; height: 70px; }
+.route-loading img { width: 48px; height: 48px; }
+.route-loading .loading-grill { gap: 3px; margin-top: 4px; }
+.route-loading .loading-grill span { width: 7px; }
+@keyframes flame-rise { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+@keyframes grill-heat { 0%, 100% { opacity: .3; transform: scaleX(.75); } 50% { opacity: 1; transform: scaleX(1); } }
+@keyframes loading-sweep { from { transform: translateX(-110%); } to { transform: translateX(330%); } }
+@keyframes loading-failsafe { to { visibility: hidden; pointer-events: none; } }
+@media (min-width: 1500px) { .hero-title { font-size: 100px; } }
+@media (max-width: 767px) {
+  .storefront-hero { height: clamp(550px, calc(100svh - 180px), 650px); }
+  .hero-inner { align-items: flex-start; padding-top: 38px; padding-bottom: 30px; }
+  .hero-title { font-size: 58px; }
+  .hero-copy { width: 100%; max-width: 420px; }
+  .hero-copy > p { max-width: 310px; }
+  .hero-copy > div:last-child { margin-top: 28px; }
+  .hero-food { object-position: 58% center; }
+  .hero-shade { background: linear-gradient(90deg, color-mix(in oklab, var(--charcoal) 95%, transparent), color-mix(in oklab, var(--charcoal) 62%, transparent) 65%, color-mix(in oklab, var(--charcoal) 22%, transparent)); }
+  .flavor-strip { justify-content: flex-start; padding: 16px 20px; font-size: 12px; gap: 24px; }
+  .category-shelf-grid { grid-auto-columns: 84%; }
+}
+@media (max-width: 380px) { .hero-title { font-size: 50px; } .hero-copy > div:nth-last-child(2) { gap: 12px; margin-top: 24px; } }
+
 @media (prefers-reduced-motion: reduce) {
+  .loading-overlay { animation-duration: 3.2s !important; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;

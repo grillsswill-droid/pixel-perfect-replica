@@ -23,7 +23,15 @@ export const Route = createFileRoute("/orders/$id")({
   loaderDeps: ({ search }) => ({ token: search.token }),
   loader: ({ params, deps }) =>
     deps.token ? getOrder({ data: { id: params.id, token: deps.token } }) : null,
-  head: () => ({ meta: [{ title: "Track your order | Grill & Swill" }] }),
+  head: () => ({ meta: [
+    { title: "Track your order | Grill & Swill" },
+    { name: "description", content: "Follow your Grill & Swill order from grill to pickup or delivery." },
+    { property: "og:title", content: "Track your order | Grill & Swill" },
+    { property: "og:description", content: "Follow your Grill & Swill order from grill to pickup or delivery." },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary" },
+    { name: "robots", content: "noindex, nofollow" },
+  ] }),
   component: OrderPage,
 });
 

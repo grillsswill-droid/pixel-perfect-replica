@@ -29,4 +29,6 @@ use the editor.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
 
+- SiteMotion owns entry/loading feedback and one-shot scroll reveals using browser observers after hydration; keep reveal wrappers visible in SSR and honor reduced motion so content never depends on animation to be readable.
+
 - Worker build: keep the `nitro.alias` mapping `"punycode/"` to the npm `punycode` package in vite.config.ts — tr46 (via the MongoDB driver) requires `"punycode/"`, which otherwise resolves to unenv's file path plus a slash and fails the publish build.

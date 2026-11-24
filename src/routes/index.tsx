@@ -65,6 +65,9 @@ function HomePage() {
   return (
     <>
       <Hero />
+      <div className="flavor-strip" aria-hidden="true">
+        <span>Smash. Sip. Repeat.</span><Flame /><span>Big flavour. Zero shortcuts.</span><Flame /><span>Grill & Swill</span><Flame />
+      </div>
       <QuickOrderMeals />
       <QuickOrderCategoryShelves />
       <CategoryGrid />
@@ -172,15 +175,15 @@ function QuickOrderMeals() {
 
   return (
     <>
-      <section className="bg-charcoal px-5 py-16 text-cream sm:px-8 sm:py-20">
+      <section id="quick-order" className="quick-order-section bg-card px-5 py-16 text-charcoal sm:px-8 sm:py-20">
         <div className="mx-auto max-w-7xl">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.2em] text-primary">
                 Quick order
               </p>
-              <h2 className="mt-2 text-4xl font-black uppercase sm:text-5xl">QUICK ORDER MEALS</h2>
-              <p className="mt-3 max-w-xl text-sm text-cream/70">
+              <h2 className="mt-2 text-4xl font-black uppercase sm:text-5xl">Your cravings. Sorted.</h2>
+              <p className="mt-3 max-w-xl text-sm text-muted-foreground">
                 Your favourites, bundled together. Pick your combo and order in seconds.
               </p>
             </div>
@@ -199,7 +202,7 @@ function QuickOrderMeals() {
             aria-label="Quick Order categories"
           >
             {QUICK_ORDER_TABS.map((tab) => (
-              <button
+              <Button
                 key={tab.id}
                 type="button"
                 role="tab"
@@ -207,14 +210,15 @@ function QuickOrderMeals() {
                 aria-controls="quick-order-panel"
                 aria-selected={activeTab === tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`min-h-11 rounded-full border px-4 py-2 text-sm font-bold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:min-w-0 ${
+                variant="ghost"
+                className={`quick-order-tab min-h-11 border px-4 py-2 text-sm font-bold sm:min-w-0 ${
                   activeTab === tab.id
                     ? "border-primary bg-primary text-primary-foreground"
-                    : "border-cream/25 text-cream hover:border-cream/60"
+                    : "border-border text-charcoal hover:border-primary"
                 }`}
               >
                 {tab.label}
-              </button>
+              </Button>
             ))}
           </div>
 
@@ -303,11 +307,12 @@ function QuickOrderCard({
     group.choices.some((choice) => choice.price_cents > 0),
   );
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-[2rem] border border-cream/10 bg-cream text-charcoal shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-lift">
-      <button
+    <article className="quick-meal-card group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card text-charcoal transition duration-300 hover:-translate-y-1 hover:shadow-lift">
+      <Button
+        variant="ghost"
         type="button"
         onClick={onSelect}
-        className="relative block aspect-[1.35] w-full overflow-hidden bg-muted text-left focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-primary"
+        className="relative block aspect-[1.5] h-auto w-full overflow-hidden rounded-none bg-muted p-0 text-left focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-primary"
         aria-label={`View ${item.name} details`}
       >
         {imageSrc ? (
@@ -324,18 +329,18 @@ function QuickOrderCard({
           </span>
           <span
             className={`rounded-full px-3 py-1.5 text-[10px] font-black tracking-[0.14em] uppercase ${
-              item.is_available ? "bg-success text-success-foreground" : "bg-destructive text-white"
+              item.is_available ? "bg-success text-primary-foreground" : "bg-destructive text-destructive-foreground"
             }`}
           >
             {item.is_available ? "Available" : "Sold out"}
           </span>
         </span>
-      </button>
+      </Button>
       <div className="flex flex-1 flex-col p-5">
         <h3 className="font-display text-2xl leading-tight font-black uppercase">{item.name}</h3>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
         {(item.bundle_components?.length ?? 0) > 0 ? (
-          <div className="mt-4 rounded-2xl bg-charcoal/5 p-3">
+          <div className="combo-inclusions mt-4 border-t border-border pt-3">
             <p className="text-xs font-black tracking-wide text-charcoal uppercase">
               Items included
             </p>
@@ -419,7 +424,7 @@ function QuickOrderCategoryShelves() {
                   Browse {group.label} <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              <div className="category-shelf-grid grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {items.map((item) => (
                   <QuickOrderCard
                     key={item.id}
@@ -448,34 +453,31 @@ function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative isolate min-h-[680px] overflow-hidden bg-charcoal text-cream sm:min-h-[760px]"
+      className="storefront-hero relative isolate overflow-hidden bg-charcoal text-cream"
     >
       <motion.div style={{ y: imageY }} className="absolute inset-0 -z-20 h-[116%]">
         <img
           src={heroFeast}
-          alt=""
-          className="h-full w-full object-cover object-center opacity-60"
+          alt="Grill & Swill smash burgers, pizza and drinks in our signature branded packaging"
+          className="hero-food h-full w-full object-cover object-center"
           fetchPriority="high"
         />
       </motion.div>
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-charcoal via-charcoal/80 to-charcoal/15" />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-charcoal/75 via-transparent to-charcoal/10" />
+      <div className="hero-shade absolute inset-0 -z-10" />
 
-      <div className="mx-auto flex min-h-[680px] max-w-7xl items-center px-5 py-20 sm:min-h-[760px] sm:px-8">
-        <div className="max-w-3xl">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-cream/30 bg-charcoal/35 px-4 py-2 text-xs font-bold tracking-[0.17em] text-cream uppercase backdrop-blur">
-            <Flame className="h-4 w-4 text-primary" /> Real food. No shortcuts.
+      <div className="hero-inner mx-auto flex max-w-7xl items-center px-5 sm:px-8">
+        <div className="hero-copy max-w-2xl">
+          <div className="mb-6 inline-flex items-center gap-2 text-xs font-bold text-cream uppercase">
+            <span className="h-px w-8 bg-ember" /><Flame className="h-4 w-4 text-ember" /> Real food. No shortcuts.
           </div>
 
-          <h1 className="max-w-3xl text-6xl leading-[0.9] font-black tracking-[-0.04em] uppercase sm:text-8xl lg:text-[108px]">
-            Good food.
-            <br />
-            <span className="text-primary">No funny</span>
-            <br />
-            business.
+          <h1 className="hero-title font-black uppercase">
+            Grill <span className="text-ember">&</span><br />Swill<span className="text-ember">.</span>
           </h1>
 
-          <p className="mt-7 max-w-lg text-base leading-relaxed text-cream/80 sm:text-lg">
+          <p className="mt-5 font-display text-xl font-bold uppercase text-cream sm:text-2xl">Big bites. Good times.</p>
+
+          <p className="mt-4 max-w-md text-base leading-relaxed text-cream/80">
             Smash burgers, hand-breaded chicken, 48-hour pizza dough. Made fresh, served fast, and
             worth getting your hands messy for.
           </p>
@@ -494,7 +496,7 @@ function Hero() {
             </Link>
           </div>
 
-          <div className="mt-12 flex items-center gap-3 text-xs font-semibold tracking-wide text-cream/65">
+          <div className="mt-8 flex items-center gap-3 text-xs font-semibold text-cream/65">
             <span className="flex -space-x-2">
               {[
                 { label: "Burger", icon: Flame },
@@ -519,7 +521,7 @@ function Hero() {
       </div>
 
       <a
-        href="#menu-favorites"
+        href="#quick-order"
         className="absolute right-8 bottom-8 hidden items-center gap-2 text-xs font-bold tracking-widest text-cream/70 uppercase transition hover:text-cream sm:flex"
       >
         Scroll for the good stuff <ArrowDown className="h-4 w-4 motion-safe:animate-bounce" />
@@ -631,7 +633,7 @@ function RewardsTeaser() {
   return (
     <section className="bg-cream px-5 py-16 sm:px-8 sm:py-20">
       <div className="mx-auto max-w-7xl">
-        <div className="rounded-[2rem] border border-r border-charcoal/10 bg-charcoal px-6 py-8 text-cream sm:px-8 sm:py-10">
+        <div className="border-y border-charcoal/20 py-8 text-charcoal sm:py-10">
           <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
             <div className="max-w-2xl">
               <p className="mb-3 flex items-center gap-2 text-xs font-black tracking-[0.2em] text-primary uppercase">
@@ -640,7 +642,7 @@ function RewardsTeaser() {
               <h2 className="text-4xl leading-none font-black uppercase sm:text-5xl">
                 Every bite brings you closer.
               </h2>
-              <p className="mt-4 text-cream/75">
+              <p className="mt-4 text-muted-foreground">
                 Earn 10 points for every dollar. Get a little something on us when you come back
                 hungry.
               </p>
@@ -656,7 +658,7 @@ function RewardsTeaser() {
             {rewardTiers.map((tier) => (
               <div
                 key={tier.points}
-                className="rounded-2xl border border-cream/10 bg-cream/5 p-4 text-left"
+                className="border-l-2 border-primary p-4 text-left"
               >
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-black tracking-[0.2em] text-primary uppercase">
@@ -666,15 +668,15 @@ function RewardsTeaser() {
                     Reward
                   </span>
                 </div>
-                <p className="mt-4 text-base font-black text-cream">{tier.label}</p>
-                <p className="mt-1 text-sm text-cream/65">{tier.value}</p>
+                <p className="mt-4 text-base font-black text-charcoal">{tier.label}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{tier.value}</p>
               </div>
             ))}
           </div>
         </div>
 
         <div className="mt-10 grid gap-4 md:grid-cols-3">
-          <Reveal className="rounded-[1.6rem] border border-charcoal/10 bg-white p-5 shadow-card">
+          <Reveal className="border-t border-charcoal/20 py-5">
             <Clock3 className="h-8 w-8 text-primary" />
             <h3 className="mt-4 text-2xl font-black uppercase">Fast pickup</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -684,7 +686,7 @@ function RewardsTeaser() {
 
           <Reveal
             delay={0.07}
-            className="rounded-[1.6rem] border border-charcoal/10 bg-white p-5 shadow-card"
+            className="border-t border-charcoal/20 py-5"
           >
             <Truck className="h-8 w-8 text-primary" />
             <h3 className="mt-4 text-2xl font-black uppercase">Fresh delivery</h3>
@@ -695,7 +697,7 @@ function RewardsTeaser() {
 
           <Reveal
             delay={0.14}
-            className="rounded-[1.6rem] border border-charcoal/10 bg-white p-5 shadow-card"
+            className="border-t border-charcoal/20 py-5"
           >
             <BadgeCheck className="h-8 w-8 text-primary" />
             <h3 className="mt-4 text-2xl font-black uppercase">Always consistent</h3>

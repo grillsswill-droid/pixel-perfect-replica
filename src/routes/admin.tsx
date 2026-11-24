@@ -89,7 +89,15 @@ const TABS: { id: Tab; label: string; icon: typeof Activity }[] = [
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
-    meta: [{ title: "Admin | Grill & Swill" }, { name: "robots", content: "noindex, nofollow" }],
+    meta: [
+      { title: "Admin | Grill & Swill" },
+      { name: "description", content: "Grill & Swill staff storefront management." },
+      { property: "og:title", content: "Admin | Grill & Swill" },
+      { property: "og:description", content: "Grill & Swill staff storefront management." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
   }),
   component: AdminPage,
 });

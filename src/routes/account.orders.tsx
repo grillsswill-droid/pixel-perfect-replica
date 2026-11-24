@@ -14,6 +14,10 @@ export const Route = createFileRoute("/account/orders")({
     meta: [
       { title: "Your orders | Grill & Swill" },
       { name: "description", content: "Review and track your recent Grill & Swill orders." },
+      { property: "og:title", content: "Your orders | Grill & Swill" },
+      { property: "og:description", content: "Review and track your recent Grill & Swill orders." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: CustomerOrdersPage,
