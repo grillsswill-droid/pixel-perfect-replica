@@ -196,9 +196,11 @@ function getClient(): MongoClient {
     globalMongo.__grillSwillMongoClient = new MongoClient(uri, {
       maxPoolSize: 10,
       maxIdleTimeMS: 60_000,
-      connectTimeoutMS: 5_000,
-      serverSelectionTimeoutMS: 5_000,
-      socketTimeoutMS: 15_000,
+      // Atlas DNS/TLS negotiation can exceed five seconds on a cold process.
+      // Allow the initial connection to settle instead of failing optional cart sync.
+      connectTimeoutMS: 10_000,
+      serverSelectionTimeoutMS: 10_000,
+      socketTimeoutMS: 30_000,
     });
   }
   return globalMongo.__grillSwillMongoClient;

@@ -15,6 +15,8 @@ import type { CartLine, Fulfillment } from "@/lib/menu-types";
 import { useGuestId } from "./use-guest";
 
 const STORAGE_KEY = "grill-swill-cart-v1";
+const REMOTE_LOAD_ATTEMPTS = 2;
+const REMOTE_RETRY_DELAY_MS = 750;
 
 interface CartState {
   lines: CartLine[];
@@ -110,24 +112,41 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!hydrated || !guestId) return;
     let active = true;
-    getCart({ data: { guestId } })
-      .then((saved) => {
-        if (!active) return;
-        if (saved && !clearedWhileLoading.current) {
-          setState((current) =>
-            current.lines.length > 0
-              ? current
-              : { lines: saved.lines, fulfillment: saved.fulfillment, storeId: saved.storeId },
-          );
+
+    async function loadRemoteCart() {
+      let lastError: unknown;
+      for (let attempt = 0; attempt < REMOTE_LOAD_ATTEMPTS; attempt += 1) {
+        try {
+          const saved = await getCart({ data: { guestId } });
+          if (!active) return;
+          if (saved && !clearedWhileLoading.current) {
+            setState((current) =>
+              current.lines.length > 0
+                ? current
+                : { lines: saved.lines, fulfillment: saved.fulfillment, storeId: saved.storeId },
+            );
+          }
+          setRemoteAvailable(true);
+          setRemoteLoaded(true);
+          return;
+        } catch (error) {
+          lastError = error;
+          if (attempt + 1 < REMOTE_LOAD_ATTEMPTS) {
+            await new Promise<void>((resolve) => {
+              window.setTimeout(resolve, REMOTE_RETRY_DELAY_MS);
+            });
+          }
         }
-        setRemoteAvailable(true);
-        setRemoteLoaded(true);
-      })
-      .catch(() => {
-        if (!active) return;
-        toast.error("Your saved bag couldn't be loaded. This device's bag is still available.");
-        setRemoteLoaded(true);
-      });
+      }
+
+      if (!active) return;
+      // Remote persistence is an enhancement; the device cart remains authoritative
+      // when MongoDB or the server-function request is temporarily unavailable.
+      console.warn("Remote cart unavailable; continuing with the device cart.", lastError);
+      setRemoteLoaded(true);
+    }
+
+    void loadRemoteCart();
     return () => {
       active = false;
     };
