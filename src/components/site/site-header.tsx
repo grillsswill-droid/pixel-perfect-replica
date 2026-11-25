@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
-import { Menu as MenuIcon, ShoppingBag, X } from "lucide-react";
+import { Flame, Menu as MenuIcon, ShoppingBag, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -88,14 +88,19 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40">
       {ticker.length ? (
-        <div className="overflow-hidden bg-charcoal py-1.5 text-cream">
-          <div className="flex w-max animate-marquee gap-10 whitespace-nowrap text-[11px] font-semibold tracking-[0.18em] uppercase">
+        <div
+          className="overflow-hidden bg-charcoal py-1.5 text-cream"
+          role="status"
+          aria-label={ticker.join(". ")}
+        >
+          <div
+            aria-hidden="true"
+            className="announcement-track flex w-max animate-marquee gap-10 whitespace-nowrap text-[11px] font-semibold tracking-[0.18em] uppercase"
+          >
             {[...ticker, ...ticker].map((text, index) => (
               <span key={index} className="flex items-center gap-10">
                 {text}
-                <span className="text-primary" aria-hidden="true">
-                  ✦
-                </span>
+                <Flame className="h-3.5 w-3.5 text-primary" />
               </span>
             ))}
           </div>
@@ -109,14 +114,19 @@ export function SiteHeader() {
             : "border-border bg-card",
         )}
       >
-        <div className="mx-auto flex h-20 max-w-7xl items-center gap-4 px-4 sm:px-6">
+        <div
+          className={cn(
+            "mx-auto flex max-w-7xl items-center gap-4 px-4 transition-[height] duration-300 sm:px-6",
+            scrolled ? "h-16" : "h-20",
+          )}
+        >
           <Logo />
           <nav className="ml-6 hidden items-center gap-1 lg:flex" aria-label="Main">
             {NAV.filter((item) => item.to !== "/").map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
-                className="relative px-3 py-2 text-sm font-bold text-charcoal/80 transition hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                className="relative min-h-11 px-3 py-3 text-sm font-bold text-charcoal/80 transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 activeProps={{ className: "text-charcoal" }}
               >
                 {({ isActive }) => (
@@ -186,7 +196,7 @@ export function SiteHeader() {
           tabIndex={-1}
           aria-hidden="true"
           onClick={closeDrawer}
-          className={`absolute inset-0 h-full w-full bg-charcoal/70 transition-opacity duration-300 ${
+          className={`absolute inset-0 h-full w-full bg-charcoal/75 transition-opacity duration-300 ${
             mobileOpen ? "opacity-100" : "opacity-0"
           }`}
         />
@@ -196,7 +206,7 @@ export function SiteHeader() {
           aria-modal="true"
           role="dialog"
           inert={!mobileOpen}
-          className={`absolute right-0 top-0 flex h-dvh w-[88%] max-w-sm flex-col overflow-y-auto bg-charcoal p-5 pt-[max(1.25rem,env(safe-area-inset-top))] text-cream shadow-2xl transition-transform duration-300 sm:p-7 ${
+          className={`absolute top-0 right-0 flex h-dvh w-[88%] max-w-sm flex-col overflow-y-auto bg-charcoal p-5 pt-[max(1.25rem,env(safe-area-inset-top))] text-cream shadow-2xl transition-transform duration-300 sm:p-7 ${
             mobileOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >

@@ -21,7 +21,7 @@ export function MenuCard({
       onClick={() => onSelect(item)}
       data-testid="menu-card"
       className={cn(
-        "menu-product-card group flex h-full w-full flex-col items-stretch justify-start gap-0 overflow-hidden whitespace-normal rounded-lg border border-border bg-card p-0 text-left transition duration-300 hover:-translate-y-1.5 hover:bg-card hover:shadow-lift active:scale-[0.98]",
+        "menu-product-card group flex h-full w-full flex-col items-stretch justify-start gap-0 overflow-hidden whitespace-normal rounded-2xl bg-card p-0 text-left shadow-card transition duration-300 hover:-translate-y-1.5 hover:bg-card hover:shadow-lift active:scale-[0.98]",
         !item.is_available && "opacity-70",
       )}
     >

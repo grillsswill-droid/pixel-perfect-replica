@@ -183,7 +183,7 @@ function AdminPage() {
 
   if (!workspace?.authenticated) {
     return (
-      <main className="grid min-h-[65vh] place-items-center bg-background px-5 py-12">
+      <div className="grid min-h-[65vh] place-items-center bg-background px-5 py-12">
         <form
           onSubmit={login}
           className="w-full max-w-md rounded-3xl bg-card p-5 shadow-card sm:p-9"
@@ -225,14 +225,14 @@ function AdminPage() {
             Open kitchen board
           </Link>
         </form>
-      </main>
+      </div>
     );
   }
 
   const data = workspace;
 
   return (
-    <main className="min-h-[65vh] bg-background px-4 py-6 sm:px-6 sm:py-9">
+    <div className="min-h-[65vh] bg-background px-4 py-6 sm:px-6 sm:py-9">
       <div className="mx-auto max-w-7xl">
         <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
           <div>
@@ -311,7 +311,7 @@ function AdminPage() {
         ) : null}
         {tab === "activity" ? <ActivityPanel data={data} /> : null}
       </div>
-    </main>
+    </div>
   );
 }
 

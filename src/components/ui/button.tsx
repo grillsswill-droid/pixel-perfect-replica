@@ -10,9 +10,9 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary-deep",
-        hero: "bg-primary text-primary-foreground font-display uppercase tracking-wide shadow-chunky hover:-translate-y-0.5 hover:bg-ember active:translate-y-1 active:shadow-none",
+        hero: "bg-primary text-primary-foreground font-display uppercase tracking-wide shadow-chunky hover:-translate-y-0.5 hover:bg-ember hover:shadow-lift active:translate-y-0 active:scale-[0.97]",
         charcoal: "bg-charcoal text-cream hover:bg-charcoal-soft",
-        cream: "bg-cream text-charcoal hover:bg-card shadow-chunky-dark active:translate-y-1 active:shadow-none",
+        cream: "bg-cream text-charcoal hover:bg-card shadow-chunky-dark hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]",
         destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline: "border-2 border-charcoal bg-transparent text-charcoal hover:bg-charcoal hover:text-cream",
         "outline-light": "border-2 border-cream/60 bg-transparent text-cream hover:bg-cream hover:text-charcoal",
@@ -21,8 +21,8 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline rounded-none",
       },
       size: {
-        default: "h-10 px-5",
-        sm: "h-11 px-4 text-xs sm:h-8 sm:px-3",
+        default: "h-11 px-5",
+        sm: "h-11 px-4 text-xs",
         lg: "h-12 px-7 text-base",
         xl: "h-14 px-9 text-base",
         icon: "h-11 w-11 sm:h-10 sm:w-10",

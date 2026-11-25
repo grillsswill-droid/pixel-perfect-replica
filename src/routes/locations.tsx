@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { PageIntro } from "@/components/site/page-intro";
 import { useCart } from "@/hooks/use-cart";
 import { storesQuery } from "@/lib/catalog.functions";
 import { cn } from "@/lib/utils";
@@ -35,9 +36,13 @@ function LocationsPage() {
     : null;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pt-10 pb-24 sm:px-6">
-      <p className="text-xs font-bold tracking-[0.25em] text-primary uppercase">Come hungry</p>
-      <h1 className="mt-2 text-5xl font-black uppercase sm:text-7xl">Locations</h1>
+    <>
+      <PageIntro
+        title="Locations"
+        description="Compare store details, check current hours, and choose exactly where you want to collect your order."
+        compact
+      />
+      <div className="mx-auto max-w-7xl px-4 pt-12 pb-24 sm:px-6">
       <div className="mt-10 grid gap-6 lg:grid-cols-[420px_1fr]">
         <ul className="space-y-3">
           {stores.map((s) => (
@@ -49,7 +54,7 @@ function LocationsPage() {
                 whileTap={{ scale: 0.99 }}
                 transition={{ duration: 0.12 }}
                 className={cn(
-                  "relative w-full rounded-3xl border-2 bg-card p-5 text-left shadow-card transition",
+                  "relative w-full rounded-2xl border bg-card p-5 text-left transition",
                   active?.id === s.id ? "border-primary" : "border-transparent hover:border-border",
                 )}
               >
@@ -78,7 +83,7 @@ function LocationsPage() {
         </ul>
         <div className="flex flex-col gap-4">
           {mapSrc && (
-            <iframe title={`Map of ${active?.name}`} src={mapSrc} className="h-[480px] w-full rounded-3xl border-0 shadow-card" loading="lazy" />
+            <iframe title={`Map of ${active?.name}`} src={mapSrc} className="h-[420px] w-full rounded-2xl border-0 shadow-card sm:h-[480px]" loading="lazy" />
           )}
           {active && (
             <Button asChild variant="hero" size="xl" onClick={() => { cart.setStoreId(active.id); cart.setFulfillment("pickup"); }}>
@@ -87,6 +92,7 @@ function LocationsPage() {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

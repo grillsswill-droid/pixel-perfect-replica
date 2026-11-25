@@ -1,9 +1,10 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Heart, Images, MessageCircle, Send } from "lucide-react";
+import { ArrowRight, Heart, MessageCircle, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
+import { PageIntro } from "@/components/site/page-intro";
 import { useGuestId } from "@/hooks/use-guest";
 import {
   addGalleryComment,
@@ -39,20 +40,12 @@ function GalleryPage() {
   const { data = [], isLoading, isError, isFetching, refetch } = useQuery(galleryQuery());
 
   return (
-    <main className="min-h-[65vh] bg-background">
-      <section className="bg-charcoal px-5 py-14 text-cream sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-7xl">
-          <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] text-primary">
-            <Images className="h-4 w-4" /> Fresh from the grill
-          </p>
-          <h1 className="mt-3 font-display text-5xl font-black uppercase sm:text-7xl">
-            The gallery
-          </h1>
-          <p className="mt-4 max-w-xl text-cream/70">
-            A look at the good stuff our team makes every day.
-          </p>
-        </div>
-      </section>
+    <div className="min-h-[65vh] bg-background">
+      <PageIntro
+        title="The gallery"
+        description="A closer look at the food, packaging and moments coming fresh off the Grill & Swill line."
+        tone="charcoal"
+      />
       <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
         {isLoading ? <p className="text-sm text-muted-foreground">Loading the gallery…</p> : null}
         {isError ? (
@@ -71,7 +64,7 @@ function GalleryPage() {
           </div>
         ) : null}
         {!isLoading && !isError && data.length === 0 ? (
-          <div className="rounded-3xl bg-card p-10 text-center shadow-card">
+          <div className="rounded-2xl bg-card p-10 text-center shadow-card">
             <p className="font-display text-2xl font-black uppercase">Coming fresh soon</p>
             <p className="mt-2 text-sm text-muted-foreground">
               Our team is getting the next batch of photos ready.
@@ -87,7 +80,7 @@ function GalleryPage() {
           {data.map((item) => (
             <article
               key={item.id}
-              className="mb-5 break-inside-avoid overflow-hidden rounded-3xl bg-card shadow-card"
+              className="mb-5 break-inside-avoid overflow-hidden rounded-2xl bg-card shadow-card"
             >
               {item.media_type === "video" ? (
                 foodImage(item.url) ? (
@@ -114,7 +107,7 @@ function GalleryPage() {
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }
 

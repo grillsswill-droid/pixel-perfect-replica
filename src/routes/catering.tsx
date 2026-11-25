@@ -1,10 +1,11 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Phone, Utensils } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { PageIntro } from "@/components/site/page-intro";
 import { useGuestId } from "@/hooks/use-guest";
 import { getPublicCateringMenu, submitCateringInquiry } from "@/lib/admin.functions";
 import { foodImage } from "@/lib/food-images";
@@ -39,19 +40,12 @@ function CateringPage() {
   const { data: stores = [] } = useQuery(storesQuery());
 
   return (
-    <main className="min-h-[65vh] bg-background">
-      <section className="bg-charcoal px-5 py-14 text-cream sm:px-8 sm:py-20">
-        <div className="mx-auto max-w-7xl">
-          <p className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] text-primary">
-            <Utensils className="h-4 w-4" /> Gather around the good stuff
-          </p>
-          <h1 className="mt-3 font-display text-5xl font-black uppercase sm:text-7xl">Catering</h1>
-          <p className="mt-4 max-w-xl text-cream/70">
-            Fresh favorites for your next get-together. Talk with your nearest grill about timing,
-            availability and the right portions for your group.
-          </p>
-        </div>
-      </section>
+    <div className="min-h-[65vh] bg-background">
+      <PageIntro
+        title="Catering"
+        description="Fresh favourites for your next get-together. Compare packages, then send your event details so the nearest grill can confirm timing, availability and portions."
+        tone="charcoal"
+      />
       <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Loading catering options…</p>
@@ -62,7 +56,7 @@ function CateringPage() {
           </p>
         ) : null}
         {!isLoading && !isError && !data?.packages.length ? (
-          <div className="rounded-3xl bg-card p-8 text-center shadow-card">
+          <div className="rounded-2xl bg-card p-8 text-center shadow-card">
             <h2 className="font-display text-2xl font-black uppercase">
               Catering menus are being prepared
             </h2>
@@ -76,7 +70,7 @@ function CateringPage() {
           <>
             <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
               {data.packages.map((item) => (
-                <article key={item.id} className="overflow-hidden rounded-3xl bg-card shadow-card">
+                <article key={item.id} className="overflow-hidden rounded-2xl bg-card shadow-card">
                   {foodImage(item.image_key) ? (
                     <img
                       src={foodImage(item.image_key)}
@@ -118,7 +112,7 @@ function CateringPage() {
               ))}
             </div>
             {data.proteins.length ? (
-              <section className="mt-10 rounded-3xl bg-accent p-6 sm:p-8">
+              <section className="mt-10 rounded-2xl bg-accent p-6 sm:p-8">
                 <h2 className="font-display text-2xl font-black uppercase">Protein add-ons</h2>
                 <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {data.proteins.map((protein) => (
@@ -138,7 +132,7 @@ function CateringPage() {
 
         <CateringInquiryForm packages={data?.packages ?? []} guestId={guestId} />
       </section>
-    </main>
+    </div>
   );
 }
 
@@ -201,12 +195,9 @@ function CateringInquiryForm({
   }
 
   return (
-    <section className="mt-10 rounded-3xl bg-accent p-6 sm:p-8">
+    <section className="mt-10 rounded-2xl bg-accent p-6 sm:p-8">
       <div className="max-w-2xl">
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-primary">
-          Tell us what you’re planning
-        </p>
-        <h2 className="mt-2 font-display text-3xl font-black uppercase">Request catering</h2>
+        <h2 className="font-display text-3xl font-black uppercase">Tell us what you’re planning</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Send your event details and a team member will follow up to confirm availability and
           pricing. This is a request, not an order or payment.

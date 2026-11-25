@@ -3,15 +3,19 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowDown,
   ArrowRight,
+  ArrowUpDown,
   BadgeCheck,
+  ChevronDown,
   Clock3,
   Flame,
   MapPin,
+  Search,
   Sparkles,
   Truck,
+  X,
 } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useDeferredValue, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import heroFeast from "@/assets/hero-feast.jpg";
@@ -25,7 +29,6 @@ import { useCart } from "@/hooks/use-cart";
 import { CATEGORIES, type MenuItem, type QuickOrderGroup } from "@/lib/menu-types";
 import { defaultSelections, formatMoney } from "@/lib/pricing";
 import { verifyQuickOrderSelection } from "@/lib/catalog.functions";
-import { useState } from "react";
 
 const rewardTiers = [
   { points: 250, label: "Free fries or lemonade", value: "$2.50 off" },
@@ -69,7 +72,6 @@ function HomePage() {
         <span>Smash. Sip. Repeat.</span><Flame /><span>Big flavour. Zero shortcuts.</span><Flame /><span>Grill & Swill</span><Flame />
       </div>
       <QuickOrderMeals />
-      <QuickOrderCategoryShelves />
       <CategoryGrid />
       <Heritage />
       <RewardsTeaser />
@@ -77,36 +79,24 @@ function HomePage() {
   );
 }
 
-const QUICK_ORDER_TABS: { id: "popular" | QuickOrderGroup; label: string }[] = [
-  { id: "popular", label: "Popular Combos" },
+type QuickOrderFilter = "all" | "popular" | QuickOrderGroup;
+type QuickOrderSort = "recommended" | "price-low" | "price-high" | "name";
+
+const QUICK_ORDER_FILTERS: { id: QuickOrderFilter; label: string }[] = [
+  { id: "all", label: "All meals" },
+  { id: "popular", label: "Popular" },
   { id: "burgers", label: "Burgers & Grill" },
   { id: "pizza", label: "Pizza Deals" },
-  { id: "kids", label: "Kids' Meals" },
-  { id: "desserts", label: "Ice Cream & Desserts" },
+  { id: "kids", label: "Little Swillers" },
+  { id: "desserts", label: "Sweet Treats" },
 ];
 
-const QUICK_ORDER_GROUPS: { id: QuickOrderGroup; label: string; description: string }[] = [
-  {
-    id: "burgers",
-    label: "Burgers & Grill",
-    description: "Complete grill meals, bundled and ready to order.",
-  },
-  {
-    id: "pizza",
-    label: "Pizza Deals",
-    description: "Choose an available pizza and make it a night in.",
-  },
-  {
-    id: "kids",
-    label: "Little Swillers",
-    description: "Simple, satisfying meals for younger guests.",
-  },
-  {
-    id: "desserts",
-    label: "Ice Cream & Sweet Treats",
-    description: "Leave room for a little something sweet.",
-  },
-];
+const QUICK_ORDER_GROUP_LABELS: Record<QuickOrderGroup, string> = {
+  burgers: "Burgers & Grill",
+  pizza: "Pizza Deals",
+  kids: "Little Swillers",
+  desserts: "Sweet Treats",
+};
 
 function orderedQuickOrderItems(menu: MenuItem[]) {
   return menu
@@ -165,92 +155,176 @@ function useQuickOrderActions() {
 function QuickOrderMeals() {
   const { data: menu, isError, isLoading, refetch } = useQuery(menuQuery());
   const { selected, setSelected, addingId, order } = useQuickOrderActions();
-  const [activeTab, setActiveTab] = useState<"popular" | QuickOrderGroup>("popular");
-  const combos = orderedQuickOrderItems(menu ?? []);
-  const popular = combos.filter((item) => item.is_featured && item.is_available).slice(0, 6);
-  const visibleItems =
-    activeTab === "popular"
-      ? (popular.length ? popular : combos.filter((item) => item.is_available)).slice(0, 6)
-      : combos.filter((item) => item.quick_order_group === activeTab);
+  const [activeFilter, setActiveFilter] = useState<QuickOrderFilter>("all");
+  const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<QuickOrderSort>("recommended");
+  const deferredQuery = useDeferredValue(query);
+  const combos = useMemo(() => orderedQuickOrderItems(menu ?? []), [menu]);
+  const visibleItems = useMemo(() => {
+    const normalizedQuery = deferredQuery.trim().toLowerCase();
+    const next = combos.filter((item) => {
+      if (activeFilter === "popular" && !item.is_featured) return false;
+      if (
+        activeFilter !== "all" &&
+        activeFilter !== "popular" &&
+        item.quick_order_group !== activeFilter
+      ) {
+        return false;
+      }
+      if (!normalizedQuery) return true;
+      const searchable = [
+        item.name,
+        item.description,
+        item.tags.join(" "),
+        item.bundle_components?.map((component) => component.label).join(" ") ?? "",
+      ]
+        .join(" ")
+        .toLowerCase();
+      return searchable.includes(normalizedQuery);
+    });
+
+    if (sort === "price-low") return next.sort((left, right) => left.price_cents - right.price_cents);
+    if (sort === "price-high") return next.sort((left, right) => right.price_cents - left.price_cents);
+    if (sort === "name") return next.sort((left, right) => left.name.localeCompare(right.name));
+    return next.sort((left, right) => {
+      if (left.is_available !== right.is_available) return left.is_available ? -1 : 1;
+      if (left.is_featured !== right.is_featured) return left.is_featured ? -1 : 1;
+      return (
+        (left.quick_order_order ?? left.sort_order) -
+        (right.quick_order_order ?? right.sort_order)
+      );
+    });
+  }, [activeFilter, combos, deferredQuery, sort]);
 
   return (
     <>
-      <section id="quick-order" className="quick-order-section bg-card px-5 py-16 text-charcoal sm:px-8 sm:py-20">
+      <section id="quick-order" className="quick-order-section bg-cream px-5 py-16 text-charcoal sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl">
-          <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-primary">
-                Quick order
-              </p>
-              <h2 className="mt-2 text-4xl font-black uppercase sm:text-5xl">Your cravings. Sorted.</h2>
-              <p className="mt-3 max-w-xl text-sm text-muted-foreground">
-                Your favourites, bundled together. Pick your combo and order in seconds.
+          <div className="mb-9 flex flex-wrap items-end justify-between gap-6" data-reveal="heading">
+            <div className="max-w-2xl">
+              <h2 className="text-4xl leading-[0.95] font-black uppercase sm:text-6xl">
+                Quick order. Everything in one place.
+              </h2>
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Search every combo, filter by craving, and sort the full Quick Order menu without
+                jumping between separate sections.
               </p>
             </div>
             <Link
               to="/menu"
-              search={{ cat: "burgers" }}
-              className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:gap-3"
+              className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-primary transition-[gap] hover:gap-3"
             >
-              Explore the menu <ArrowRight className="h-4 w-4" />
+              Browse the full menu <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
-          <div
-            className="mb-7 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap"
-            role="tablist"
-            aria-label="Quick Order categories"
-          >
-            {QUICK_ORDER_TABS.map((tab) => (
-              <Button
-                key={tab.id}
-                type="button"
-                role="tab"
-                id={`quick-order-tab-${tab.id}`}
-                aria-controls="quick-order-panel"
-                aria-selected={activeTab === tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                variant="ghost"
-                className={`quick-order-tab min-h-11 border px-4 py-2 text-sm font-bold sm:min-w-0 ${
-                  activeTab === tab.id
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border text-charcoal hover:border-primary"
-                }`}
-              >
-                {tab.label}
-              </Button>
-            ))}
+          <div className="quick-order-controls mb-7 rounded-2xl bg-card p-4 sm:p-5" data-reveal="rise">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_15rem]">
+              <label className="grid gap-2 text-xs font-bold uppercase tracking-[0.12em] text-charcoal/70">
+                Find a meal
+                <span className="relative block">
+                  <Search className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="search"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="Search burgers, pizza, kids' meals…"
+                    className="h-12 w-full rounded-xl border border-input bg-background pr-12 pl-11 text-base font-medium normal-case tracking-normal outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  />
+                  {query ? (
+                    <button
+                      type="button"
+                      onClick={() => setQuery("")}
+                      className="absolute top-1/2 right-1.5 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-charcoal"
+                      aria-label="Clear Quick Order search"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  ) : null}
+                </span>
+              </label>
+              <label className="grid gap-2 text-xs font-bold uppercase tracking-[0.12em] text-charcoal/70">
+                Sort by
+                <span className="relative block">
+                  <ArrowUpDown className="pointer-events-none absolute top-1/2 left-4 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <select
+                    value={sort}
+                    onChange={(event) => setSort(event.target.value as QuickOrderSort)}
+                    className="h-12 w-full appearance-none rounded-xl border border-input bg-background pr-10 pl-11 text-base font-semibold normal-case tracking-normal outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  >
+                    <option value="recommended">Recommended</option>
+                    <option value="price-low">Price: low to high</option>
+                    <option value="price-high">Price: high to low</option>
+                    <option value="name">Name: A to Z</option>
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute top-1/2 right-4 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                </span>
+              </label>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Filter Quick Order meals">
+              {QUICK_ORDER_FILTERS.map((filter) => (
+                <button
+                  key={filter.id}
+                  type="button"
+                  aria-pressed={activeFilter === filter.id}
+                  onClick={() => setActiveFilter(filter.id)}
+                  className={`quick-order-filter min-h-11 border px-4 py-2 text-sm font-bold transition-colors ${
+                    activeFilter === filter.id
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-background text-charcoal hover:border-primary hover:text-primary"
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div
-            id="quick-order-panel"
-            role="tabpanel"
-            aria-labelledby={`quick-order-tab-${activeTab}`}
-            tabIndex={0}
-          >
+          <div id="quick-order-results" aria-busy={isLoading}>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <p className="text-sm font-semibold text-muted-foreground" aria-live="polite">
+                {isLoading
+                  ? "Loading Quick Order meals…"
+                  : `${visibleItems.length} meal${visibleItems.length === 1 ? "" : "s"} ready to browse`}
+              </p>
+              {(query || activeFilter !== "all" || sort !== "recommended") ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    setActiveFilter("all");
+                    setSort("recommended");
+                  }}
+                  className="min-h-11 text-sm font-bold text-primary underline decoration-primary/35 decoration-2 hover:decoration-primary"
+                >
+                  Reset filters
+                </button>
+              ) : null}
+            </div>
             {isLoading ? (
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-label="Loading meals">
-                {Array.from({ length: 3 }, (_, index) => (
+                {Array.from({ length: 6 }, (_, index) => (
                   <div
                     key={index}
-                    className="overflow-hidden rounded-[2rem] border border-cream/10 bg-cream"
+                    className="grid min-h-40 grid-cols-[7.5rem_minmax(0,1fr)] overflow-hidden rounded-2xl bg-card sm:flex sm:flex-col"
                   >
-                    <div className="aspect-[1.35] animate-pulse bg-muted" />
-                    <div className="space-y-3 p-5">
+                    <div className="animate-pulse bg-muted sm:aspect-[1.45]" />
+                    <div className="flex-1 space-y-3 p-4">
                       <div className="h-6 w-3/4 animate-pulse rounded bg-muted" />
                       <div className="h-4 w-full animate-pulse rounded bg-muted" />
-                      <div className="h-11 w-full animate-pulse rounded-full bg-muted" />
+                      <div className="h-10 w-full animate-pulse rounded-full bg-muted" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : isError ? (
-              <div className="rounded-3xl border border-cream/15 bg-cream/5 p-6 text-center">
+              <div role="alert" className="rounded-2xl border border-destructive/25 bg-destructive/5 p-6 text-center">
                 <p className="font-bold">The combo menu couldn’t load.</p>
                 <button
                   type="button"
                   onClick={() => void refetch()}
-                  className="mt-3 min-h-11 rounded-full border border-cream/40 px-5 text-sm font-bold hover:bg-cream/10"
+                  className="mt-3 min-h-11 rounded-full border border-charcoal/25 px-5 text-sm font-bold transition hover:border-primary hover:text-primary"
                 >
                   Try again
                 </button>
@@ -268,18 +342,21 @@ function QuickOrderMeals() {
                 ))}
               </div>
             ) : (
-              <div className="rounded-3xl border border-cream/15 bg-cream/5 p-6 text-center">
-                <p className="font-bold">
-                  {combos.length
-                    ? "No meals in this category yet."
-                    : "Signature combos are being prepared."}
+              <div className="rounded-2xl bg-card p-8 text-center shadow-card">
+                <p className="font-display text-2xl font-black uppercase">
+                  {combos.length ? "No meals match those filters" : "Signature combos are being prepared"}
                 </p>
-                <Link
-                  to="/menu"
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    setActiveFilter("all");
+                    setSort("recommended");
+                  }}
                   className="mt-3 inline-flex min-h-11 items-center gap-2 text-sm font-bold text-primary"
                 >
-                  Browse the full menu <ArrowRight className="h-4 w-4" />
-                </Link>
+                  Show every Quick Order meal <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
             )}
           </div>
@@ -306,13 +383,24 @@ function QuickOrderCard({
   const hasPricedOptions = item.options.some((group) =>
     group.choices.some((choice) => choice.price_cents > 0),
   );
+  const groupLabel = item.quick_order_group
+    ? QUICK_ORDER_GROUP_LABELS[item.quick_order_group]
+    : "Quick Order";
+  const inclusionSummary = item.bundle_components
+    ?.slice(0, 3)
+    .map((component) => `${component.quantity}× ${component.label}`)
+    .join(" · ");
   return (
-    <article className="quick-meal-card group flex h-full flex-col overflow-hidden rounded-lg border border-border bg-card text-charcoal transition duration-300 hover:-translate-y-1 hover:shadow-lift">
+    <motion.article
+      layout
+      transition={{ layout: { duration: 0.32, ease: [0.16, 1, 0.3, 1] } }}
+      className="quick-meal-card group grid min-h-40 grid-cols-[7.5rem_minmax(0,1fr)] overflow-hidden rounded-2xl bg-card text-charcoal transition duration-300 hover:-translate-y-1 hover:shadow-lift sm:flex sm:h-full sm:flex-col"
+    >
       <Button
         variant="ghost"
         type="button"
         onClick={onSelect}
-        className="relative block aspect-[1.5] h-auto w-full overflow-hidden rounded-none bg-muted p-0 text-left focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-primary"
+        className="relative block h-full min-h-40 w-full overflow-hidden rounded-none bg-muted p-0 text-left focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-primary sm:aspect-[1.45] sm:h-auto sm:min-h-0"
         aria-label={`View ${item.name} details`}
       >
         {imageSrc ? (
@@ -323,124 +411,60 @@ function QuickOrderCard({
             className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
           />
         ) : null}
-        <span className="absolute inset-x-3 top-3 flex items-center justify-between gap-2">
-          <span className="rounded-full bg-charcoal/90 px-3 py-1.5 text-[10px] font-black tracking-[0.14em] text-cream uppercase">
-            {item.is_featured ? "Featured pick" : "Quick Order"}
+        <span className="absolute inset-x-2 top-2 flex flex-wrap items-center justify-between gap-1.5 sm:inset-x-3 sm:top-3">
+          <span className="rounded-full bg-charcoal/92 px-2.5 py-1 text-[9px] font-black tracking-[0.12em] text-cream uppercase sm:px-3 sm:py-1.5 sm:text-[10px]">
+            {item.is_featured ? "Featured" : groupLabel}
           </span>
           <span
-            className={`rounded-full px-3 py-1.5 text-[10px] font-black tracking-[0.14em] uppercase ${
-              item.is_available ? "bg-success text-primary-foreground" : "bg-destructive text-destructive-foreground"
+            className={`rounded-full px-2.5 py-1 text-[9px] font-black tracking-[0.12em] uppercase sm:px-3 sm:py-1.5 sm:text-[10px] ${
+              item.is_available ? "bg-success text-charcoal" : "bg-destructive text-destructive-foreground"
             }`}
           >
             {item.is_available ? "Available" : "Sold out"}
           </span>
         </span>
       </Button>
-      <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-display text-2xl leading-tight font-black uppercase">{item.name}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-        {(item.bundle_components?.length ?? 0) > 0 ? (
-          <div className="combo-inclusions mt-4 border-t border-border pt-3">
-            <p className="text-xs font-black tracking-wide text-charcoal uppercase">
-              Items included
-            </p>
-            <ul className="mt-2 space-y-1 text-sm text-charcoal/80">
-              {item.bundle_components?.map((component, index) => (
-                <li key={`${component.label}-${index}`}>
-                  <span className="font-semibold">{component.quantity} ×</span> {component.label}
-                </li>
-              ))}
-            </ul>
-          </div>
+      <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
+        <h3 className="font-display line-clamp-2 leading-[1.02] font-black uppercase">{item.name}</h3>
+        <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+          {item.description}
+        </p>
+        {inclusionSummary ? (
+          <p className="mt-3 line-clamp-1 border-t border-border pt-3 text-[11px] font-semibold text-charcoal/70 sm:text-xs">
+            Includes {inclusionSummary}
+            {(item.bundle_components?.length ?? 0) > 3 ? " + more" : ""}
+          </p>
         ) : null}
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-4 pt-5">
+        <div className="mt-auto flex items-end justify-between gap-2 pt-4 sm:gap-4 sm:pt-5">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.16em] text-primary">
+            <p className="text-[9px] font-black uppercase tracking-[0.12em] text-primary sm:text-[10px]">
               {hasPricedOptions ? "Starting at" : "Combo price"}
             </p>
-            <p className="mt-1 font-display text-3xl font-black tabular-nums">
+            <p className="mt-1 font-display text-xl font-black tabular-nums sm:text-2xl">
               {formatMoney(item.price_cents)}{" "}
-              <span className="font-sans text-xs font-bold">USD</span>
+              <span className="hidden font-sans text-[10px] font-bold sm:inline">USD</span>
             </p>
           </div>
           <Button
             type="button"
             variant="hero"
             size="sm"
-            className="h-11 min-w-32"
+            className="h-11 min-w-16 px-3 sm:min-w-28 sm:px-4"
             onClick={onOrder}
             disabled={!item.is_available || adding}
             loading={adding}
+            aria-label={`${!item.is_available ? "Sold out" : needsCustomization ? "Choose options for" : "Quick add"} ${item.name}`}
           >
-            {!item.is_available ? "Sold out" : needsCustomization ? "Choose options" : "Quick add"}
+            <span className="sm:hidden">
+              {!item.is_available ? "Sold" : needsCustomization ? "Choose" : "Add"}
+            </span>
+            <span className="hidden sm:inline">
+              {!item.is_available ? "Sold out" : needsCustomization ? "Choose options" : "Quick add"}
+            </span>
           </Button>
         </div>
       </div>
-    </article>
-  );
-}
-
-function QuickOrderCategoryShelves() {
-  const { data: menu = [] } = useQuery(menuQuery());
-  const { selected, setSelected, addingId, order } = useQuickOrderActions();
-  const combos = orderedQuickOrderItems(menu);
-  const popularIds = new Set(
-    combos
-      .filter((item) => item.is_featured && item.is_available)
-      .slice(0, 6)
-      .map((item) => item.id),
-  );
-
-  return (
-    <>
-      {QUICK_ORDER_GROUPS.map((group) => {
-        const items = combos.filter(
-          (item) => item.quick_order_group === group.id && !popularIds.has(item.id),
-        );
-        if (!items.length) return null;
-        return (
-          <section key={group.id} className="bg-cream px-5 py-12 sm:px-8 sm:py-16">
-            <div className="mx-auto max-w-7xl">
-              <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
-                <div>
-                  <p className="text-xs font-black tracking-[0.18em] text-primary uppercase">
-                    Quick Order
-                  </p>
-                  <h2 className="mt-2 text-3xl font-black uppercase sm:text-4xl">{group.label}</h2>
-                  <p className="mt-2 text-sm text-muted-foreground">{group.description}</p>
-                </div>
-                <Link
-                  to="/menu"
-                  search={{
-                    cat:
-                      group.id === "kids" || group.id === "desserts"
-                        ? group.id
-                        : group.id === "burgers"
-                          ? "burgers"
-                          : "pizza",
-                  }}
-                  className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-primary hover:gap-3"
-                >
-                  Browse {group.label} <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-              <div className="category-shelf-grid grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {items.map((item) => (
-                  <QuickOrderCard
-                    key={item.id}
-                    item={item}
-                    adding={addingId === item.id}
-                    onSelect={() => setSelected(item)}
-                    onOrder={() => void order(item)}
-                  />
-                ))}
-              </div>
-            </div>
-          </section>
-        );
-      })}
-      <ItemCustomizer item={selected} onClose={() => setSelected(null)} />
-    </>
+    </motion.article>
   );
 }
 
@@ -467,10 +491,6 @@ function Hero() {
 
       <div className="hero-inner mx-auto flex max-w-7xl items-center px-5 sm:px-8">
         <div className="hero-copy max-w-2xl">
-          <div className="mb-6 inline-flex items-center gap-2 text-xs font-bold text-cream uppercase">
-            <span className="h-px w-8 bg-ember" /><Flame className="h-4 w-4 text-ember" /> Real food. No shortcuts.
-          </div>
-
           <h1 className="hero-title font-black uppercase">
             Grill <span className="text-ember">&</span><br />Swill<span className="text-ember">.</span>
           </h1>
@@ -535,11 +555,8 @@ function CategoryGrid() {
   return (
     <section id="menu-favorites" className="bg-cream px-5 py-20 sm:px-8 sm:py-28">
       <div className="mx-auto max-w-7xl">
-        <Reveal className="mb-10 flex flex-wrap items-end justify-between gap-5">
+        <Reveal variant="heading" className="mb-10 flex flex-wrap items-end justify-between gap-5">
           <div>
-            <p className="mb-3 text-xs font-black tracking-[0.2em] text-primary uppercase">
-              The good stuff
-            </p>
             <h2 className="text-4xl leading-none font-black uppercase sm:text-6xl">
               What sounds good?
             </h2>
@@ -558,7 +575,7 @@ function CategoryGrid() {
               <Link
                 to="/menu"
                 search={{ cat: category.id }}
-                className="group relative block aspect-[0.83] overflow-hidden rounded-3xl bg-charcoal shadow-card"
+                className="group relative block aspect-[0.83] overflow-hidden rounded-2xl bg-charcoal shadow-card"
               >
                 {CATEGORY_IMAGES[category.id] ? (
                   <img
@@ -592,9 +609,6 @@ function Heritage() {
     <section className="overflow-hidden bg-primary text-cream">
       <div className="mx-auto grid max-w-7xl items-center gap-10 px-5 py-16 sm:px-8 md:grid-cols-[1fr_0.9fr] md:py-24">
         <Reveal>
-          <p className="mb-3 text-xs font-black tracking-[0.2em] text-cream/65 uppercase">
-            The long way is the right way
-          </p>
           <h2 className="max-w-xl text-5xl leading-[0.95] font-black uppercase sm:text-7xl">
             Fast food.
             <br />
@@ -612,13 +626,13 @@ function Heritage() {
         </Reveal>
 
         <Reveal delay={0.12} className="relative">
-          <div className="absolute -inset-4 rotate-3 rounded-[2rem] border-2 border-cream/30" />
+          <div className="absolute -inset-4 rotate-3 rounded-2xl border border-cream/30" />
           <img
             src={kitchenGrill}
             alt="Fresh ingredients cooking on the Grill & Swill flat top"
             width={1536}
             height={1024}
-            className="relative aspect-[1.13] w-full rounded-[1.7rem] object-cover shadow-2xl"
+            className="relative aspect-[1.13] w-full rounded-2xl object-cover shadow-2xl"
           />
           <span className="absolute -bottom-5 -left-4 flex items-center gap-2 rounded-2xl bg-cream px-4 py-3 text-sm font-black text-charcoal shadow-lg">
             <BadgeCheck className="h-5 w-5 text-primary" /> Made fresh, every day
@@ -636,12 +650,12 @@ function RewardsTeaser() {
         <div className="border-y border-charcoal/20 py-8 text-charcoal sm:py-10">
           <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
             <div className="max-w-2xl">
-              <p className="mb-3 flex items-center gap-2 text-xs font-black tracking-[0.2em] text-primary uppercase">
-                <Sparkles className="h-4 w-4" /> The Swill Club
-              </p>
-              <h2 className="text-4xl leading-none font-black uppercase sm:text-5xl">
-                Every bite brings you closer.
-              </h2>
+              <div className="flex items-start gap-3">
+                <Sparkles className="mt-1 h-6 w-6 shrink-0 text-primary" aria-hidden="true" />
+                <h2 className="text-4xl leading-none font-black uppercase sm:text-5xl">
+                  Every bite brings you closer.
+                </h2>
+              </div>
               <p className="mt-4 text-muted-foreground">
                 Earn 10 points for every dollar. Get a little something on us when you come back
                 hungry.

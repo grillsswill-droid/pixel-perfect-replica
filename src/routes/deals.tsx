@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { Stagger, StaggerItem } from "@/components/site/reveal";
+import { PageIntro } from "@/components/site/page-intro";
 import { Button } from "@/components/ui/button";
 import { getCheckoutConfiguration } from "@/lib/admin.functions";
 import { FREE_DELIVERY_THRESHOLD_CENTS, PROMOS, formatMoney } from "@/lib/pricing";
@@ -40,22 +41,21 @@ function DealsPage() {
   const threshold = config?.freeDeliveryThresholdCents ?? FREE_DELIVERY_THRESHOLD_CENTS;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pt-10 pb-24 sm:px-6">
-      <p className="text-xs font-bold tracking-[0.25em] text-primary uppercase">
-        Save on every bite
-      </p>
-      <h1 className="mt-2 text-5xl font-black uppercase sm:text-7xl">Deals</h1>
-      <p className="mt-4 max-w-lg text-lg text-charcoal/75">
-        Copy a code and paste it at checkout. Delivery is free over {formatMoney(threshold)}.
-      </p>
+    <>
+      <PageIntro
+        title="Deals"
+        description={`Copy a current promo code and paste it at checkout. Delivery is free over ${formatMoney(threshold)}.`}
+        compact
+      />
+      <div className="mx-auto max-w-7xl px-4 pt-12 pb-24 sm:px-6">
       <Stagger className="mt-10 grid gap-5 md:grid-cols-3">
         {promos.map((p, i) => (
           <StaggerItem key={p.code}>
             <div
               className={
                 i === 0
-                  ? "h-full rounded-3xl bg-flame p-7 text-primary-foreground shadow-lift"
-                  : "h-full rounded-3xl bg-card p-7 shadow-card"
+                  ? "h-full rounded-2xl bg-primary p-7 text-primary-foreground shadow-lift"
+                  : "h-full rounded-2xl bg-card p-7 shadow-card"
               }
             >
               <Tag className="h-6 w-6" />
@@ -80,6 +80,7 @@ function DealsPage() {
       <Button asChild variant="hero" size="xl" className="mt-10">
         <Link to="/menu">Start an order</Link>
       </Button>
-    </div>
+      </div>
+    </>
   );
 }

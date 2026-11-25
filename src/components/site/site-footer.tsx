@@ -1,11 +1,31 @@
 import { Link } from "@tanstack/react-router";
+import { ArrowRight, MapPin } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { Logo } from "./logo";
 
 export function SiteFooter() {
   return (
     <footer className="bg-charcoal text-cream">
       <div className="checker-border" />
+      <div className="footer-order">
+        <div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 py-12 sm:px-8 md:flex-row md:items-end md:justify-between md:py-16">
+          <div data-reveal="heading">
+            <h2 className="font-display font-black uppercase">Your next favourite is on the grill.</h2>
+            <p className="mt-4 max-w-xl text-sm leading-relaxed text-cream/70 sm:text-base">
+              Browse every burger, pizza, side and sweet treat, then choose pickup or delivery at checkout.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-3" data-reveal="right">
+            <Button asChild variant="hero" size="lg">
+              <Link to="/menu">Start an order <ArrowRight /></Link>
+            </Button>
+            <Button asChild variant="outline-light" size="lg">
+              <Link to="/locations"><MapPin /> Find a grill</Link>
+            </Button>
+          </div>
+        </div>
+      </div>
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Logo light />

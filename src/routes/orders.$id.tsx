@@ -68,7 +68,7 @@ function OrderPage() {
 
   if (!order) {
     return (
-      <main className="grid min-h-[60vh] place-items-center px-5">
+      <div className="grid min-h-[60vh] place-items-center px-5">
         <div className="text-center">
           <h1 className="font-display text-4xl font-black uppercase">Order not found</h1>
           <p className="mt-2 text-muted-foreground">Check the tracking link and try again.</p>
@@ -76,7 +76,7 @@ function OrderPage() {
             <Link to="/">Back home</Link>
           </Button>
         </div>
-      </main>
+      </div>
     );
   }
 
@@ -86,7 +86,7 @@ function OrderPage() {
   const items = order.items as OrderLineSnapshot[];
 
   return (
-    <main className="min-h-[65vh] bg-background">
+    <div className="min-h-[65vh] bg-background">
       <section className="bg-charcoal px-5 py-12 text-cream sm:px-8 sm:py-16">
         <div className="mx-auto max-w-4xl">
           <p className="text-xs font-black tracking-[0.18em] text-primary uppercase">
@@ -244,6 +244,6 @@ function OrderPage() {
           </aside>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

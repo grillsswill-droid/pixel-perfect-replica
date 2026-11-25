@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Flame, Gift, ReceiptText, RotateCcw, Star } from "lucide-react";
+import { ArrowRight, Flame, Gift, ReceiptText, RotateCcw } from "lucide-react";
 import { motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Stagger, StaggerItem } from "@/components/site/reveal";
+import { PageIntro } from "@/components/site/page-intro";
 import { useCart } from "@/hooks/use-cart";
 import { useGuestId } from "@/hooks/use-guest";
 import { getStorefrontSettings } from "@/lib/admin.functions";
@@ -116,24 +117,13 @@ function RewardsPage() {
   }
 
   return (
-    <main className="min-h-[65vh] bg-background">
-      <section className="bg-charcoal px-5 py-14 text-cream sm:px-8 sm:py-20">
-        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1fr_auto] md:items-end">
-          <div>
-            <p className="flex items-center gap-2 text-xs font-black tracking-[0.2em] text-primary uppercase">
-              <Star className="h-4 w-4" /> The Swill Club
-            </p>
-            <h1 className="font-display mt-3 text-5xl leading-[0.9] font-black uppercase sm:text-7xl">
-              Good bites.
-              <br />
-              Great perks.
-            </h1>
-            <p className="mt-5 max-w-xl text-cream/70">
-              Earn {getPointsPerDollar(settings.points_per_dollar)} points for every dollar. Your
-              rewards are saved on this device—no account, no fuss.
-            </p>
-          </div>
-          <div className="min-w-60 rounded-3xl border border-cream/15 bg-cream/5 p-6">
+    <div className="min-h-[65vh] bg-background">
+      <PageIntro
+        title="Good bites. Great perks."
+        description={`Earn ${getPointsPerDollar(settings.points_per_dollar)} points for every dollar. Your rewards stay on this device—no account and no extra sign-up.`}
+        tone="charcoal"
+        aside={
+          <div className="min-w-60 rounded-2xl border border-cream/15 bg-cream/5 p-6 text-cream">
             <div className="flex items-center justify-between">
               <span className="text-sm font-bold text-cream/70">Your points</span>
               <Flame className="h-5 w-5 text-primary" />
@@ -156,18 +146,13 @@ function RewardsPage() {
                 : "You’ve reached the top tier."}
             </p>
           </div>
-        </div>
-      </section>
+        }
+      />
       <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-xs font-black tracking-[0.16em] text-primary uppercase">
-              Worth the wait
-            </p>
-            <h2 className="font-display mt-2 text-3xl font-black uppercase sm:text-4xl">
-              Pick your reward
-            </h2>
-          </div>
+          <h2 className="font-display text-3xl font-black uppercase sm:text-4xl">
+            Pick your reward
+          </h2>
           <p className="text-sm text-muted-foreground">
             Current tier: <span className="font-bold text-charcoal">{level.current.name}</span>
           </p>
@@ -175,7 +160,7 @@ function RewardsPage() {
         <Stagger className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {settings.reward_tiers.map((tier, index) => (
             <StaggerItem key={index} className="h-full">
-              <article className="h-full rounded-3xl bg-card p-5 shadow-card">
+              <article className="h-full rounded-2xl bg-card p-5 shadow-card">
                 <span className="grid h-11 w-11 place-items-center rounded-2xl bg-accent text-primary">
                   <Gift />
                 </span>
@@ -303,6 +288,6 @@ function RewardsPage() {
           </aside>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

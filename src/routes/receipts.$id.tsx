@@ -37,7 +37,7 @@ function ReceiptPage() {
 
   if (!order) {
     return (
-      <main className="grid min-h-[60vh] place-items-center px-5">
+      <div className="grid min-h-[60vh] place-items-center px-5">
         <div className="text-center">
           <h1 className="font-display text-3xl font-black uppercase">Receipt unavailable</h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -47,7 +47,7 @@ function ReceiptPage() {
             <Link to="/account/orders">View order history</Link>
           </Button>
         </div>
-      </main>
+      </div>
     );
   }
 
@@ -55,7 +55,7 @@ function ReceiptPage() {
   const paymentStatus = order.payment_status ?? "not_charged";
 
   return (
-    <main className="min-h-[65vh] bg-background px-4 py-8 sm:px-6 sm:py-12 print:bg-white print:p-0">
+    <div className="min-h-[65vh] bg-background px-4 py-8 sm:px-6 sm:py-12 print:bg-white print:p-0">
       <div className="mx-auto max-w-3xl">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3 print:hidden">
           <Button asChild variant="outline">
@@ -198,7 +198,7 @@ function ReceiptPage() {
           </footer>
         </article>
       </div>
-    </main>
+    </div>
   );
 }
 

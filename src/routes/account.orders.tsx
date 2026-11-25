@@ -3,6 +3,7 @@ import { ArrowRight, ReceiptText } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
+import { PageIntro } from "@/components/site/page-intro";
 import { useGuestId } from "@/hooks/use-guest";
 import { guestRewardsQuery } from "@/lib/order-queries";
 import { formatMoney } from "@/lib/pricing";
@@ -28,21 +29,13 @@ function CustomerOrdersPage() {
   const { data, isLoading, isError, isFetching, refetch } = useQuery(guestRewardsQuery(guestId));
 
   return (
-    <main className="min-h-[65vh] bg-background">
-      <section className="bg-charcoal px-5 py-12 text-cream sm:px-8 sm:py-16">
-        <div className="mx-auto max-w-5xl">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-primary">
-            Saved on this device
-          </p>
-          <h1 className="mt-2 font-display text-4xl font-black uppercase sm:text-5xl">
-            Your orders
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm text-cream/70">
-            Your order history and rewards are linked to this browser. Keep this device’s site data
-            to access them again.
-          </p>
-        </div>
-      </section>
+    <div className="min-h-[65vh] bg-background">
+      <PageIntro
+        title="Your orders"
+        description="Your order history and rewards are linked to this browser. Keep this device’s site data to reopen receipts and tracking later."
+        tone="charcoal"
+        compact
+      />
 
       <section className="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-14">
         {isLoading ? <p className="text-sm text-muted-foreground">Loading your orders…</p> : null}
@@ -62,7 +55,7 @@ function CustomerOrdersPage() {
           </div>
         ) : null}
         {!isLoading && !isError && (data?.orders.length ?? 0) === 0 ? (
-          <div className="rounded-3xl bg-card p-8 text-center shadow-card">
+          <div className="rounded-2xl bg-card p-8 text-center shadow-card">
             <h2 className="font-display text-2xl font-black uppercase">No orders yet</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Your next favorite is only a few taps away.
@@ -118,6 +111,6 @@ function CustomerOrdersPage() {
           })}
         </ul>
       </section>
-    </main>
+    </div>
   );
 }

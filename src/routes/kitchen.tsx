@@ -121,7 +121,7 @@ function KitchenPage() {
 
   if (!board || !board.unlocked) {
     return (
-      <main className="grid min-h-[65vh] place-items-center bg-background px-5 py-12">
+      <div className="grid min-h-[65vh] place-items-center bg-background px-5 py-12">
         <form
           onSubmit={login}
           className="w-full max-w-md rounded-3xl bg-card p-5 shadow-card sm:p-9"
@@ -163,7 +163,7 @@ function KitchenPage() {
             Back to storefront
           </Link>
         </form>
-      </main>
+      </div>
     );
   }
 
@@ -176,7 +176,7 @@ function KitchenPage() {
   );
 
   return (
-    <main className="min-h-[65vh] bg-background">
+    <div className="min-h-[65vh] bg-background">
       <section className="bg-charcoal px-5 py-10 text-cream sm:px-8">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -388,6 +388,6 @@ function KitchenPage() {
           </aside>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

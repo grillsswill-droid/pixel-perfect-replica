@@ -2,10 +2,11 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { Search, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 
 import { ItemCustomizer } from "@/components/site/item-customizer";
 import { MenuCard } from "@/components/site/menu-card";
+import { PageIntro } from "@/components/site/page-intro";
 import { categoriesQuery, menuQuery } from "@/lib/catalog.functions";
 import { CATEGORIES, type CategoryId, type MenuItem } from "@/lib/menu-types";
 import { cn } from "@/lib/utils";
@@ -51,11 +52,12 @@ function MenuPage() {
   const { cat } = Route.useSearch();
   const navigate = useNavigate({ from: "/menu" });
   const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
   const [tags, setTags] = useState<string[]>([]);
   const [selected, setSelected] = useState<MenuItem | null>(null);
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = deferredQuery.trim().toLowerCase();
     return menu.filter((i) => {
       if (cat && i.category !== cat) return false;
       if (
@@ -67,7 +69,7 @@ function MenuPage() {
         return false;
       return true;
     });
-  }, [menu, cat, tags, query]);
+  }, [menu, cat, tags, deferredQuery]);
 
   const categoryMap = new Map(
     CATEGORIES.map((category, index) => [category.id, { ...category, sort_order: index + 1 }]),
@@ -86,13 +88,16 @@ function MenuPage() {
     .filter((group) => group.items.length > 0);
 
   return (
-    <div className="mx-auto max-w-7xl px-4 pt-10 pb-24 sm:px-6">
-      <p className="text-xs font-bold tracking-[0.25em] text-primary uppercase">Order online</p>
-      <h1 className="mt-2 text-5xl font-black uppercase sm:text-7xl">The Menu</h1>
-
-      <div className="sticky top-[100px] z-20 -mx-4 mt-8 bg-background/95 px-4 py-3 backdrop-blur-md sm:-mx-6 sm:px-6">
+    <>
+      <PageIntro
+        title="The menu"
+        description="Browse the whole Grill & Swill line-up, search by ingredient, or jump straight to the kind of meal you want."
+        compact
+      />
+      <div className="mx-auto max-w-7xl px-4 pt-8 pb-24 sm:px-6">
+      <div className="sticky top-[91px] z-20 -mx-4 rounded-b-2xl bg-background/95 px-4 py-4 shadow-[0_18px_30px_-28px_var(--charcoal)] backdrop-blur-md sm:-mx-6 sm:px-6">
         <div
-          className="flex gap-2 overflow-x-auto pb-1"
+          className="flex flex-wrap gap-2 pb-1"
           role="tablist"
           aria-label="Menu categories"
         >
@@ -114,13 +119,13 @@ function MenuPage() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search the menu"
               aria-label="Search the menu"
-              className="h-10 w-full rounded-full border-2 border-input bg-card pr-9 pl-10 text-sm outline-none focus:border-primary"
+              className="h-11 w-full rounded-xl border border-input bg-card pr-11 pl-10 text-base outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
             />
             {query && (
               <button
                 type="button"
                 onClick={() => setQuery("")}
-                className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full p-1 text-muted-foreground hover:text-charcoal"
+                className="absolute top-1/2 right-1 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-charcoal"
                 aria-label="Clear search"
               >
                 <X className="h-4 w-4" />
@@ -136,7 +141,7 @@ function MenuPage() {
                 aria-pressed={on}
                 onClick={() => setTags((t) => (on ? t.filter((x) => x !== f) : [...t, f]))}
                 className={cn(
-                  "h-10 rounded-full border-2 px-4 text-sm font-semibold transition active:scale-95",
+                  "min-h-11 rounded-full border px-4 text-sm font-semibold transition active:scale-95",
                   on
                     ? "border-charcoal bg-charcoal text-cream"
                     : "border-input bg-card hover:border-charcoal",
@@ -147,6 +152,9 @@ function MenuPage() {
             );
           })}
         </div>
+        <p className="mt-3 text-sm font-semibold text-muted-foreground" role="status" aria-live="polite">
+          {filtered.length} item{filtered.length === 1 ? "" : "s"} match your filters
+        </p>
       </div>
 
       {groups.length === 0 ? (
@@ -198,7 +206,8 @@ function MenuPage() {
       )}
 
       <ItemCustomizer item={selected} onClose={() => setSelected(null)} />
-    </div>
+      </div>
+    </>
   );
 }
 
