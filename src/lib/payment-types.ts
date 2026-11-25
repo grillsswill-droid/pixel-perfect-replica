@@ -49,8 +49,23 @@ export interface ProviderRefundOutcome {
   status: "pending" | "succeeded" | "failed";
 }
 
+export type PaymentConfigurationErrorCode =
+  | "missing_secret_key"
+  | "invalid_secret_key"
+  | "missing_secret_hash"
+  | "missing_public_site_url"
+  | "invalid_public_site_url"
+  | "payment_configuration_error";
+
 export class PaymentConfigurationError extends Error {
   override name = "PaymentConfigurationError";
+
+  constructor(
+    message: string,
+    readonly code: PaymentConfigurationErrorCode = "payment_configuration_error",
+  ) {
+    super(message);
+  }
 }
 
 export class PaymentVerificationError extends Error {

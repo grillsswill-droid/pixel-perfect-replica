@@ -46,34 +46,37 @@ WebP images (up to 2 MB each) are stored in MongoDB GridFS.
 Checkout uses Flutterwave Standard (hosted checkout) in USD. The browser calls
 `POST /api/payments/initialize`; the server recomputes the order total and uses
 `FLW_SECRET_KEY` to create the hosted payment link. The secret key is never sent
-to browser code. This test-payment deployment accepts only a Flutterwave test
-secret key whose prefix is `FLWSECK_TEST-`. A public key and encryption key are
-not required by Flutterwave Standard and are not read by this application.
+to browser code. Configure the raw Flutterwave v3 secret key: test keys start
+with `FLWSECK_TEST-` and live keys start with `FLWSECK-`. The key selects test or
+live payments; live keys charge real money. Do not include a `Bearer` prefix or
+surrounding quotes in the Vercel value. A public key and encryption key are not
+required by Flutterwave Standard and are not read by this application.
 
-The server calls the documented `https://api.flutterwave.com/v3/payments`
-endpoint and redirects only to the returned HTTPS URL on
-`checkout.flutterwave.com`. The application stops reusing a stored link after
-30 minutes. A stale, expired, or unexpected link (including a
-`dev-flutterwave.com` URL) is not reused; the server starts a new attempt with a
+Both test and live payments use the documented
+`https://api.flutterwave.com/v3/payments` endpoint. The server redirects only to
+the returned HTTPS URL on `checkout.flutterwave.com`. The application stops
+reusing a stored link after 30 minutes. A stale, expired, or unexpected link
+(including a `dev-flutterwave.com` URL) is not reused; the server starts a new attempt with a
 new transaction reference instead.
 
 Set the Flutterwave redirect/callback URL to the app-generated
 `/api/payments/verify` URL by configuring `PUBLIC_SITE_URL` to the deployed HTTPS
-origin. In the Flutterwave dashboard, configure the webhook URL as:
+origin. In the Flutterwave dashboard mode matching the configured secret key
+(Live or Test), configure the webhook URL as:
 
 ```text
 https://your-domain.example/api/webhooks/flutterwave
 ```
 
-Set the same random secret hash in Flutterwave and `FLW_SECRET_HASH`. The webhook
-checks the `verif-hash` header before accepting `charge.completed` events. Both
-the redirect and webhook re-fetch the transaction from Flutterwave, compare its
-transaction ID, status, `tx_ref`, exact amount, currency, customer email, and
-order metadata, then use one atomic paid transition so retries cannot award
+Set the same random secret hash in that dashboard mode and `FLW_SECRET_HASH`.
+The webhook checks the `verif-hash` header before accepting `charge.completed`
+events. Both the redirect and webhook re-fetch the transaction from Flutterwave,
+compare its transaction ID, status, `tx_ref`, exact amount, currency, customer
+email, and order metadata, then use one atomic paid transition so retries cannot award
 rewards or fulfill an order twice. Pending payments remain pending for a later
 webhook; cancelled, failed, and abandoned payments are not fulfilled. See the
-[Flutterwave v3 API docs](https://developer.flutterwave.com/api) for dashboard
-and test-mode details.
+[Flutterwave authentication docs](https://developer.flutterwave.com/docs/authentication)
+for dashboard and payment-mode details.
 
 Configure these values in **Vercel → Project → Settings → Environment Variables**
 for the Production environment (and Preview only if preview payments are
@@ -81,14 +84,14 @@ intended):
 
 ```text
 PUBLIC_SITE_URL=https://your-production-domain.example
-FLW_SECRET_KEY=FLWSECK_TEST-...
+FLW_SECRET_KEY=<raw live FLWSECK-... or test FLWSECK_TEST-... secret key>
 FLW_SECRET_HASH=<the random dashboard webhook secret hash>
 ```
 
 After changing a Vercel environment variable, redeploy the application. In the
-Flutterwave test dashboard, set the webhook URL above, set the matching secret
-hash, and enable webhook retries. Do not add any Flutterwave credential to a
-`VITE_*` variable or commit it to the repository.
+Flutterwave dashboard mode matching the key, set the webhook URL above, set the
+matching secret hash, and enable webhook retries. Do not add any Flutterwave
+credential to a `VITE_*` variable or commit it to the repository.
 
 For a production Node.js server, build and start with:
 
@@ -140,7 +143,7 @@ The seed command only inserts starter menu, category, and store data when each
 collection is empty. Guest carts are synchronized to MongoDB while retaining
 the local-device fallback; guest reward balances remain in `guests`, and order
 profiles are stored in `users`. Keep the MongoDB connection string, session
-secret, staff passcode, Flutterwave test secret key, and webhook hash private.
+secret, staff passcode, Flutterwave secret key, and webhook hash private.
 Pending or failed payment attempts remain out of the kitchen queue;
 only verified payments are fulfilled and credited with rewards.
 

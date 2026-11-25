@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring } from "motion/react";
 
-const revealFrames: Record<string, Keyframe[]> = {
+const revealFrames: Record<string, Keyframe[]> & { rise: Keyframe[] } = {
   rise: [
     { opacity: 0.45, transform: "translateY(26px)" },
     { opacity: 1, transform: "translateY(0)" },

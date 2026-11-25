@@ -13,13 +13,11 @@ import {
 } from "@/lib/payments.server";
 import { PaymentConfigurationError, PaymentVerificationError } from "@/lib/payment-types";
 import type { OrderDocument } from "@/lib/mongodb.server";
+import * as mongodb from "@/lib/mongodb.server";
 import { handleInitializePaymentRequest } from "@/routes/api.payments.initialize";
 import { callbackPaymentStatus } from "@/routes/api.payments.verify";
 
 const uuid = "00000000-0000-4000-8000-000000000001";
-const originalSecretHash = process.env["FLW_SECRET_HASH"];
-const originalSecretKey = process.env["FLW_SECRET_KEY"];
-const originalPublicSiteUrl = process.env["PUBLIC_SITE_URL"];
 
 const paymentOrder: OrderDocument = {
   id: "00000000-0000-4000-8000-000000000010",
@@ -96,12 +94,7 @@ const validPayment = {
 };
 
 afterEach(() => {
-  if (originalSecretHash === undefined) delete process.env["FLW_SECRET_HASH"];
-  else process.env["FLW_SECRET_HASH"] = originalSecretHash;
-  if (originalSecretKey === undefined) delete process.env["FLW_SECRET_KEY"];
-  else process.env["FLW_SECRET_KEY"] = originalSecretKey;
-  if (originalPublicSiteUrl === undefined) delete process.env["PUBLIC_SITE_URL"];
-  else process.env["PUBLIC_SITE_URL"] = originalPublicSiteUrl;
+  vi.unstubAllEnvs();
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
@@ -128,7 +121,7 @@ describe("Flutterwave payment request validation", () => {
 
 describe("Flutterwave initialization API route", () => {
   it("rejects cross-origin, non-JSON and malformed requests before payment processing", async () => {
-    process.env["PUBLIC_SITE_URL"] = "https://grill-swill.vercel.app";
+    vi.stubEnv("PUBLIC_SITE_URL", "https://grill-swill.vercel.app");
 
     const crossOrigin = await handleInitializePaymentRequest(
       new Request("https://grill-swill.vercel.app/api/payments/initialize", {
@@ -173,11 +166,93 @@ describe("Flutterwave initialization API route", () => {
     expect(response.status).toBe(400);
     expect(fetch).not.toHaveBeenCalled();
   });
+
+  it.each([
+    { label: "missing", secretKey: undefined, code: "missing_secret_key" },
+    { label: "public", secretKey: "FLWPUBK-live-unit-test-X", code: "invalid_secret_key" },
+  ])("reports a $label secret key before creating an order", async ({ secretKey, code }) => {
+    vi.stubEnv("FLW_SECRET_KEY", secretKey);
+    vi.stubEnv("PUBLIC_SITE_URL", "https://grill-swill.vercel.app");
+    vi.stubGlobal("fetch", vi.fn());
+    const databaseMock = vi
+      .spyOn(mongodb, "getMongoDatabase")
+      .mockRejectedValue(
+        new Error("Checkout must validate configuration before accessing orders."),
+      );
+    const logMock = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    const response = await handleInitializePaymentRequest(
+      new Request("https://grill-swill.vercel.app/api/payments/initialize", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(validPayment),
+      }),
+    );
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({
+      ok: false,
+      error: "Flutterwave checkout is not configured yet.",
+      code,
+    });
+    expect(databaseMock).not.toHaveBeenCalled();
+    expect(fetch).not.toHaveBeenCalled();
+    expect(logMock).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ code, message: expect.any(String) }),
+    );
+    if (secretKey) expect(JSON.stringify(logMock.mock.calls)).not.toContain(secretKey);
+  });
+
+  it.each([
+    { label: "missing", publicSiteUrl: undefined, code: "missing_public_site_url" },
+    {
+      label: "malformed",
+      publicSiteUrl: "grill-swill.vercel.app",
+      code: "invalid_public_site_url",
+    },
+    {
+      label: "insecure",
+      publicSiteUrl: "http://grill-swill.vercel.app",
+      code: "invalid_public_site_url",
+    },
+  ])(
+    "reports a $label redirect origin before creating an order",
+    async ({ publicSiteUrl, code }) => {
+      vi.stubEnv("FLW_SECRET_KEY", "FLWSECK-live-unit-test-X");
+      vi.stubEnv("PUBLIC_SITE_URL", publicSiteUrl);
+      vi.stubEnv("APP_URL", undefined);
+      vi.stubEnv("VERCEL", "1");
+      vi.stubGlobal("fetch", vi.fn());
+      const databaseMock = vi
+        .spyOn(mongodb, "getMongoDatabase")
+        .mockRejectedValue(
+          new Error("Checkout must validate redirect configuration before accessing orders."),
+        );
+      vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+      const response = await handleInitializePaymentRequest(
+        new Request("https://grill-swill.vercel.app/api/payments/initialize", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            origin: "https://grill-swill.vercel.app",
+          },
+          body: JSON.stringify(validPayment),
+        }),
+      );
+
+      expect(response.status).toBe(503);
+      await expect(response.json()).resolves.toMatchObject({ ok: false, code });
+      expect(databaseMock).not.toHaveBeenCalled();
+      expect(fetch).not.toHaveBeenCalled();
+    },
+  );
 });
 
 describe("Flutterwave webhook verification", () => {
   it("compares verif-hash using the configured secret", () => {
-    process.env["FLW_SECRET_HASH"] = "test-webhook-secret";
+    vi.stubEnv("FLW_SECRET_HASH", "test-webhook-secret");
 
     expect(verifyFlutterwaveWebhookHash("test-webhook-secret")).toBe(true);
     expect(verifyFlutterwaveWebhookHash("wrong-secret")).toBe(false);
@@ -202,9 +277,13 @@ describe("Flutterwave webhook verification", () => {
 });
 
 describe("Flutterwave Standard checkout", () => {
-  it("uses the documented endpoint and returns Flutterwave's official hosted link", async () => {
-    process.env["FLW_SECRET_KEY"] = "FLWSECK_TEST-unit-test-X";
-    process.env["PUBLIC_SITE_URL"] = "https://grill-swill.vercel.app";
+  it.each([
+    { mode: "test", secretKey: "FLWSECK_TEST-unit-test-X" },
+    { mode: "live", secretKey: "FLWSECK-live-unit-test-X" },
+    { mode: "live with surrounding whitespace", secretKey: "  FLWSECK-live-unit-test-X\n" },
+  ])("creates an official hosted checkout with $mode credentials", async ({ secretKey }) => {
+    vi.stubEnv("FLW_SECRET_KEY", secretKey);
+    vi.stubEnv("PUBLIC_SITE_URL", "https://grill-swill.vercel.app");
     const fetchMock = vi.fn().mockResolvedValue(
       Response.json({
         status: "success",
@@ -225,7 +304,7 @@ describe("Flutterwave Standard checkout", () => {
     const [requestUrl, requestInit] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     expect(requestUrl).toBe("https://api.flutterwave.com/v3/payments");
     expect(new Headers(requestInit.headers).get("authorization")).toBe(
-      "Bearer FLWSECK_TEST-unit-test-X",
+      `Bearer ${secretKey.trim()}`,
     );
     const body = JSON.parse(String(requestInit.body)) as Record<string, unknown>;
     expect(body).toMatchObject({
@@ -243,8 +322,8 @@ describe("Flutterwave Standard checkout", () => {
   });
 
   it("rejects provider failures and unexpected development checkout domains", async () => {
-    process.env["FLW_SECRET_KEY"] = "FLWSECK_TEST-unit-test-X";
-    process.env["PUBLIC_SITE_URL"] = "https://grill-swill.vercel.app";
+    vi.stubEnv("FLW_SECRET_KEY", "FLWSECK_TEST-unit-test-X");
+    vi.stubEnv("PUBLIC_SITE_URL", "https://grill-swill.vercel.app");
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValueOnce(
@@ -274,14 +353,33 @@ describe("Flutterwave Standard checkout", () => {
     });
   });
 
-  it("refuses live credentials in this test-payment deployment", async () => {
-    process.env["FLW_SECRET_KEY"] = "FLWSECK-live-key-X";
-    process.env["PUBLIC_SITE_URL"] = "https://grill-swill.vercel.app";
+  it.each([
+    { label: "missing", secretKey: undefined, code: "missing_secret_key" },
+    { label: "blank", secretKey: "  ", code: "missing_secret_key" },
+    { label: "public", secretKey: "FLWPUBK_TEST-unit-test-X", code: "invalid_secret_key" },
+    { label: "unrecognized", secretKey: "not-a-flutterwave-key", code: "invalid_secret_key" },
+    { label: "quoted", secretKey: '"FLWSECK-live-unit-test-X"', code: "invalid_secret_key" },
+    {
+      label: "trailing-quote",
+      secretKey: 'FLWSECK-live-unit-test-X"',
+      code: "invalid_secret_key",
+    },
+    { label: "empty", secretKey: "FLWSECK-", code: "invalid_secret_key" },
+    { label: "internal-whitespace", secretKey: "FLWSECK-live key-X", code: "invalid_secret_key" },
+    {
+      label: "Bearer-prefixed",
+      secretKey: "Bearer FLWSECK-live-unit-test-X",
+      code: "invalid_secret_key",
+    },
+  ])("rejects $label credentials before contacting Flutterwave", async ({ secretKey, code }) => {
+    vi.stubEnv("FLW_SECRET_KEY", secretKey);
+    vi.stubEnv("PUBLIC_SITE_URL", "https://grill-swill.vercel.app");
     vi.stubGlobal("fetch", vi.fn());
 
-    await expect(createFlutterwaveCheckout(paymentOrder)).rejects.toBeInstanceOf(
-      PaymentConfigurationError,
-    );
+    await expect(createFlutterwaveCheckout(paymentOrder)).rejects.toMatchObject({
+      name: "PaymentConfigurationError",
+      code,
+    });
     expect(fetch).not.toHaveBeenCalled();
   });
 });

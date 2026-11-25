@@ -36,6 +36,7 @@ import {
 } from "./pricing";
 
 const FLUTTERWAVE_API_URL = "https://api.flutterwave.com/v3";
+const FLUTTERWAVE_SECRET_KEY_PATTERN = /^FLWSECK(?:_TEST)?-[^\s"']+$/;
 const FLUTTERWAVE_CHECKOUT_HOST = "checkout.flutterwave.com";
 const FLUTTERWAVE_CHECKOUT_PATH_PREFIX = "/v3/hosted/pay/";
 const FLUTTERWAVE_CHECKOUT_SESSION_MINUTES = 30;
@@ -213,17 +214,18 @@ export class PaymentProviderError extends Error {
 
 export function isFlutterwaveConfigured(): boolean {
   const secretKey = process.env["FLW_SECRET_KEY"]?.trim();
-  return Boolean(secretKey?.startsWith("FLWSECK_TEST-"));
+  return Boolean(secretKey && FLUTTERWAVE_SECRET_KEY_PATTERN.test(secretKey));
 }
 
 function requireFlutterwaveSecretKey(): string {
   const secretKey = process.env["FLW_SECRET_KEY"]?.trim();
   if (!secretKey) {
-    throw new PaymentConfigurationError("FLW_SECRET_KEY is not configured.");
+    throw new PaymentConfigurationError("FLW_SECRET_KEY is not configured.", "missing_secret_key");
   }
-  if (!secretKey.startsWith("FLWSECK_TEST-")) {
+  if (!FLUTTERWAVE_SECRET_KEY_PATTERN.test(secretKey)) {
     throw new PaymentConfigurationError(
-      "This deployment accepts Flutterwave test secret keys only.",
+      "FLW_SECRET_KEY must be a Flutterwave v3 live (FLWSECK-) or test (FLWSECK_TEST-) secret key.",
+      "invalid_secret_key",
     );
   }
   return secretKey;
@@ -232,7 +234,10 @@ function requireFlutterwaveSecretKey(): string {
 function requireFlutterwaveSecretHash(): string {
   const secretHash = process.env["FLW_SECRET_HASH"]?.trim();
   if (!secretHash) {
-    throw new PaymentConfigurationError("FLW_SECRET_HASH is not configured.");
+    throw new PaymentConfigurationError(
+      "FLW_SECRET_HASH is not configured.",
+      "missing_secret_hash",
+    );
   }
   return secretHash;
 }
@@ -317,13 +322,17 @@ export function validatePublicSiteUrl(value: string): string {
   try {
     url = new URL(value);
   } catch {
-    throw new PaymentConfigurationError("PUBLIC_SITE_URL must be a valid absolute URL.");
+    throw new PaymentConfigurationError(
+      "PUBLIC_SITE_URL must be a valid absolute URL.",
+      "invalid_public_site_url",
+    );
   }
   const isLocalhost = ["localhost", "127.0.0.1", "::1"].includes(url.hostname);
   const validProtocol = url.protocol === "https:" || (url.protocol === "http:" && isLocalhost);
   if (!validProtocol || url.username || url.password) {
     throw new PaymentConfigurationError(
       "PUBLIC_SITE_URL must use HTTPS, except for an HTTP localhost URL.",
+      "invalid_public_site_url",
     );
   }
   return url.origin;
@@ -338,6 +347,7 @@ async function resolvePublicOrigin(): Promise<string> {
   if (process.env["VERCEL"] === "1") {
     throw new PaymentConfigurationError(
       "PUBLIC_SITE_URL is required on Vercel for trusted payment redirects.",
+      "missing_public_site_url",
     );
   }
   try {
@@ -347,7 +357,10 @@ async function resolvePublicOrigin(): Promise<string> {
   } catch {
     // Tests and background jobs must configure PUBLIC_SITE_URL explicitly.
   }
-  throw new PaymentConfigurationError("PUBLIC_SITE_URL is required for payment redirects.");
+  throw new PaymentConfigurationError(
+    "PUBLIC_SITE_URL is required for payment redirects.",
+    "missing_public_site_url",
+  );
 }
 
 function countOrderItems(order: OrderDocument): number {
@@ -658,10 +671,10 @@ async function checkoutForExistingOrder(
 export async function initializeFlutterwavePayment(
   input: InitializeFlutterwavePaymentInput,
 ): Promise<InitializedFlutterwavePayment> {
-  if (!isFlutterwaveConfigured()) {
-    throw new PaymentConfigurationError("Flutterwave checkout is not configured yet.");
-  }
+  requireFlutterwaveSecretKey();
   const data = initializeFlutterwavePaymentSchema.parse(input);
+  // Reject deployment configuration errors before creating or updating a pending order.
+  await resolvePublicOrigin();
   const requestId = data.requestId ?? randomUUID();
   const { client, db } = await getMongoDatabase();
   const orders = collection<OrderDocument>(db, "orders");

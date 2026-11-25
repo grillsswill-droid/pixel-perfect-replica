@@ -36,7 +36,7 @@ function providerErrorMessage(error: PaymentProviderError): string {
     case "timeout":
       return "Flutterwave is temporarily unreachable. Please try again.";
     case "provider_rejected":
-      return "Flutterwave rejected the checkout request. Confirm the Vercel TEST secret key and Flutterwave account settings.";
+      return "Flutterwave rejected the checkout request. Please contact the store if this continues.";
     case "missing_checkout_url":
     case "invalid_checkout_url":
     case "unexpected_checkout_url":
@@ -81,7 +81,14 @@ export async function handleInitializePaymentRequest(request: Request): Promise<
       return json({ ok: false, error: error.message }, 409);
     }
     if (error instanceof PaymentConfigurationError) {
-      return json({ ok: false, error: "Flutterwave checkout is not configured yet." }, 503);
+      console.error("Flutterwave checkout configuration error", {
+        code: error.code,
+        message: error.message,
+      });
+      return json(
+        { ok: false, error: "Flutterwave checkout is not configured yet.", code: error.code },
+        503,
+      );
     }
     if (error instanceof PaymentProviderError) {
       console.error("Flutterwave checkout provider error", {
