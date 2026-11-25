@@ -1,3 +1,4 @@
+import { createPublicPageHead, seoFromMatches } from "@/lib/seo";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Clock, MapPin, Phone } from "lucide-react";
@@ -12,16 +13,7 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/locations")({
   loader: ({ context }) => context.queryClient.ensureQueryData(storesQuery()),
-  head: () => ({
-    meta: [
-      { title: "Locations & Hours | Grill & Swill" },
-      { name: "description", content: "Find a Grill & Swill near you. Addresses, phone numbers, hours and drive-thru info." },
-      { property: "og:title", content: "Find a Grill & Swill" },
-      { property: "og:description", content: "Store addresses, hours and phone numbers." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ matches }) => createPublicPageHead("/locations", seoFromMatches(matches)),
   component: LocationsPage,
 });
 

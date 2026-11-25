@@ -1,3 +1,4 @@
+import { createPublicPageHead, seoFromMatches } from "@/lib/seo";
 import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Heart, MessageCircle, Send } from "lucide-react";
@@ -23,16 +24,7 @@ const galleryQuery = () =>
 
 export const Route = createFileRoute("/gallery")({
   loader: ({ context }) => context.queryClient.ensureQueryData(galleryQuery()),
-  head: () => ({
-    meta: [
-      { title: "Gallery | Grill & Swill" },
-      { name: "description", content: "Take a look at what's fresh off the Grill & Swill line." },
-      { property: "og:title", content: "Gallery | Grill & Swill" },
-      { property: "og:description", content: "Take a look at what's fresh off the Grill & Swill line." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ matches }) => createPublicPageHead("/gallery", seoFromMatches(matches)),
   component: GalleryPage,
 });
 

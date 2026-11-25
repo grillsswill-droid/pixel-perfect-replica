@@ -1,7 +1,8 @@
+import { createPublicPageHead, seoFromMatches } from "@/lib/seo";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Copy, Tag } from "lucide-react";
 import { motion } from "motion/react";
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { Stagger, StaggerItem } from "@/components/site/reveal";
@@ -10,33 +11,21 @@ import { Button } from "@/components/ui/button";
 import { getCheckoutConfiguration } from "@/lib/admin.functions";
 import { FREE_DELIVERY_THRESHOLD_CENTS, PROMOS, formatMoney } from "@/lib/pricing";
 
-export const Route = createFileRoute("/deals")({
-  head: () => ({
-    meta: [
-      { title: "Deals & Promo Codes | Grill & Swill" },
-      {
-        name: "description",
-        content:
-          "Current Grill & Swill promo codes: $5 off $35, 20% off pizzas, and more. Apply them at checkout.",
-      },
-      { property: "og:title", content: "Grill & Swill Deals" },
-      {
-        property: "og:description",
-        content: "Promo codes for burgers, chicken and pizza. Apply at checkout.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
-  component: DealsPage,
-});
-
-function DealsPage() {
-  const { data: config } = useQuery({
+const dealsQuery = () =>
+  queryOptions({
     queryKey: ["checkout-configuration"],
     queryFn: () => getCheckoutConfiguration(),
     staleTime: 60_000,
   });
+
+export const Route = createFileRoute("/deals")({
+  loader: ({ context }) => context.queryClient.ensureQueryData(dealsQuery()),
+  head: ({ matches }) => createPublicPageHead("/deals", seoFromMatches(matches)),
+  component: DealsPage,
+});
+
+function DealsPage() {
+  const { data: config } = useQuery(dealsQuery());
   const promos = config?.promotions ?? PROMOS;
   const threshold = config?.freeDeliveryThresholdCents ?? FREE_DELIVERY_THRESHOLD_CENTS;
 

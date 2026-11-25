@@ -1,3 +1,4 @@
+import { createPublicPageHead, seoFromMatches } from "@/lib/seo";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
@@ -44,23 +45,7 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(categoriesQuery()),
     ]);
   },
-  head: () => ({
-    meta: [
-      { title: "Grill & Swill | Fast food, made the slow way" },
-      {
-        name: "description",
-        content:
-          "Smash burgers, crispy chicken, wood-fired pizza and serious coffee. Order fresh from Grill & Swill.",
-      },
-      { property: "og:title", content: "Grill & Swill | Fast food, made the slow way" },
-      {
-        property: "og:description",
-        content: "Fresh burger, chicken, pizza and coffee made for pickup or delivery.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ matches }) => createPublicPageHead("/", seoFromMatches(matches)),
   component: HomePage,
 });
 

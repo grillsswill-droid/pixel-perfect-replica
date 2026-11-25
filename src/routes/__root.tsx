@@ -20,6 +20,8 @@ import { BrandLoading, SiteMotion } from "@/components/site/site-motion";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 import { CartProvider } from "@/hooks/use-cart";
+import { getSeoConfiguration } from "@/lib/seo.functions";
+import { NOINDEX } from "@/lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -73,7 +75,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  loader: () => getSeoConfiguration(),
+  staleTime: Infinity,
+  head: ({ loaderData }) => ({
     // Never add og:image or twitter:image here: every page without its own would inherit it.
     meta: [
       { charSet: "utf-8" },
@@ -84,7 +88,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#B84414" },
       { property: "og:site_name", content: "Grill & Swill" },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: NOINDEX },
+      ...(loaderData?.googleSiteVerification
+        ? [{ name: "google-site-verification", content: loaderData.googleSiteVerification }]
+        : []),
     ],
     links: [
       { rel: "stylesheet", href: appCss },

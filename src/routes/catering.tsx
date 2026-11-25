@@ -1,3 +1,4 @@
+import { createPublicPageHead, seoFromMatches } from "@/lib/seo";
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Phone } from "lucide-react";
@@ -21,16 +22,7 @@ const cateringMenuQuery = () =>
 
 export const Route = createFileRoute("/catering")({
   loader: ({ context }) => context.queryClient.ensureQueryData(cateringMenuQuery()),
-  head: () => ({
-    meta: [
-      { title: "Catering | Grill & Swill" },
-      { name: "description", content: "Plan your next gathering with Grill & Swill catering." },
-      { property: "og:title", content: "Catering | Grill & Swill" },
-      { property: "og:description", content: "Plan your next gathering with Grill & Swill catering." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ matches }) => createPublicPageHead("/catering", seoFromMatches(matches)),
   component: CateringPage,
 });
 

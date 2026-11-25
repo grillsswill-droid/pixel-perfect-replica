@@ -41,6 +41,31 @@ The MongoDB deployment must support transactions (MongoDB Atlas does). The app
 creates its required indexes when it connects. Admin-uploaded JPEG, PNG, and
 WebP images (up to 2 MB each) are stored in MongoDB GridFS.
 
+## Google search and SEO
+
+Public pages have server-rendered titles, descriptions, canonical URLs, social
+sharing metadata and JSON-LD website/organization/breadcrumb data. The runtime
+`/sitemap.xml` lists the six public marketing pages. Private order, receipt,
+checkout, rewards, account and operations pages use `noindex`; public food images
+remain available to search engines. The runtime `/robots.txt` advertises the
+sitemap only on the preferred production origin.
+
+Set `PUBLIC_SITE_URL` to the preferred HTTPS production origin, without a path
+or query. Production indexing is enabled there by default; set
+`SEO_INDEXING_ENABLED=false` while the site is unpublished. Local, preview and
+alternate-origin responses remain `noindex`. If using a reverse proxy, configure
+it to supply the correct public HTTPS request URL. No canonical URL is derived
+from arbitrary forwarded headers.
+
+After deploying, verify the domain in [Google Search Console](https://search.google.com/search-console/about)
+and submit `https://your-domain.example/sitemap.xml`. For Search Console's
+HTML-tag method, set `GOOGLE_SITE_VERIFICATION` to its **content value only** and
+redeploy. DNS verification can be used instead. Check the homepage with URL
+Inspection and validate its structured data. Real store details should be
+confirmed before enabling local-business markup.
+
+See [the SEO setup guide](docs/SEO.md) for configuration and verification.
+
 ## Flutterwave payments
 
 Checkout uses Flutterwave Standard (hosted checkout) in USD. The browser calls

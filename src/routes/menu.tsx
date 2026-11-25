@@ -1,3 +1,4 @@
+import { createPublicPageHead, seoFromMatches } from "@/lib/seo";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "motion/react";
@@ -24,23 +25,7 @@ export const Route = createFileRoute("/menu")({
       context.queryClient.ensureQueryData(categoriesQuery()),
     ]);
   },
-  head: () => ({
-    meta: [
-      { title: "Menu — Combos, Burgers, Pizza, Kids' Meals & Desserts | Grill & Swill" },
-      {
-        name: "description",
-        content:
-          "Browse Grill & Swill combos, smash burgers, crispy chicken, wood-fired pizza, Little Swillers meals, desserts and cold brew.",
-      },
-      { property: "og:title", content: "The Grill & Swill Menu" },
-      {
-        property: "og:description",
-        content: "Smash burgers, crispy chicken, wood-fired pizza, hand-cut fries and cold brew.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ matches }) => createPublicPageHead("/menu", seoFromMatches(matches)),
   component: MenuPage,
 });
 
