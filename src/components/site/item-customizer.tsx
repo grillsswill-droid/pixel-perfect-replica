@@ -22,7 +22,7 @@ import { QuantityStepper } from "./quantity-stepper";
 export function ItemCustomizer({ item, onClose }: { item: MenuItem | null; onClose: () => void }) {
   return (
     <Dialog open={!!item} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="max-h-[92vh] gap-0 overflow-hidden border-0 bg-background p-0 sm:max-w-2xl sm:rounded-3xl">
+      <DialogContent className="top-auto bottom-0 max-h-[94dvh] w-full max-w-full translate-y-0 gap-0 overflow-hidden rounded-t-3xl border-0 bg-background p-0 sm:top-[50%] sm:bottom-auto sm:max-h-[92vh] sm:max-w-2xl sm:translate-y-[-50%] sm:rounded-3xl">
         {item && <CustomizerBody key={item.id} item={item} onDone={onClose} />}
       </DialogContent>
     </Dialog>
@@ -113,7 +113,7 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
   }
 
   return (
-    <div className="flex max-h-[92vh] flex-col">
+    <div className="flex max-h-[94dvh] flex-col sm:max-h-[92vh]">
       <div className="overflow-y-auto">
         <div className="relative aspect-[16/10] w-full overflow-hidden bg-muted">
           {imageSrc ? (
@@ -139,7 +139,7 @@ function CustomizerBody({ item, onDone }: { item: MenuItem; onDone: () => void }
             ))}
           </div>
         </div>
-        <div className="space-y-6 p-6">
+        <div className="space-y-6 p-5 sm:p-6">
           <div>
             <DialogTitle className="font-display text-3xl font-black uppercase">
               {item.name}
