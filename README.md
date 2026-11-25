@@ -52,8 +52,8 @@ not required by Flutterwave Standard and are not read by this application.
 
 The server calls the documented `https://api.flutterwave.com/v3/payments`
 endpoint and redirects only to the returned HTTPS URL on
-`checkout.flutterwave.com`. Hosted links expire after 30 minutes and allow at
-most five retries. A stale, expired, or unexpected link (including a
+`checkout.flutterwave.com`. The application stops reusing a stored link after
+30 minutes. A stale, expired, or unexpected link (including a
 `dev-flutterwave.com` URL) is not reused; the server starts a new attempt with a
 new transaction reference instead.
 

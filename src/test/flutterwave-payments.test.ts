@@ -238,8 +238,8 @@ describe("Flutterwave Standard checkout", () => {
         name: "Pat Guest",
         phonenumber: "+1 512 555 0100",
       },
-      configurations: { session_duration: 30, max_retry_attempt: 5 },
     });
+    expect(body).not.toHaveProperty("configurations");
   });
 
   it("rejects provider failures and unexpected development checkout domains", async () => {
@@ -256,9 +256,9 @@ describe("Flutterwave Standard checkout", () => {
         ),
       ),
     );
-    await expect(createFlutterwaveCheckout(paymentOrder)).rejects.toBeInstanceOf(
-      PaymentProviderError,
-    );
+    await expect(createFlutterwaveCheckout(paymentOrder)).rejects.toMatchObject({
+      code: "provider_rejected",
+    });
 
     vi.stubGlobal(
       "fetch",
@@ -269,9 +269,9 @@ describe("Flutterwave Standard checkout", () => {
         }),
       ),
     );
-    await expect(createFlutterwaveCheckout(paymentOrder)).rejects.toThrow(
-      "unexpected checkout URL",
-    );
+    await expect(createFlutterwaveCheckout(paymentOrder)).rejects.toMatchObject({
+      code: "unexpected_checkout_url",
+    });
   });
 
   it("refuses live credentials in this test-payment deployment", async () => {

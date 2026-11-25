@@ -39,7 +39,6 @@ const FLUTTERWAVE_API_URL = "https://api.flutterwave.com/v3";
 const FLUTTERWAVE_CHECKOUT_HOST = "checkout.flutterwave.com";
 const FLUTTERWAVE_CHECKOUT_PATH_PREFIX = "/v3/hosted/pay/";
 const FLUTTERWAVE_CHECKOUT_SESSION_MINUTES = 30;
-const FLUTTERWAVE_CHECKOUT_MAX_RETRIES = 5;
 const FLUTTERWAVE_INITIALIZATION_LOCK_MS = 60_000;
 const PHONE_PATTERN = /^[\d\s()+.-]{10,20}$/;
 
@@ -192,8 +191,24 @@ export class PaymentRequestError extends Error {
   override name = "PaymentRequestError";
 }
 
+export type PaymentProviderErrorCode =
+  | "network_error"
+  | "timeout"
+  | "invalid_response"
+  | "provider_rejected"
+  | "missing_checkout_url"
+  | "invalid_checkout_url"
+  | "unexpected_checkout_url";
+
 export class PaymentProviderError extends Error {
   override name = "PaymentProviderError";
+
+  constructor(
+    message: string,
+    readonly code: PaymentProviderErrorCode = "provider_rejected",
+  ) {
+    super(message);
+  }
 }
 
 export function isFlutterwaveConfigured(): boolean {
@@ -234,7 +249,10 @@ export function validateFlutterwaveCheckoutUrl(value: string): string {
   try {
     url = new URL(value);
   } catch {
-    throw new PaymentProviderError("Flutterwave returned an invalid checkout URL.");
+    throw new PaymentProviderError(
+      "Flutterwave returned an invalid checkout URL.",
+      "invalid_checkout_url",
+    );
   }
   if (
     url.protocol !== "https:" ||
@@ -246,6 +264,7 @@ export function validateFlutterwaveCheckoutUrl(value: string): string {
   ) {
     throw new PaymentProviderError(
       `Flutterwave returned an unexpected checkout URL. Expected ${FLUTTERWAVE_CHECKOUT_HOST}.`,
+      "unexpected_checkout_url",
     );
   }
   return url.toString();
@@ -269,6 +288,7 @@ async function flutterwaveRequest<T>(path: string, init: RequestInit = {}): Prom
       error instanceof Error && error.name === "TimeoutError"
         ? "Flutterwave timed out. Please try again."
         : "Flutterwave could not be reached. Please try again.",
+      error instanceof Error && error.name === "TimeoutError" ? "timeout" : "network_error",
     );
   }
 
@@ -278,13 +298,16 @@ async function flutterwaveRequest<T>(path: string, init: RequestInit = {}): Prom
     try {
       payload = JSON.parse(text) as FlutterwaveEnvelope<T>;
     } catch {
-      throw new PaymentProviderError("Flutterwave returned an unreadable response.");
+      throw new PaymentProviderError(
+        "Flutterwave returned an unreadable response.",
+        "invalid_response",
+      );
     }
   }
 
   if (!response.ok || payload.status !== "success" || payload.data == null) {
     const message = payload.message?.trim() || `Flutterwave request failed (${response.status}).`;
-    throw new PaymentProviderError(message);
+    throw new PaymentProviderError(message, "provider_rejected");
   }
   return payload.data;
 }
@@ -362,14 +385,15 @@ export async function createFlutterwaveCheckout(order: OrderDocument): Promise<P
         title: "Grill & Swill",
         description: `Order #${order.order_number} · ${countOrderItems(order)} item${countOrderItems(order) === 1 ? "" : "s"}`,
       },
-      configurations: {
-        session_duration: FLUTTERWAVE_CHECKOUT_SESSION_MINUTES,
-        max_retry_attempt: FLUTTERWAVE_CHECKOUT_MAX_RETRIES,
-      },
     }),
   });
 
-  if (!data.link) throw new PaymentProviderError("Flutterwave returned no checkout link.");
+  if (!data.link) {
+    throw new PaymentProviderError(
+      "Flutterwave returned no checkout link.",
+      "missing_checkout_url",
+    );
+  }
   return {
     provider: "flutterwave",
     reference: order.payment_reference,

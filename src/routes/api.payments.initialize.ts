@@ -30,6 +30,22 @@ function isSameOrigin(request: Request): boolean {
   }
 }
 
+function providerErrorMessage(error: PaymentProviderError): string {
+  switch (error.code) {
+    case "network_error":
+    case "timeout":
+      return "Flutterwave is temporarily unreachable. Please try again.";
+    case "provider_rejected":
+      return "Flutterwave rejected the checkout request. Confirm the Vercel TEST secret key and Flutterwave account settings.";
+    case "missing_checkout_url":
+    case "invalid_checkout_url":
+    case "unexpected_checkout_url":
+      return "Flutterwave returned an unsupported checkout address. Contact Flutterwave support if this continues.";
+    default:
+      return "Flutterwave couldn't start checkout. Please try again.";
+  }
+}
+
 export async function handleInitializePaymentRequest(request: Request): Promise<Response> {
   if (!isSameOrigin(request)) return json({ ok: false, error: "Invalid origin." }, 403);
   if (!request.headers.get("content-type")?.includes("application/json")) {
@@ -68,11 +84,11 @@ export async function handleInitializePaymentRequest(request: Request): Promise<
       return json({ ok: false, error: "Flutterwave checkout is not configured yet." }, 503);
     }
     if (error instanceof PaymentProviderError) {
-      console.error("Flutterwave checkout provider error", error.message);
-      return json(
-        { ok: false, error: "Flutterwave couldn't start checkout. Please try again." },
-        502,
-      );
+      console.error("Flutterwave checkout provider error", {
+        code: error.code,
+        message: error.message,
+      });
+      return json({ ok: false, error: providerErrorMessage(error), code: error.code }, 502);
     }
     console.error("Flutterwave initialization failed", error);
     return json({ ok: false, error: "We couldn't start payment. Please try again." }, 500);
