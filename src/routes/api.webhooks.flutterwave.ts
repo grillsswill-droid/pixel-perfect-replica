@@ -13,11 +13,12 @@ import {
 
 const webhookSchema = z
   .object({
-    event: z.string(),
+    event: z.string().max(80),
     data: z
       .object({
         id: z.union([z.string(), z.number()]),
-        tx_ref: z.string().optional(),
+        tx_ref: z.string().max(200).optional(),
+        status: z.string().max(40).optional(),
       })
       .passthrough(),
   })
@@ -69,10 +70,15 @@ export const Route = createFileRoute("/api/webhooks/flutterwave")({
         if (!/^\d+$/.test(transactionId)) {
           return json({ received: false, error: "Invalid transaction ID." }, 400);
         }
+        const transactionStatus = payload.data.status?.trim().toLowerCase() ?? "";
+        if (!transactionStatus) {
+          return json({ received: false, error: "Missing transaction status." }, 400);
+        }
 
         const claim = await claimFlutterwaveWebhookEvent({
           eventType: payload.event,
           transactionId,
+          transactionStatus,
         });
         if (claim !== "claimed") {
           return json({ received: true, duplicate: true });
@@ -86,6 +92,7 @@ export const Route = createFileRoute("/api/webhooks/flutterwave")({
           await completeFlutterwaveWebhookEvent({
             eventType: payload.event,
             transactionId,
+            transactionStatus,
             orderId: result.orderId,
           });
           return json({ received: true, verified: result.successful });
@@ -93,6 +100,7 @@ export const Route = createFileRoute("/api/webhooks/flutterwave")({
           await failFlutterwaveWebhookEvent({
             eventType: payload.event,
             transactionId,
+            transactionStatus,
             errorCode: error instanceof Error ? error.name : "unknown_error",
           });
           if (error instanceof PaymentVerificationError) {

@@ -3,17 +3,24 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PaymentConfigurationError, PaymentVerificationError } from "../lib/payment-types";
 import {
   PaymentProviderError,
-  cancelFlutterwavePayment,
+  recordFlutterwaveCallbackStatus,
   verifyAndFinalizeFlutterwavePayment,
 } from "../lib/payments.server";
 
 function checkoutRedirect(
   request: Request,
-  payment: "cancelled" | "failed" | "verification_error",
+  payment: "pending" | "cancelled" | "failed" | "verification_error",
 ) {
   const url = new URL("/checkout", request.url);
   url.searchParams.set("payment", payment);
   return new Response(null, { status: 303, headers: { location: url.toString() } });
+}
+
+export function callbackPaymentStatus(status: string): "pending" | "cancelled" | "failed" | null {
+  if (status === "pending" || status === "processing") return "pending";
+  if (status.includes("cancel") || status === "abandoned") return "cancelled";
+  if (status) return "failed";
+  return null;
 }
 
 export const Route = createFileRoute("/api/payments/verify")({
@@ -27,16 +34,16 @@ export const Route = createFileRoute("/api/payments/verify")({
         const orderId = callbackUrl.searchParams.get("order_id")?.trim() || null;
 
         if (!transactionId) {
+          const paymentStatus = callbackPaymentStatus(status);
           try {
-            if (status) await cancelFlutterwavePayment({ txRef, orderId });
+            if (txRef && paymentStatus) {
+              await recordFlutterwaveCallbackStatus({ txRef, orderId, status: paymentStatus });
+            }
           } catch (error) {
-            console.error("Flutterwave callback cancellation update failed", error);
+            console.error("Flutterwave callback status update failed", error);
             return checkoutRedirect(request, "verification_error");
           }
-          return checkoutRedirect(
-            request,
-            status.includes("cancel") ? "cancelled" : status ? "failed" : "verification_error",
-          );
+          return checkoutRedirect(request, paymentStatus ?? "verification_error");
         }
 
         try {

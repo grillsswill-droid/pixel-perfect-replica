@@ -36,6 +36,11 @@ import {
 } from "./pricing";
 
 const FLUTTERWAVE_API_URL = "https://api.flutterwave.com/v3";
+const FLUTTERWAVE_CHECKOUT_HOST = "checkout.flutterwave.com";
+const FLUTTERWAVE_CHECKOUT_PATH_PREFIX = "/v3/hosted/pay/";
+const FLUTTERWAVE_CHECKOUT_SESSION_MINUTES = 30;
+const FLUTTERWAVE_CHECKOUT_MAX_RETRIES = 5;
+const FLUTTERWAVE_INITIALIZATION_LOCK_MS = 60_000;
 const PHONE_PATTERN = /^[\d\s()+.-]{10,20}$/;
 
 const checkoutLineSchema = z.object({
@@ -131,7 +136,7 @@ type FlutterwaveEnvelope<T> = {
   data?: T;
 };
 
-type FlutterwaveTransaction = {
+export type FlutterwaveTransaction = {
   id?: string | number;
   tx_ref?: string;
   flw_ref?: string;
@@ -140,6 +145,15 @@ type FlutterwaveTransaction = {
   currency?: string;
   status?: string;
   payment_type?: string;
+  customer?: {
+    email?: string;
+    name?: string;
+    phone_number?: string;
+  };
+  meta?: {
+    order_id?: string;
+    order_number?: string | number;
+  };
   card?: {
     last_4digits?: string;
   };
@@ -170,7 +184,7 @@ export type FlutterwaveVerificationResult =
     }
   | {
       successful: false;
-      status: "cancelled" | "failed";
+      status: "pending" | "cancelled" | "failed";
       orderId?: string;
     };
 
@@ -182,18 +196,20 @@ export class PaymentProviderError extends Error {
   override name = "PaymentProviderError";
 }
 
-function configured(value: string | undefined): boolean {
-  return Boolean(value?.trim());
-}
-
 export function isFlutterwaveConfigured(): boolean {
-  return configured(process.env["FLW_SECRET_KEY"]);
+  const secretKey = process.env["FLW_SECRET_KEY"]?.trim();
+  return Boolean(secretKey?.startsWith("FLWSECK_TEST-"));
 }
 
 function requireFlutterwaveSecretKey(): string {
   const secretKey = process.env["FLW_SECRET_KEY"]?.trim();
   if (!secretKey) {
     throw new PaymentConfigurationError("FLW_SECRET_KEY is not configured.");
+  }
+  if (!secretKey.startsWith("FLWSECK_TEST-")) {
+    throw new PaymentConfigurationError(
+      "This deployment accepts Flutterwave test secret keys only.",
+    );
   }
   return secretKey;
 }
@@ -211,6 +227,28 @@ export function verifyFlutterwaveWebhookHash(receivedHash: string | null): boole
   const expected = Buffer.from(requireFlutterwaveSecretHash(), "utf8");
   const received = Buffer.from(receivedHash.trim(), "utf8");
   return received.length === expected.length && timingSafeEqual(received, expected);
+}
+
+export function validateFlutterwaveCheckoutUrl(value: string): string {
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new PaymentProviderError("Flutterwave returned an invalid checkout URL.");
+  }
+  if (
+    url.protocol !== "https:" ||
+    url.hostname !== FLUTTERWAVE_CHECKOUT_HOST ||
+    url.port !== "" ||
+    url.username !== "" ||
+    url.password !== "" ||
+    !url.pathname.startsWith(FLUTTERWAVE_CHECKOUT_PATH_PREFIX)
+  ) {
+    throw new PaymentProviderError(
+      `Flutterwave returned an unexpected checkout URL. Expected ${FLUTTERWAVE_CHECKOUT_HOST}.`,
+    );
+  }
+  return url.toString();
 }
 
 async function flutterwaveRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
@@ -251,15 +289,33 @@ async function flutterwaveRequest<T>(path: string, init: RequestInit = {}): Prom
   return payload.data;
 }
 
+export function validatePublicSiteUrl(value: string): string {
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new PaymentConfigurationError("PUBLIC_SITE_URL must be a valid absolute URL.");
+  }
+  const isLocalhost = ["localhost", "127.0.0.1", "::1"].includes(url.hostname);
+  const validProtocol = url.protocol === "https:" || (url.protocol === "http:" && isLocalhost);
+  if (!validProtocol || url.username || url.password) {
+    throw new PaymentConfigurationError(
+      "PUBLIC_SITE_URL must use HTTPS, except for an HTTP localhost URL.",
+    );
+  }
+  return url.origin;
+}
+
 async function resolvePublicOrigin(): Promise<string> {
   const configuredOrigin =
-    process.env["PUBLIC_SITE_URL"]?.trim() ?? process.env["APP_URL"]?.trim() ?? "";
+    process.env["PUBLIC_SITE_URL"]?.trim() || process.env["APP_URL"]?.trim() || "";
   if (configuredOrigin) {
-    const url = new URL(configuredOrigin);
-    if (url.protocol !== "https:" && url.hostname !== "localhost") {
-      throw new PaymentConfigurationError("PUBLIC_SITE_URL must use HTTPS outside localhost.");
-    }
-    return url.origin;
+    return validatePublicSiteUrl(configuredOrigin);
+  }
+  if (process.env["VERCEL"] === "1") {
+    throw new PaymentConfigurationError(
+      "PUBLIC_SITE_URL is required on Vercel for trusted payment redirects.",
+    );
   }
   try {
     const { getRequest } = await import("@tanstack/react-start/server");
@@ -275,7 +331,7 @@ function countOrderItems(order: OrderDocument): number {
   return order.items.reduce((total, item) => total + item.quantity, 0);
 }
 
-async function createFlutterwaveCheckout(order: OrderDocument): Promise<ProviderCheckout> {
+export async function createFlutterwaveCheckout(order: OrderDocument): Promise<ProviderCheckout> {
   if (!order.payment_reference || !order.customer_email) {
     throw new PaymentConfigurationError("The pending order is missing Flutterwave checkout data.");
   }
@@ -306,6 +362,10 @@ async function createFlutterwaveCheckout(order: OrderDocument): Promise<Provider
         title: "Grill & Swill",
         description: `Order #${order.order_number} · ${countOrderItems(order)} item${countOrderItems(order) === 1 ? "" : "s"}`,
       },
+      configurations: {
+        session_duration: FLUTTERWAVE_CHECKOUT_SESSION_MINUTES,
+        max_retry_attempt: FLUTTERWAVE_CHECKOUT_MAX_RETRIES,
+      },
     }),
   });
 
@@ -313,7 +373,8 @@ async function createFlutterwaveCheckout(order: OrderDocument): Promise<Provider
   return {
     provider: "flutterwave",
     reference: order.payment_reference,
-    checkoutUrl: data.link,
+    checkoutUrl: validateFlutterwaveCheckoutUrl(data.link),
+    expiresAt: new Date(Date.now() + FLUTTERWAVE_CHECKOUT_SESSION_MINUTES * 60_000).toISOString(),
   };
 }
 
@@ -414,12 +475,43 @@ function databasePromotion(storedPromotion: StoredPromotion | null): PromoDefini
   };
 }
 
+function newFlutterwaveTransactionReference(): string {
+  return `gsw-${randomUUID()}`;
+}
+
+function reusableFlutterwaveCheckout(order: OrderDocument): string | null {
+  if (
+    order.payment_status !== "pending" ||
+    !order.payment_checkout_url ||
+    !order.payment_reference
+  ) {
+    return null;
+  }
+  let checkoutUrl: string;
+  try {
+    checkoutUrl = validateFlutterwaveCheckoutUrl(order.payment_checkout_url);
+  } catch {
+    return null;
+  }
+  const expiry = order.payment_expires_at
+    ? Date.parse(order.payment_expires_at)
+    : Date.parse(order.payment_updated_at ?? order.updated_at) +
+      FLUTTERWAVE_CHECKOUT_SESSION_MINUTES * 60_000;
+  return Number.isFinite(expiry) && expiry > Date.now() ? checkoutUrl : null;
+}
+
+function checkoutInitializationIsActive(order: OrderDocument): boolean {
+  if (order.payment_status !== "processing") return false;
+  const updatedAt = Date.parse(order.payment_updated_at ?? order.updated_at);
+  return Number.isFinite(updatedAt) && Date.now() - updatedAt < FLUTTERWAVE_INITIALIZATION_LOCK_MS;
+}
+
 async function checkoutForExistingOrder(
   order: OrderDocument,
   reused: boolean,
 ): Promise<InitializedFlutterwavePayment> {
-  const origin = await resolvePublicOrigin();
   if (order.payment_status === "paid") {
+    const origin = await resolvePublicOrigin();
     const orderUrl = new URL(`/orders/${order.id}`, origin);
     orderUrl.searchParams.set("token", createOrderAccessToken(order.id, order.guest_id));
     orderUrl.searchParams.set("payment", "successful");
@@ -432,9 +524,10 @@ async function checkoutForExistingOrder(
     };
   }
 
-  if (order.payment_status === "pending" && order.payment_checkout_url && order.payment_reference) {
+  const reusableCheckout = reusableFlutterwaveCheckout(order);
+  if (reusableCheckout && order.payment_reference) {
     return {
-      link: order.payment_checkout_url,
+      link: reusableCheckout,
       orderId: order.id,
       orderNumber: order.order_number,
       txRef: order.payment_reference,
@@ -442,21 +535,74 @@ async function checkoutForExistingOrder(
     };
   }
 
+  if (checkoutInitializationIsActive(order)) {
+    throw new PaymentRequestError(
+      "Flutterwave checkout is already being prepared. Please try again in a moment.",
+    );
+  }
+  if (!order.payment_reference || !order.payment_status) {
+    throw new PaymentConfigurationError("The pending order is missing payment state.");
+  }
+
+  const { db } = await getMongoDatabase();
+  const orders = collection<OrderDocument>(db, "orders");
+  const txRef = newFlutterwaveTransactionReference();
+  const claimedAt = new Date().toISOString();
+  const claimed = await orders.updateOne(
+    {
+      id: order.id,
+      payment_status: order.payment_status,
+      payment_reference: order.payment_reference,
+    },
+    {
+      $set: {
+        payment_status: "processing",
+        payment_reference: txRef,
+        payment_updated_at: claimedAt,
+        updated_at: claimedAt,
+      },
+      $unset: {
+        payment_checkout_url: "",
+        payment_expires_at: "",
+        payment_failure_code: "",
+      },
+    },
+  );
+  if (!claimed.modifiedCount) {
+    const latest = await orders.findOne({ id: order.id });
+    if (latest) return checkoutForExistingOrder(latest, true);
+    throw new PaymentRequestError("The payment order is no longer available.");
+  }
+
+  const claimedOrder: OrderDocument = {
+    ...order,
+    payment_status: "processing",
+    payment_reference: txRef,
+    payment_updated_at: claimedAt,
+    updated_at: claimedAt,
+  };
+
   try {
-    const checkout = await createFlutterwaveCheckout(order);
+    const checkout = await createFlutterwaveCheckout(claimedOrder);
     const now = new Date().toISOString();
-    await collection<OrderDocument>((await getMongoDatabase()).db, "orders").updateOne(
-      { id: order.id, payment_status: { $ne: "paid" } },
+    const stored = await orders.updateOne(
+      { id: order.id, payment_status: "processing", payment_reference: txRef },
       {
         $set: {
           payment_status: "pending",
           payment_checkout_url: checkout.checkoutUrl,
+          payment_expires_at: checkout.expiresAt,
           payment_updated_at: now,
           updated_at: now,
         },
         $unset: { payment_failure_code: "" },
       },
     );
+    if (!stored.modifiedCount) {
+      const latest = await orders.findOne({ id: order.id });
+      if (latest?.payment_status === "paid") return checkoutForExistingOrder(latest, true);
+      throw new PaymentRequestError("The payment checkout state changed. Please try again.");
+    }
     return {
       link: checkout.checkoutUrl,
       orderId: order.id,
@@ -466,8 +612,8 @@ async function checkoutForExistingOrder(
     };
   } catch (error) {
     const now = new Date().toISOString();
-    await collection<OrderDocument>((await getMongoDatabase()).db, "orders").updateOne(
-      { id: order.id, payment_status: { $ne: "paid" } },
+    await orders.updateOne(
+      { id: order.id, payment_status: "processing", payment_reference: txRef },
       {
         $set: {
           payment_status: "failed",
@@ -505,7 +651,7 @@ export async function initializeFlutterwavePayment(
 
   const prepared = await prepareOrder(db, data);
   const orderId = randomUUID();
-  const txRef = `gsw-${orderId}`;
+  const txRef = newFlutterwaveTransactionReference();
   const session = client.startSession();
   let createdOrder: OrderDocument | null = null;
 
@@ -659,15 +805,15 @@ async function verifyFlutterwaveTransaction(
   );
 }
 
-function paymentOutcome(transaction: FlutterwaveTransaction): ProviderPaymentOutcome {
+export function paymentOutcome(transaction: FlutterwaveTransaction): ProviderPaymentOutcome {
   const rawStatus = transaction.status?.trim().toLowerCase() ?? "";
   const status =
     rawStatus === "successful"
       ? "paid"
-      : rawStatus.includes("cancel")
+      : rawStatus.includes("cancel") || rawStatus === "abandoned"
         ? "cancelled"
-        : rawStatus === "pending"
-          ? "pending"
+        : rawStatus === "pending" || rawStatus === "processing"
+          ? rawStatus
           : "failed";
   const last4 = transaction.card?.last_4digits?.replace(/\D/g, "").slice(-4);
   return {
@@ -680,6 +826,36 @@ function paymentOutcome(transaction: FlutterwaveTransaction): ProviderPaymentOut
     paymentMethod: transaction.payment_type?.trim() || "Flutterwave",
     ...(last4?.length === 4 ? { last4 } : {}),
   };
+}
+
+export function assertFlutterwaveTransactionMatchesOrder(
+  transaction: FlutterwaveTransaction,
+  order: OrderDocument,
+  expectedTransactionId?: string,
+): ProviderPaymentOutcome {
+  const outcome = paymentOutcome(transaction);
+  if (expectedTransactionId && outcome.transactionId !== expectedTransactionId) {
+    throw new PaymentVerificationError("The verified Flutterwave transaction ID did not match.");
+  }
+  if (!outcome.providerReference || outcome.providerReference !== order.payment_reference) {
+    throw new PaymentVerificationError("The Flutterwave transaction reference did not match.");
+  }
+  if (outcome.status !== "paid") return outcome;
+  if (outcome.amountCents !== order.total_cents) {
+    throw new PaymentVerificationError("The verified payment amount did not match the order.");
+  }
+  if (outcome.currency !== order.currency) {
+    throw new PaymentVerificationError("The verified payment currency did not match the order.");
+  }
+  const customerEmail = transaction.customer?.email?.trim().toLowerCase() ?? "";
+  if (!order.customer_email || customerEmail !== order.customer_email.trim().toLowerCase()) {
+    throw new PaymentVerificationError("The verified payment customer did not match the order.");
+  }
+  const metadataOrderId = transaction.meta?.order_id?.trim();
+  if (metadataOrderId && metadataOrderId !== order.id) {
+    throw new PaymentVerificationError("The verified payment metadata did not match the order.");
+  }
+  return outcome;
 }
 
 async function findFlutterwaveOrder(
@@ -720,18 +896,43 @@ async function markUnsuccessfulPayment(
   );
 }
 
-export async function cancelFlutterwavePayment(input: {
-  txRef?: string | null;
+async function markPendingPayment(order: OrderDocument, status: "pending" | "processing") {
+  const { db } = await getMongoDatabase();
+  const now = new Date().toISOString();
+  await collection<OrderDocument>(db, "orders").updateOne(
+    { id: order.id, payment_status: { $ne: "paid" } },
+    {
+      $set: {
+        payment_status: status,
+        payment_updated_at: now,
+        updated_at: now,
+      },
+      $unset: { payment_failure_code: "" },
+    },
+  );
+}
+
+export async function recordFlutterwaveCallbackStatus(input: {
+  txRef: string;
   orderId?: string | null;
+  status: "pending" | "cancelled" | "failed";
 }): Promise<void> {
-  if (!input.txRef && !input.orderId) return;
   const { db } = await getMongoDatabase();
   const order = await collection<OrderDocument>(db, "orders").findOne({
     payment_provider: "flutterwave",
-    ...(input.txRef ? { payment_reference: input.txRef } : {}),
+    payment_reference: input.txRef,
     ...(input.orderId ? { id: input.orderId } : {}),
   });
-  if (order) await markUnsuccessfulPayment(order, "cancelled", "customer_cancelled");
+  if (!order) return;
+  if (input.status === "pending") {
+    await markPendingPayment(order, "pending");
+    return;
+  }
+  await markUnsuccessfulPayment(
+    order,
+    input.status,
+    input.status === "cancelled" ? "customer_cancelled" : "provider_failed",
+  );
 }
 
 async function applySuccessfulFlutterwavePayment(
@@ -762,6 +963,16 @@ async function applySuccessfulFlutterwavePayment(
         }
         alreadyProcessed = true;
         return;
+      }
+
+      const transactionOwner = await orders.findOne(
+        { payment_transaction_id: transactionId, id: { $ne: current.id } },
+        { session },
+      );
+      if (transactionOwner) {
+        throw new PaymentVerificationError(
+          "This Flutterwave transaction was already applied to another order.",
+        );
       }
 
       const now = new Date().toISOString();
@@ -880,22 +1091,31 @@ export async function verifyAndFinalizeFlutterwavePayment(input: {
   );
   if (!order) throw new PaymentVerificationError("No order matches this Flutterwave payment.");
 
-  if (outcome.status !== "paid") {
-    const status = outcome.status === "cancelled" ? "cancelled" : "failed";
-    await markUnsuccessfulPayment(order, status, `provider_${outcome.status}`);
+  let verifiedOutcome: ProviderPaymentOutcome;
+  try {
+    verifiedOutcome = assertFlutterwaveTransactionMatchesOrder(
+      transaction,
+      order,
+      input.transactionId,
+    );
+  } catch (error) {
+    if (outcome.status === "paid") {
+      await markUnsuccessfulPayment(order, "failed", "verification_mismatch");
+    }
+    throw error;
+  }
+
+  if (verifiedOutcome.status === "pending" || verifiedOutcome.status === "processing") {
+    await markPendingPayment(order, verifiedOutcome.status);
+    return { successful: false, status: "pending", orderId: order.id };
+  }
+  if (verifiedOutcome.status !== "paid") {
+    const status = verifiedOutcome.status === "cancelled" ? "cancelled" : "failed";
+    await markUnsuccessfulPayment(order, status, `provider_${verifiedOutcome.status}`);
     return { successful: false, status, orderId: order.id };
   }
 
-  if (outcome.amountCents !== order.total_cents) {
-    await markUnsuccessfulPayment(order, "failed", "amount_mismatch");
-    throw new PaymentVerificationError("The verified payment amount did not match the order.");
-  }
-  if (outcome.currency !== order.currency) {
-    await markUnsuccessfulPayment(order, "failed", "currency_mismatch");
-    throw new PaymentVerificationError("The verified payment currency did not match the order.");
-  }
-
-  const finalized = await applySuccessfulFlutterwavePayment(order, outcome);
+  const finalized = await applySuccessfulFlutterwavePayment(order, verifiedOutcome);
   return {
     successful: true,
     orderId: finalized.order.id,
@@ -908,10 +1128,11 @@ export async function verifyAndFinalizeFlutterwavePayment(input: {
 export async function claimFlutterwaveWebhookEvent(input: {
   eventType: string;
   transactionId: string;
+  transactionStatus: string;
 }): Promise<"claimed" | "processed" | "processing"> {
   const { db } = await getMongoDatabase();
   const events = collection<PaymentEventDocument>(db, "payment_events");
-  const providerEventId = `${input.eventType}:${input.transactionId}`;
+  const providerEventId = flutterwaveWebhookEventId(input);
   const now = new Date().toISOString();
   try {
     await events.insertOne({
@@ -954,6 +1175,7 @@ export async function claimFlutterwaveWebhookEvent(input: {
 export async function completeFlutterwaveWebhookEvent(input: {
   eventType: string;
   transactionId: string;
+  transactionStatus: string;
   orderId?: string;
 }): Promise<void> {
   const { db } = await getMongoDatabase();
@@ -961,7 +1183,7 @@ export async function completeFlutterwaveWebhookEvent(input: {
   await collection<PaymentEventDocument>(db, "payment_events").updateOne(
     {
       provider: "flutterwave",
-      provider_event_id: `${input.eventType}:${input.transactionId}`,
+      provider_event_id: flutterwaveWebhookEventId(input),
     },
     {
       $set: {
@@ -978,13 +1200,14 @@ export async function completeFlutterwaveWebhookEvent(input: {
 export async function failFlutterwaveWebhookEvent(input: {
   eventType: string;
   transactionId: string;
+  transactionStatus: string;
   errorCode: string;
 }): Promise<void> {
   const { db } = await getMongoDatabase();
   await collection<PaymentEventDocument>(db, "payment_events").updateOne(
     {
       provider: "flutterwave",
-      provider_event_id: `${input.eventType}:${input.transactionId}`,
+      provider_event_id: flutterwaveWebhookEventId(input),
     },
     {
       $set: {
@@ -994,4 +1217,13 @@ export async function failFlutterwaveWebhookEvent(input: {
       },
     },
   );
+}
+
+export function flutterwaveWebhookEventId(input: {
+  eventType: string;
+  transactionId: string;
+  transactionStatus: string;
+}): string {
+  const status = input.transactionStatus.trim().toLowerCase() || "unknown";
+  return [input.eventType, input.transactionId, status].map(encodeURIComponent).join(":");
 }

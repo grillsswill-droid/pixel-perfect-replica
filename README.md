@@ -27,8 +27,8 @@ npm run lint
 ## Environment
 
 Configure `MONGODB_URI`, `MONGODB_DATABASE`, `SESSION_SECRET`, `STAFF_PASSCODE`,
-`ADMIN_PASSCODE`, `PUBLIC_SITE_URL`, and the `FLW_*` variables in a private local
-`.env` file using [`.env.example`](./.env.example)
+`ADMIN_PASSCODE`, `PUBLIC_SITE_URL`, `FLW_SECRET_KEY`, and `FLW_SECRET_HASH` in a
+private local `.env` file using [`.env.example`](./.env.example)
 as a template. `SESSION_SECRET` must contain at least 32 characters;
 `ADMIN_PASSCODE` must be a unique secret of at least 16 characters. Keep both
 passcodes private and distinct.
@@ -46,9 +46,16 @@ WebP images (up to 2 MB each) are stored in MongoDB GridFS.
 Checkout uses Flutterwave Standard (hosted checkout) in USD. The browser calls
 `POST /api/payments/initialize`; the server recomputes the order total and uses
 `FLW_SECRET_KEY` to create the hosted payment link. The secret key is never sent
-to browser code. `FLW_PUBLIC_KEY` and `FLW_ENCRYPTION_KEY` are included as
-placeholders for a future Inline/direct-charge flow but are not required by the
-current hosted flow.
+to browser code. This test-payment deployment accepts only a Flutterwave test
+secret key whose prefix is `FLWSECK_TEST-`. A public key and encryption key are
+not required by Flutterwave Standard and are not read by this application.
+
+The server calls the documented `https://api.flutterwave.com/v3/payments`
+endpoint and redirects only to the returned HTTPS URL on
+`checkout.flutterwave.com`. Hosted links expire after 30 minutes and allow at
+most five retries. A stale, expired, or unexpected link (including a
+`dev-flutterwave.com` URL) is not reused; the server starts a new attempt with a
+new transaction reference instead.
 
 Set the Flutterwave redirect/callback URL to the app-generated
 `/api/payments/verify` URL by configuring `PUBLIC_SITE_URL` to the deployed HTTPS
@@ -61,10 +68,27 @@ https://your-domain.example/api/webhooks/flutterwave
 Set the same random secret hash in Flutterwave and `FLW_SECRET_HASH`. The webhook
 checks the `verif-hash` header before accepting `charge.completed` events. Both
 the redirect and webhook re-fetch the transaction from Flutterwave, compare its
-status, amount, currency, and `tx_ref`, then use one atomic paid transition so
-retries cannot award rewards or fulfill an order twice. See the
+transaction ID, status, `tx_ref`, exact amount, currency, customer email, and
+order metadata, then use one atomic paid transition so retries cannot award
+rewards or fulfill an order twice. Pending payments remain pending for a later
+webhook; cancelled, failed, and abandoned payments are not fulfilled. See the
 [Flutterwave v3 API docs](https://developer.flutterwave.com/api) for dashboard
 and test-mode details.
+
+Configure these values in **Vercel → Project → Settings → Environment Variables**
+for the Production environment (and Preview only if preview payments are
+intended):
+
+```text
+PUBLIC_SITE_URL=https://your-production-domain.example
+FLW_SECRET_KEY=FLWSECK_TEST-...
+FLW_SECRET_HASH=<the random dashboard webhook secret hash>
+```
+
+After changing a Vercel environment variable, redeploy the application. In the
+Flutterwave test dashboard, set the webhook URL above, set the matching secret
+hash, and enable webhook retries. Do not add any Flutterwave credential to a
+`VITE_*` variable or commit it to the repository.
 
 For a production Node.js server, build and start with:
 
@@ -116,8 +140,8 @@ The seed command only inserts starter menu, category, and store data when each
 collection is empty. Guest carts are synchronized to MongoDB while retaining
 the local-device fallback; guest reward balances remain in `guests`, and order
 profiles are stored in `users`. Keep the MongoDB connection string, session
-secret, staff passcode, Flutterwave secret key, encryption key, and webhook hash
-private. Pending or failed payment attempts remain out of the kitchen queue;
+secret, staff passcode, Flutterwave test secret key, and webhook hash private.
+Pending or failed payment attempts remain out of the kitchen queue;
 only verified payments are fulfilled and credited with rewards.
 
 ## Storefront routes

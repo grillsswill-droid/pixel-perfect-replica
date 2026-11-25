@@ -47,7 +47,7 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/checkout")({
   validateSearch: z.object({
-    payment: z.enum(["cancelled", "failed", "verification_error"]).optional(),
+    payment: z.enum(["pending", "cancelled", "failed", "verification_error"]).optional(),
   }),
   head: () => ({
     meta: [
@@ -139,15 +139,19 @@ function CheckoutPage() {
 
   useEffect(() => {
     if (!payment) return;
-    requestId.current = null;
-    window.sessionStorage.removeItem(CHECKOUT_REQUEST_KEY);
+    if (payment !== "pending") {
+      requestId.current = null;
+      window.sessionStorage.removeItem(CHECKOUT_REQUEST_KEY);
+    }
     setStep(2);
     setServerError(
-      payment === "cancelled"
-        ? "Payment was cancelled. Your bag is still here when you're ready to try again."
-        : payment === "failed"
-          ? "Flutterwave did not complete the payment. Check your details and try again."
-          : "We couldn't confirm the payment yet. If you were charged, don't retry immediately—contact support with your Flutterwave receipt.",
+      payment === "pending"
+        ? "Payment is still pending. Don’t retry yet—we’ll confirm it automatically when Flutterwave completes it."
+        : payment === "cancelled"
+          ? "Payment was cancelled. Your bag is still here when you're ready to try again."
+          : payment === "failed"
+            ? "Flutterwave did not complete the payment. Check your details and try again."
+            : "We couldn't confirm the payment yet. If you were charged, don't retry immediately—contact support with your Flutterwave receipt.",
     );
   }, [payment]);
 
