@@ -1,0 +1,540 @@
+[
+  {
+    "name": "placeOrder",
+    "method": "POST",
+    "file": "src/lib/orders.functions.ts",
+    "line": 110,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "find",
+      "findOne",
+      "insertOne",
+      "updateOne"
+    ]
+  },
+  {
+    "name": "getGuestRewards",
+    "method": "GET",
+    "file": "src/lib/orders.functions.ts",
+    "line": 399,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "find",
+      "findOne"
+    ]
+  },
+  {
+    "name": "getOrder",
+    "method": "GET",
+    "file": "src/lib/orders.functions.ts",
+    "line": 449,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "find",
+      "updateOne"
+    ]
+  },
+  {
+    "name": "getCart",
+    "method": "GET",
+    "file": "src/lib/cart.functions.ts",
+    "line": 39,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "findOne"
+    ]
+  },
+  {
+    "name": "saveCart",
+    "method": "POST",
+    "file": "src/lib/cart.functions.ts",
+    "line": 56,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "updateOne"
+    ]
+  },
+  {
+    "name": "unlockKitchen",
+    "method": "POST",
+    "file": "src/lib/staff.functions.ts",
+    "line": 47,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": []
+  },
+  {
+    "name": "lockKitchen",
+    "method": "POST",
+    "file": "src/lib/staff.functions.ts",
+    "line": 59,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": []
+  },
+  {
+    "name": "getKitchenBoard",
+    "method": "GET",
+    "file": "src/lib/staff.functions.ts",
+    "line": 66,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "find"
+    ]
+  },
+  {
+    "name": "setOrderStatus",
+    "method": "POST",
+    "file": "src/lib/staff.functions.ts",
+    "line": 123,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": true,
+    "operations": [
+      "findOne",
+      "insertOne",
+      "updateOne"
+    ]
+  },
+  {
+    "name": "setItemAvailability",
+    "method": "POST",
+    "file": "src/lib/staff.functions.ts",
+    "line": 173,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": true,
+    "operations": [
+      "insertOne",
+      "updateOne"
+    ]
+  },
+  {
+    "name": "getAdminSessionState",
+    "method": "GET",
+    "file": "src/lib/admin.functions.ts",
+    "line": 421,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": []
+  },
+  {
+    "name": "unlockAdmin",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 426,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": []
+  },
+  {
+    "name": "lockAdmin",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 439,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": []
+  },
+  {
+    "name": "getCheckoutConfiguration",
+    "method": "GET",
+    "file": "src/lib/admin.functions.ts",
+    "line": 445,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "find",
+      "findOne"
+    ]
+  },
+  {
+    "name": "getPublicGalleryItems",
+    "method": "GET",
+    "file": "src/lib/admin.functions.ts",
+    "line": 488,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "find"
+    ]
+  },
+  {
+    "name": "getPublicCateringMenu",
+    "method": "GET",
+    "file": "src/lib/admin.functions.ts",
+    "line": 516,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "find"
+    ]
+  },
+  {
+    "name": "submitCateringInquiry",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 541,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "countDocuments",
+      "findOne",
+      "insertOne"
+    ]
+  },
+  {
+    "name": "getGalleryFeedback",
+    "method": "GET",
+    "file": "src/lib/admin.functions.ts",
+    "line": 581,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "countDocuments",
+      "find",
+      "findOne"
+    ]
+  },
+  {
+    "name": "toggleGalleryLike",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 635,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "deleteOne",
+      "findOne",
+      "insertOne"
+    ]
+  },
+  {
+    "name": "addGalleryComment",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 666,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "countDocuments",
+      "findOne",
+      "insertOne"
+    ]
+  },
+  {
+    "name": "getAdminWorkspace",
+    "method": "GET",
+    "file": "src/lib/admin.functions.ts",
+    "line": 707,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "find",
+      "findOne"
+    ]
+  },
+  {
+    "name": "getStorefrontSettings",
+    "method": "GET",
+    "file": "src/lib/admin.functions.ts",
+    "line": 868,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "findOne"
+    ]
+  },
+  {
+    "name": "saveAdminMenuItem",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 892,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "updateOne"
+    ]
+  },
+  {
+    "name": "deleteAdminMenuItem",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 940,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "deleteOne"
+    ]
+  },
+  {
+    "name": "saveAdminCategory",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 952,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "updateOne"
+    ]
+  },
+  {
+    "name": "saveAdminSettings",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 967,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "updateMany",
+      "updateOne"
+    ]
+  },
+  {
+    "name": "saveStoreLocation",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 993,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "updateOne"
+    ]
+  },
+  {
+    "name": "deleteStoreLocation",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1016,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "deleteOne"
+    ]
+  },
+  {
+    "name": "saveAdminPromotion",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1028,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "findOne",
+      "updateOne"
+    ]
+  },
+  {
+    "name": "deleteAdminPromotion",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1058,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "deleteOne",
+      "findOne",
+      "updateOne"
+    ]
+  },
+  {
+    "name": "saveAdminCateringPackage",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1081,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "updateOne"
+    ]
+  },
+  {
+    "name": "deleteAdminCateringPackage",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1102,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "deleteOne"
+    ]
+  },
+  {
+    "name": "saveAdminCateringProtein",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1114,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "updateOne"
+    ]
+  },
+  {
+    "name": "deleteAdminCateringProtein",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1135,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "deleteOne"
+    ]
+  },
+  {
+    "name": "updateAdminCateringInquiry",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1147,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "updateOne"
+    ]
+  },
+  {
+    "name": "saveAdminGalleryItem",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1175,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "updateOne"
+    ]
+  },
+  {
+    "name": "uploadAdminImage",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1195,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": []
+  },
+  {
+    "name": "deleteAdminGalleryItem",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1250,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "deleteMany",
+      "deleteOne"
+    ]
+  },
+  {
+    "name": "setAdminOrderStatus",
+    "method": "POST",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1268,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "findOne",
+      "updateOne"
+    ]
+  },
+  {
+    "name": "getAdminSales",
+    "method": "GET",
+    "file": "src/lib/admin.functions.ts",
+    "line": 1312,
+    "validator": true,
+    "directAdminGuard": true,
+    "directStaffGuard": false,
+    "operations": [
+      "find"
+    ]
+  },
+  {
+    "name": "getCategories",
+    "method": "GET",
+    "file": "src/lib/catalog.functions.ts",
+    "line": 49,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "find"
+    ]
+  },
+  {
+    "name": "getMenu",
+    "method": "GET",
+    "file": "src/lib/catalog.functions.ts",
+    "line": 66,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "find"
+    ]
+  },
+  {
+    "name": "verifyQuickOrderSelection",
+    "method": "POST",
+    "file": "src/lib/catalog.functions.ts",
+    "line": 106,
+    "validator": true,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": []
+  },
+  {
+    "name": "getStores",
+    "method": "GET",
+    "file": "src/lib/catalog.functions.ts",
+    "line": 121,
+    "validator": false,
+    "directAdminGuard": false,
+    "directStaffGuard": false,
+    "operations": [
+      "find"
+    ]
+  }
+]

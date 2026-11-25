@@ -1,0 +1,94 @@
+[
+  {
+    "file": ".impeccable/questions/seeds/57615ddd5e1c05b6.json",
+    "tracked": false,
+    "ignore_return": 0,
+    "fields": [
+      {
+        "key": ".key",
+        "length": 32,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      },
+      {
+        "key": ".rounds.0.scope",
+        "length": 9,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      },
+      {
+        "key": ".rounds.0.mode",
+        "length": 8,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      },
+      {
+        "key": ".rounds.0.poolRevision",
+        "length": 12,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      },
+      {
+        "key": ".rounds.0.handId",
+        "length": 32,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      },
+      {
+        "key": ".rounds.0.dealt[0]",
+        "length": 20,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      },
+      {
+        "key": ".rounds.0.dealt[1]",
+        "length": 40,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      },
+      {
+        "key": ".rounds.0.dealt[2]",
+        "length": 39,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      },
+      {
+        "key": ".rounds.0.dealt[3]",
+        "length": 37,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      },
+      {
+        "key": ".rounds.0.dealt[4]",
+        "length": 43,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      },
+      {
+        "key": ".rounds.0.dealt[5]",
+        "length": 52,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      },
+      {
+        "key": ".rounds.0.pingId",
+        "length": 32,
+        "equals_or_contains_configured_secret": false,
+        "provider_format": false
+      }
+    ]
+  },
+  {
+    "file": ".vercel/output/functions/__server.func/_libs/bson.mjs",
+    "line": 2867,
+    "contains_configured_secret": false,
+    "identifier_tokens": [
+      "const",
+      "utf8ValidatedKeys",
+      "validation",
+      "utf8"
+    ],
+    "numeric_literal_count": 2,
+    "length": 44
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "id": "npm-registry-connectivity",
+  "started": "2026-11-25T20:50:39.253150+00:00",
+  "finished": "2026-11-25T20:50:39.316114+00:00",
+  "duration_seconds": 0.063,
+  "command": "curl -sS -I --max-time 15 https://registry.npmjs.org/zod",
+  "cwd": ".",
+  "environment": "sensitive variables stripped; audit-only npm cache",
+  "exit_code": 6,
+  "stdout": "",
+  "stderr": "curl: (6) Could not resolve host: registry.npmjs.org\n"
+}

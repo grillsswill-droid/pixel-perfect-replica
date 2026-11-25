@@ -1,0 +1,12 @@
+{
+  "id": "session-built-handler-checks-validated",
+  "started": "2026-11-25T21:00:05.218874+00:00",
+  "finished": "2026-11-25T21:00:06.132022+00:00",
+  "seconds": 0.913,
+  "cwd": ".",
+  "command": "node --require ./security-audit/scripts/no-network.cjs security-audit/scripts/built_handler_checks.mjs",
+  "clean_env": true,
+  "exit_code": 0,
+  "stdout": "{\n  \"checks\": 15,\n  \"passed\": 15,\n  \"failed\": 0,\n  \"functionCount\": 44\n}\n",
+  "stderr": ""
+}

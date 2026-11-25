@@ -1,0 +1,172 @@
+{
+  "source": "official npm bulk advisory API",
+  "fetched": "2026-11-25T21:16:03.712764+00:00",
+  "queried_distinct_package_names": 811,
+  "summary": [
+    {
+      "lockfile": "package-lock.json",
+      "advisory_packages": [
+        "esbuild",
+        "minimatch",
+        "vite",
+        "zod"
+      ],
+      "advisory_count": 8,
+      "affected_package_instances": 8
+    },
+    {
+      "lockfile": "my-mongodb-app/package-lock.json",
+      "advisory_packages": [
+        "minimatch"
+      ],
+      "advisory_count": 1,
+      "affected_package_instances": 1
+    }
+  ],
+  "findings": [
+    {
+      "lockfile": "package-lock.json",
+      "package": "esbuild",
+      "id": "GHSA-67mh-4wv8-2f99",
+      "severity": "moderate",
+      "range": "<=0.24.2",
+      "url": "https://github.com/advisories/GHSA-67mh-4wv8-2f99",
+      "title": "esbuild enables any website to send any requests to the development server and read the response",
+      "installed": [
+        {
+          "path": "node_modules/@esbuild-kit/core-utils/node_modules/esbuild",
+          "version": "0.18.20",
+          "dev": true
+        }
+      ]
+    },
+    {
+      "lockfile": "package-lock.json",
+      "package": "minimatch",
+      "id": "GHSA-g3hv-75wg-m249",
+      "severity": "moderate",
+      "range": ">=7.0.0 <11.0.1",
+      "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249",
+      "title": "minimatch has potential denial of service via globparts amplification",
+      "installed": [
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+          "version": "10.2.6",
+          "dev": true
+        }
+      ]
+    },
+    {
+      "lockfile": "package-lock.json",
+      "package": "vite",
+      "id": "GHSA-9jrq-w75r-8gcw",
+      "severity": "low",
+      "range": ">=8.0.0 <=8.1.5",
+      "url": "https://github.com/advisories/GHSA-9jrq-w75r-8gcw",
+      "title": "Vite: Cross origin script execution through Vite custom middleware",
+      "installed": [
+        {
+          "path": "node_modules/vite",
+          "version": "8.1.5",
+          "dev": false
+        }
+      ]
+    },
+    {
+      "lockfile": "package-lock.json",
+      "package": "vite",
+      "id": "GHSA-rq7h-c2jc-7f22",
+      "severity": "moderate",
+      "range": ">=8.0.0 <=8.1.5",
+      "url": "https://github.com/advisories/GHSA-rq7h-c2jc-7f22",
+      "title": "Vite: Files outside `server.fs.allow` could be served when project paths match system paths on non-Windows machine",
+      "installed": [
+        {
+          "path": "node_modules/vite",
+          "version": "8.1.5",
+          "dev": false
+        }
+      ]
+    },
+    {
+      "lockfile": "package-lock.json",
+      "package": "vite",
+      "id": "GHSA-698v-4r3x-3vcv",
+      "severity": "moderate",
+      "range": ">=8.0.0 <=8.1.5",
+      "url": "https://github.com/advisories/GHSA-698v-4r3x-3vcv",
+      "title": "launch-editor: escapeCmdArgs() omits % escaping on Windows",
+      "installed": [
+        {
+          "path": "node_modules/vite",
+          "version": "8.1.5",
+          "dev": false
+        }
+      ]
+    },
+    {
+      "lockfile": "package-lock.json",
+      "package": "vite",
+      "id": "GHSA-r825-w8mm-5pxw",
+      "severity": "moderate",
+      "range": ">=8.0.0 <=8.1.5",
+      "url": "https://github.com/advisories/GHSA-r825-w8mm-5pxw",
+      "title": "launch-editor: Editor CLI flag misinterpretation causing arbitrary command execution for some editors",
+      "installed": [
+        {
+          "path": "node_modules/vite",
+          "version": "8.1.5",
+          "dev": false
+        }
+      ]
+    },
+    {
+      "lockfile": "package-lock.json",
+      "package": "vite",
+      "id": "GHSA-587h-7wmj-h5pm",
+      "severity": "high",
+      "range": ">=8.0.0 <=8.1.5",
+      "url": "https://github.com/advisories/GHSA-587h-7wmj-h5pm",
+      "title": "launch-editor: `fs.existsSync()` existence check can be bypassed on Windows",
+      "installed": [
+        {
+          "path": "node_modules/vite",
+          "version": "8.1.5",
+          "dev": false
+        }
+      ]
+    },
+    {
+      "lockfile": "package-lock.json",
+      "package": "zod",
+      "id": "GHSA-mrhx-c7xc-m3w5",
+      "severity": "high",
+      "range": "<4.6.6",
+      "url": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5",
+      "title": "Zod can exhaust memory while validating oversized constrained collections",
+      "installed": [
+        {
+          "path": "node_modules/zod",
+          "version": "3.25.76",
+          "dev": false
+        }
+      ]
+    },
+    {
+      "lockfile": "my-mongodb-app/package-lock.json",
+      "package": "minimatch",
+      "id": "GHSA-g3hv-75wg-m249",
+      "severity": "moderate",
+      "range": ">=7.0.0 <11.0.1",
+      "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249",
+      "title": "minimatch has potential denial of service via globparts amplification",
+      "installed": [
+        {
+          "path": "node_modules/@typescript-eslint/typescript-estree/node_modules/minimatch",
+          "version": "10.2.6",
+          "dev": true
+        }
+      ]
+    }
+  ]
+}

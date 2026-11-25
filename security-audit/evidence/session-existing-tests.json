@@ -1,0 +1,12 @@
+{
+  "id": "session-existing-tests",
+  "started": "2026-11-25T20:32:40.774638+00:00",
+  "finished": "2026-11-25T20:32:49.601347+00:00",
+  "seconds": 8.826,
+  "cwd": ".",
+  "command": "node --require ./security-audit/scripts/no-network.cjs ./node_modules/vitest/vitest.mjs run --config security-audit/vitest.existing.config.ts --reporter=json --outputFile=security-audit/evidence/session-existing-results.json",
+  "clean_env": true,
+  "exit_code": 0,
+  "stdout": "JSON report written to /Users/john/Documents/GitHub/pixel-perfect-replica/security-audit/evidence/session-existing-results.json\n",
+  "stderr": ""
+}

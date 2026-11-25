@@ -1,0 +1,18 @@
+{
+  "time": "2026-11-25T21:25:21.678181+00:00",
+  "required_documents": [
+    "SECURITY_AUDIT_REPORT.md",
+    "SECURITY_FINDINGS.md",
+    "SECURITY_REMEDIATION_PLAN.md",
+    "SECURITY_TEST_MATRIX.md",
+    "SECURITY_TOOL_INVENTORY.md",
+    "SECURITY_EXECUTION_LOG.md",
+    "THREAT_MODEL.md",
+    "DEPENDENCY_RISK_INVENTORY.md"
+  ],
+  "missing_documents": [],
+  "broken_relative_links": [],
+  "configured_secret_exact_matches_in_shareable_artifacts": [],
+  "integrity_passed": true,
+  "passed": true
+}

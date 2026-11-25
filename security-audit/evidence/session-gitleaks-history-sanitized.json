@@ -1,0 +1,283 @@
+{
+  "time": "2026-11-25T20:57:22.930282+00:00",
+  "scanner": "Gitleaks8.30.1",
+  "mode": "history",
+  "findings": [
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 1,
+      "EndLine": 1,
+      "File": ".env",
+      "Commit": "d6c90a76aded2cd723ab1cd78b5f080e038c69c5",
+      "Date": "2026-11-16T00:43:34Z",
+      "Fingerprint": "d6c90a76aded2cd723ab1cd78b5f080e038c69c5:.env:generic-api-key:1"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 4,
+      "EndLine": 4,
+      "File": ".env",
+      "Commit": "d6c90a76aded2cd723ab1cd78b5f080e038c69c5",
+      "Date": "2026-11-16T00:43:34Z",
+      "Fingerprint": "d6c90a76aded2cd723ab1cd78b5f080e038c69c5:.env:generic-api-key:4"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 7,
+      "EndLine": 7,
+      "File": ".env",
+      "Commit": "d6c90a76aded2cd723ab1cd78b5f080e038c69c5",
+      "Date": "2026-11-16T00:43:34Z",
+      "Fingerprint": "d6c90a76aded2cd723ab1cd78b5f080e038c69c5:.env:generic-api-key:7"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 2,
+      "EndLine": 2,
+      "File": ".env",
+      "Commit": "24ced0ae762131b4ed77470e745929fd6ad1319a",
+      "Date": "2026-11-15T21:19:24Z",
+      "Fingerprint": "24ced0ae762131b4ed77470e745929fd6ad1319a:.env:generic-api-key:2"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 3,
+      "EndLine": 3,
+      "File": ".env.example",
+      "Commit": "24ced0ae762131b4ed77470e745929fd6ad1319a",
+      "Date": "2026-11-15T21:19:24Z",
+      "Fingerprint": "24ced0ae762131b4ed77470e745929fd6ad1319a:.env.example:generic-api-key:3"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 36,
+      "EndLine": 36,
+      "File": "src/test/mongodb-config.test.ts",
+      "Commit": "24ced0ae762131b4ed77470e745929fd6ad1319a",
+      "Date": "2026-11-15T21:19:24Z",
+      "Fingerprint": "24ced0ae762131b4ed77470e745929fd6ad1319a:src/test/mongodb-config.test.ts:generic-api-key:36"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 3,
+      "EndLine": 3,
+      "File": ".env.example",
+      "Commit": "8ebf7920fd8a81275d0b17c7e0a32f882fe45867",
+      "Date": "2026-11-15T18:26:54Z",
+      "Fingerprint": "8ebf7920fd8a81275d0b17c7e0a32f882fe45867:.env.example:generic-api-key:3"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 3,
+      "EndLine": 3,
+      "File": ".env.example",
+      "Commit": "b9c59d8bc27d229bada1e3a730c1d62d4f60d45c",
+      "Date": "2026-11-15T18:07:19Z",
+      "Fingerprint": "b9c59d8bc27d229bada1e3a730c1d62d4f60d45c:.env.example:generic-api-key:3"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 36,
+      "EndLine": 36,
+      "File": "src/test/mongodb-config.test.ts",
+      "Commit": "8ebf7920fd8a81275d0b17c7e0a32f882fe45867",
+      "Date": "2026-11-15T18:26:54Z",
+      "Fingerprint": "8ebf7920fd8a81275d0b17c7e0a32f882fe45867:src/test/mongodb-config.test.ts:generic-api-key:36"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 36,
+      "EndLine": 36,
+      "File": "src/test/mongodb-config.test.ts",
+      "Commit": "b9c59d8bc27d229bada1e3a730c1d62d4f60d45c",
+      "Date": "2026-11-15T18:07:19Z",
+      "Fingerprint": "b9c59d8bc27d229bada1e3a730c1d62d4f60d45c:src/test/mongodb-config.test.ts:generic-api-key:36"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 2,
+      "EndLine": 2,
+      "File": ".env",
+      "Commit": "6dd487f099ecbf028a1e4956a4bc80b4babb4d14",
+      "Date": "2026-11-15T16:33:12Z",
+      "Fingerprint": "6dd487f099ecbf028a1e4956a4bc80b4babb4d14:.env:generic-api-key:2"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 2,
+      "EndLine": 2,
+      "File": ".env",
+      "Commit": "56137d7f70d10f3a61f1429a090a1b1cb66bc4e5",
+      "Date": "2026-11-15T15:29:03Z",
+      "Fingerprint": "56137d7f70d10f3a61f1429a090a1b1cb66bc4e5:.env:generic-api-key:2"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 2,
+      "EndLine": 2,
+      "File": ".env",
+      "Commit": "89334389199b51c895b00e35126b66936795861f",
+      "Date": "2026-11-15T12:17:22Z",
+      "Fingerprint": "89334389199b51c895b00e35126b66936795861f:.env:generic-api-key:2"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 2,
+      "EndLine": 2,
+      "File": ".env",
+      "Commit": "9caddf33d69d61dc7cea5da74dbcd8c6326c5734",
+      "Date": "2026-11-15T03:28:30Z",
+      "Fingerprint": "9caddf33d69d61dc7cea5da74dbcd8c6326c5734:.env:generic-api-key:2"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 5,
+      "EndLine": 5,
+      "File": ".env",
+      "Commit": "9caddf33d69d61dc7cea5da74dbcd8c6326c5734",
+      "Date": "2026-11-15T03:28:30Z",
+      "Fingerprint": "9caddf33d69d61dc7cea5da74dbcd8c6326c5734:.env:generic-api-key:5"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 2,
+      "EndLine": 2,
+      "File": ".env",
+      "Commit": "381d49cbd6491e57345c616b7fdc83c08542357e",
+      "Date": "2026-11-15T03:20:42Z",
+      "Fingerprint": "381d49cbd6491e57345c616b7fdc83c08542357e:.env:generic-api-key:2"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 5,
+      "EndLine": 5,
+      "File": ".env",
+      "Commit": "381d49cbd6491e57345c616b7fdc83c08542357e",
+      "Date": "2026-11-15T03:20:42Z",
+      "Fingerprint": "381d49cbd6491e57345c616b7fdc83c08542357e:.env:generic-api-key:5"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 2,
+      "EndLine": 2,
+      "File": ".env",
+      "Commit": "41e2341d752842c09889ffca44d5bc2a8352fd7b",
+      "Date": "2026-11-15T02:16:37Z",
+      "Fingerprint": "41e2341d752842c09889ffca44d5bc2a8352fd7b:.env:generic-api-key:2"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 5,
+      "EndLine": 5,
+      "File": ".env",
+      "Commit": "41e2341d752842c09889ffca44d5bc2a8352fd7b",
+      "Date": "2026-11-15T02:16:37Z",
+      "Fingerprint": "41e2341d752842c09889ffca44d5bc2a8352fd7b:.env:generic-api-key:5"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 2,
+      "EndLine": 2,
+      "File": ".env",
+      "Commit": "f89d87ff7153ac26af525d46d0c6a38ebadce52a",
+      "Date": "2026-11-15T02:11:13Z",
+      "Fingerprint": "f89d87ff7153ac26af525d46d0c6a38ebadce52a:.env:generic-api-key:2"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 5,
+      "EndLine": 5,
+      "File": ".env",
+      "Commit": "f89d87ff7153ac26af525d46d0c6a38ebadce52a",
+      "Date": "2026-11-15T02:11:13Z",
+      "Fingerprint": "f89d87ff7153ac26af525d46d0c6a38ebadce52a:.env:generic-api-key:5"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 2,
+      "EndLine": 2,
+      "File": ".env",
+      "Commit": "08adb5218477d28791ac99f33df20aaa24eef98e",
+      "Date": "2026-11-15T02:05:43Z",
+      "Fingerprint": "08adb5218477d28791ac99f33df20aaa24eef98e:.env:generic-api-key:2"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 5,
+      "EndLine": 5,
+      "File": ".env",
+      "Commit": "08adb5218477d28791ac99f33df20aaa24eef98e",
+      "Date": "2026-11-15T02:05:43Z",
+      "Fingerprint": "08adb5218477d28791ac99f33df20aaa24eef98e:.env:generic-api-key:5"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 2,
+      "EndLine": 2,
+      "File": ".env",
+      "Commit": "7c6918fbf404b6114b85088aac6a260dc7dbabb8",
+      "Date": "2026-11-15T00:09:39Z",
+      "Fingerprint": "7c6918fbf404b6114b85088aac6a260dc7dbabb8:.env:generic-api-key:2"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 5,
+      "EndLine": 5,
+      "File": ".env",
+      "Commit": "7c6918fbf404b6114b85088aac6a260dc7dbabb8",
+      "Date": "2026-11-15T00:09:39Z",
+      "Fingerprint": "7c6918fbf404b6114b85088aac6a260dc7dbabb8:.env:generic-api-key:5"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 2,
+      "EndLine": 2,
+      "File": ".env",
+      "Commit": "ae8d42153768ffaa2206adfa6d48898c9d082429",
+      "Date": "2026-11-14T22:45:05Z",
+      "Fingerprint": "ae8d42153768ffaa2206adfa6d48898c9d082429:.env:generic-api-key:2"
+    },
+    {
+      "RuleID": "generic-api-key",
+      "Description": "Detected a Generic API Key, potentially exposing access to various services and sensitive operations.",
+      "StartLine": 5,
+      "EndLine": 5,
+      "File": ".env",
+      "Commit": "ae8d42153768ffaa2206adfa6d48898c9d082429",
+      "Date": "2026-11-14T22:45:05Z",
+      "Fingerprint": "ae8d42153768ffaa2206adfa6d48898c9d082429:.env:generic-api-key:5"
+    }
+  ],
+  "count": 27,
+  "rules": {
+    "generic-api-key": 27
+  },
+  "secrets_and_matches_removed": true,
+  "status": "detections need validation"
+}

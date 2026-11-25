@@ -1,0 +1,7 @@
+{
+  "path": "/var/folders/xy/wjvzkvjx3wn0l8vmwczwrs6c0000gn/T/grill-swill-security-scanner-da0orlh8/gitleaks",
+  "version": "8.30.1",
+  "current_binary_sha256": "cee01fea7173f1b779dff188e1c26ecbcb4027d394acc573b23aaf0be260e291",
+  "provenance": "pre-existing verified official temporary install; prior gitleaks-installation.json records matching official archive SHA256",
+  "fresh_download": "timed out, executable from partial archive not extracted or run"
+}

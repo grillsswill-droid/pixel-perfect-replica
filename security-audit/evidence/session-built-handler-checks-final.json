@@ -1,0 +1,12 @@
+{
+  "id": "session-built-handler-checks-final",
+  "started": "2026-11-25T20:58:55.277569+00:00",
+  "finished": "2026-11-25T20:58:56.112339+00:00",
+  "seconds": 0.835,
+  "cwd": ".",
+  "command": "node --require ./security-audit/scripts/no-network.cjs security-audit/scripts/built_handler_checks.mjs",
+  "clean_env": true,
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "file:///Users/john/Documents/GitHub/pixel-perfect-replica/node_modules/seroval/dist/read-BSFu4fPn.js:381\n\t\tthrow new SerovalDeserializationError(error);\n\t\t      ^\n\nSerovalDeserializationError: Seroval Error (step: 3)\n    at deserializeTop (file:///Users/john/Documents/GitHub/pixel-perfect-replica/node_modules/seroval/dist/read-BSFu4fPn.js:381:9)\n    at fromJSON (file:///Users/john/Documents/GitHub/pixel-perfect-replica/node_modules/seroval/dist/read-BSFu4fPn.js:445:9)\n    at file:///Users/john/Documents/GitHub/pixel-perfect-replica/security-audit/scripts/built_handler_checks.mjs:69:25 {\n  cause: SerovalUnsupportedNodeError: Seroval Error (specific: 2)\n      at deserialize$1 (file:///Users/john/Documents/GitHub/pixel-perfect-replica/node_modules/seroval/dist/read-BSFu4fPn.js:373:18)\n      at deserializeTop (file:///Users/john/Documents/GitHub/pixel-perfect-replica/node_modules/seroval/dist/read-BSFu4fPn.js:379:10)\n      at fromJSON (file:///Users/john/Documents/GitHub/pixel-perfect-replica/node_modules/seroval/dist/read-BSFu4fPn.js:445:9)\n      at file:///Users/john/Documents/GitHub/pixel-perfect-replica/security-audit/scripts/built_handler_checks.mjs:69:25\n}\n\nNode.js v26.13.0\n"
+}

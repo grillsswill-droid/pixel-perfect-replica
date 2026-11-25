@@ -1,0 +1,12 @@
+{
+  "id": "zod-bounded-proof",
+  "started": "2026-11-25T20:53:42.270957+00:00",
+  "finished": "2026-11-25T20:53:42.434817+00:00",
+  "duration_seconds": 0.164,
+  "command": "node --require ./security-audit/scripts/no-network.cjs security-audit/agent-supply/zod-bounded-proof.mjs",
+  "cwd": ".",
+  "environment": "sensitive variables stripped; audit-only npm cache",
+  "exit_code": 0,
+  "stdout": "{\"test\":\"bounded Zod collection processing and application-equivalent selections\",\"input_elements\":1000,\"collection_maximum\":2,\"rejected\":true,\"visited_elements\":1000,\"allocated_validation_issues\":1001,\"accepted_selection_record_keys\":1000,\"limitation\":\"Demonstrates mechanism with bounded input; does not perform memory exhaustion or service denial.\"}\n",
+  "stderr": ""
+}

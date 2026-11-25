@@ -1,0 +1,12 @@
+{
+  "id": "session-built-handler-checks-corrected",
+  "started": "2026-11-25T20:59:51.164386+00:00",
+  "finished": "2026-11-25T20:59:51.998782+00:00",
+  "seconds": 0.834,
+  "cwd": ".",
+  "command": "node --require ./security-audit/scripts/no-network.cjs security-audit/scripts/built_handler_checks.mjs",
+  "clean_env": true,
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "file:///Users/john/Documents/GitHub/pixel-perfect-replica/node_modules/seroval/dist/read-BSFu4fPn.js:409\n\t\tmaxBase64Length: options.maxBase64Length,\n\t\t                         ^\n\nTypeError: Cannot read properties of undefined (reading 'maxBase64Length')\n    at createFromCrossJSONContext (file:///Users/john/Documents/GitHub/pixel-perfect-replica/node_modules/seroval/dist/read-BSFu4fPn.js:409:28)\n    at fromCrossJSON (file:///Users/john/Documents/GitHub/pixel-perfect-replica/node_modules/seroval/dist/read-BSFu4fPn.js:418:24)\n    at file:///Users/john/Documents/GitHub/pixel-perfect-replica/security-audit/scripts/built_handler_checks.mjs:69:25\n\nNode.js v26.13.0\n"
+}

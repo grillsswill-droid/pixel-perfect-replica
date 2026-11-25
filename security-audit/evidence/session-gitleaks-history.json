@@ -1,0 +1,12 @@
+{
+  "id": "session-gitleaks-history",
+  "started": "2026-11-25T20:56:38.286869+00:00",
+  "finished": "2026-11-25T20:56:41.399384+00:00",
+  "seconds": 3.112,
+  "cwd": ".",
+  "command": "/var/folders/xy/wjvzkvjx3wn0l8vmwczwrs6c0000gn/T/grill-swill-security-scanner-da0orlh8/gitleaks git . '--log-opts=--all --full-history' --config security-audit/gitleaks.toml --redact=100 --no-banner --no-color --log-level error --report-format json --report-path security-audit/.cache/gitleaks-history.json",
+  "clean_env": true,
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": ""
+}

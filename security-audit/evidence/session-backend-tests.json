@@ -1,0 +1,12 @@
+{
+  "id": "session-backend-tests",
+  "started": "2026-11-25T20:32:40.762862+00:00",
+  "finished": "2026-11-25T20:32:42.693792+00:00",
+  "seconds": 1.931,
+  "cwd": ".",
+  "command": "node --require ./security-audit/scripts/no-network.cjs ./node_modules/vitest/vitest.mjs run --config security-audit/vitest.security.config.ts --reporter=json --outputFile=security-audit/evidence/session-backend-results.json",
+  "clean_env": true,
+  "exit_code": 0,
+  "stdout": "JSON report written to /Users/john/Documents/GitHub/pixel-perfect-replica/security-audit/evidence/session-backend-results.json\n",
+  "stderr": ""
+}

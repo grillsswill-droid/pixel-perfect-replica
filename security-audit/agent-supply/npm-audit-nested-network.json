@@ -1,0 +1,12 @@
+{
+  "id": "npm-audit-nested-network",
+  "started": "2026-11-25T20:49:47.019470+00:00",
+  "finished": "2026-11-25T20:50:32.046015+00:00",
+  "duration_seconds": 45.026,
+  "command": "npm audit --json --ignore-scripts",
+  "cwd": "my-mongodb-app",
+  "environment": "sensitive variables stripped; audit-only npm cache",
+  "exit_code": 124,
+  "stdout": "",
+  "stderr": "Audit timeout reached; subprocess stopped."
+}

@@ -1,0 +1,14 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Exclude dependency trees, generated caches/builds, and audit output; source and private env files remain in scope"
+paths = [
+  '''(^|/)node_modules/''',
+  '''(^|/)\.git/''',
+  '''(^|/)\.next/''',
+  '''(^|/)\.output/''',
+  '''(^|/)\.nitro/''',
+  '''(^|/)security-audit/''',
+]
+

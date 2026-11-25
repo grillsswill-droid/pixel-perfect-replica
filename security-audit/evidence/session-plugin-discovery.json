@@ -1,0 +1,15 @@
+{
+  "codex_path": "/usr/local/bin/codex",
+  "security_tools_exposed": false,
+  "security_skill_found": false,
+  "--version": {
+    "exit": 0,
+    "stdout": "codex-cli 0.172.0\n",
+    "stderr": "WARNING: proceeding, even though we could not create PATH aliases: Operation not permitted (os error 1)\n"
+  },
+  "plugin list --json": {
+    "exit": 0,
+    "stdout": "{\n  \"installed\": [\n    {\n      \"pluginId\": \"taste-skill@taste-skill\",\n      \"name\": \"taste-skill\",\n      \"marketplaceName\": \"taste-skill\",\n      \"version\": \"2.5.1\",\n      \"installed\": true,\n      \"enabled\": true,\n      \"source\": {\n        \"source\": \"git\",\n        \"url\": \"https://github.com/Leonxlnx/taste-skill.git\",\n        \"ref\": \"main\"\n      },\n      \"marketplaceSource\": {\n        \"sourceType\": \"git\",\n        \"source\": \"https://github.com/Leonxlnx/taste-skill.git\"\n      },\n      \"installPolicy\": \"AVAILABLE\",\n      \"authPolicy\": \"ON_INSTALL\"\n    }\n  ],\n  \"available\": []\n}\n",
+    "stderr": "WARNING: proceeding, even though we could not create PATH aliases: Operation not permitted (os error 1)\n"
+  }
+}

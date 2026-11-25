@@ -1,0 +1,27 @@
+{
+  "url": "https://owasp.org/API-Security/editions/2023/en/0x11-t10/",
+  "time": "2026-11-25T20:50:25.681018+00:00",
+  "exit": 0,
+  "sha256": "ac00589e1bb28f4977b3c82dfb61713b7aac0cbd07b15bd40d8516ef86379524",
+  "title": "OWASP Top 10 API Security Risks – 2023 - OWASP API Security Top 10",
+  "version_excerpts": [
+    " OWASP Top 10 API Security Risks – 2023 - OWASP API Security Top 10 :root{--md-text-font:\"Roboto\";--md-code-font:\"Roboto Mono\"} __md_scope=new URL(\"../../../..\",location),__md_hash=e=>[...e].reduce((e,_)=>(e J",
+    "+e,JSON.stringify(_))}catch(e){}} Skip to content OWASP API Security Top 10 OWASP Top 10 API Security Risks – 2023 Bahasa (Indonesian) English Français Persian Português (Portugal) Initializing search OWASP/API-Security Home 2023 2019 OWASP API Security Top 10 OWASP/API-Security Home",
+    "Bahasa (Indonesian) English Français Persian Português (Portugal) Initializing search OWASP/API-Security Home 2023 2019 OWASP API Security Top 10 OWASP/API-Security Home Home How-to Contribute 2023 2023 Notice Table of Contents About OWASP Foreword Introduction Release Notes API Secu",
+    "ch OWASP/API-Security Home 2023 2019 OWASP API Security Top 10 OWASP/API-Security Home Home How-to Contribute 2023 2023 Notice Table of Contents About OWASP Foreword Introduction Release Notes API Security Risks OWASP Top 10 API Security Risks – 2023 API1:2023 Broken Object Level Aut",
+    "ASP/API-Security Home 2023 2019 OWASP API Security Top 10 OWASP/API-Security Home Home How-to Contribute 2023 2023 Notice Table of Contents About OWASP Foreword Introduction Release Notes API Security Risks OWASP Top 10 API Security Risks – 2023 API1:2023 Broken Object Level Authoriz",
+    "Contents About OWASP Foreword Introduction Release Notes API Security Risks OWASP Top 10 API Security Risks – 2023 API1:2023 Broken Object Level Authorization API2:2023 Broken Authentication API3:2023 Broken Object Property Level Authorization API4:2023 Unrestricted Resource Consumpt",
+    "bout OWASP Foreword Introduction Release Notes API Security Risks OWASP Top 10 API Security Risks – 2023 API1:2023 Broken Object Level Authorization API2:2023 Broken Authentication API3:2023 Broken Object Property Level Authorization API4:2023 Unrestricted Resource Consumption API5:2",
+    "es API Security Risks OWASP Top 10 API Security Risks – 2023 API1:2023 Broken Object Level Authorization API2:2023 Broken Authentication API3:2023 Broken Object Property Level Authorization API4:2023 Unrestricted Resource Consumption API5:2023 Broken Function Level Authorization API6",
+    "10 API Security Risks – 2023 API1:2023 Broken Object Level Authorization API2:2023 Broken Authentication API3:2023 Broken Object Property Level Authorization API4:2023 Unrestricted Resource Consumption API5:2023 Broken Function Level Authorization API6:2023 Unrestricted Access to Sen",
+    "Level Authorization API2:2023 Broken Authentication API3:2023 Broken Object Property Level Authorization API4:2023 Unrestricted Resource Consumption API5:2023 Broken Function Level Authorization API6:2023 Unrestricted Access to Sensitive Business Flows API7:2023 Server Side Request F",
+    "ication API3:2023 Broken Object Property Level Authorization API4:2023 Unrestricted Resource Consumption API5:2023 Broken Function Level Authorization API6:2023 Unrestricted Access to Sensitive Business Flows API7:2023 Server Side Request Forgery API8:2023 Security Misconfiguration A",
+    " Authorization API4:2023 Unrestricted Resource Consumption API5:2023 Broken Function Level Authorization API6:2023 Unrestricted Access to Sensitive Business Flows API7:2023 Server Side Request Forgery API8:2023 Security Misconfiguration API9:2023 Improper Inventory Management API10:2",
+    " API5:2023 Broken Function Level Authorization API6:2023 Unrestricted Access to Sensitive Business Flows API7:2023 Server Side Request Forgery API8:2023 Security Misconfiguration API9:2023 Improper Inventory Management API10:2023 Unsafe Consumption of APIs What's Next For Developers ",
+    "rization API6:2023 Unrestricted Access to Sensitive Business Flows API7:2023 Server Side Request Forgery API8:2023 Security Misconfiguration API9:2023 Improper Inventory Management API10:2023 Unsafe Consumption of APIs What's Next For Developers What's Next For DevSecOps Methodology ",
+    "ss to Sensitive Business Flows API7:2023 Server Side Request Forgery API8:2023 Security Misconfiguration API9:2023 Improper Inventory Management API10:2023 Unsafe Consumption of APIs What's Next For Developers What's Next For DevSecOps Methodology and Data Acknowledgments 2019 2019 N",
+    "Server Side Request Forgery API8:2023 Security Misconfiguration API9:2023 Improper Inventory Management API10:2023 Unsafe Consumption of APIs What's Next For Developers What's Next For DevSecOps Methodology and Data Acknowledgments 2019 2019 Notice Table of Contents About OWASP Forew",
+    "r Developers What's Next For DevSecOps Methodology and Data Acknowledgments OWASP Top 10 API Security Risks – 2023 Risk Description API1:2023 - Broken Object Level Authorization APIs tend to expose endpoints that handle object identifiers, creating a wide attack surface of Object Lev",
+    "r DevSecOps Methodology and Data Acknowledgments OWASP Top 10 API Security Risks – 2023 Risk Description API1:2023 - Broken Object Level Authorization APIs tend to expose endpoints that handle object identifiers, creating a wide attack surface of Object Level Access Control issues. O"
+  ]
+}

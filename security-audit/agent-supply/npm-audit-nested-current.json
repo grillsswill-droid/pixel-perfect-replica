@@ -1,0 +1,12 @@
+{
+  "id": "npm-audit-nested-current",
+  "started": "2026-11-25T20:33:22.385991+00:00",
+  "finished": "2026-11-25T20:33:23.785591+00:00",
+  "duration_seconds": 1.4,
+  "command": "npm audit --json --ignore-scripts",
+  "cwd": "my-mongodb-app",
+  "environment": "sensitive variables stripped; audit-only npm cache",
+  "exit_code": 1,
+  "stdout": "{\n  \"message\": \"request to https://registry.npmjs.org/-/npm/v1/security/advisories/bulk failed, reason: getaddrinfo ENOTFOUND registry.npmjs.org\",\n  \"error\": {\n    \"summary\": \"\",\n    \"detail\": \"\"\n  }\n}\n",
+  "stderr": "npm warn audit request to https://registry.npmjs.org/-/npm/v1/security/advisories/bulk failed, reason: getaddrinfo ENOTFOUND registry.npmjs.org\nnpm error audit endpoint returned an error\nnpm error A complete log of this run can be found in: /Users/john/Documents/GitHub/pixel-perfect-replica/security-audit/agent-supply/cache/_logs/2026-11-25T20_33_22_559Z-debug-0.log\n"
+}

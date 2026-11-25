@@ -1,0 +1,12 @@
+{
+  "id": "session-public-references-sandbox",
+  "started": "2026-11-25T20:39:37.514070+00:00",
+  "finished": "2026-11-25T20:39:37.857279+00:00",
+  "seconds": 0.343,
+  "cwd": ".",
+  "command": "python3 security-audit/scripts/public_references.py",
+  "clean_env": true,
+  "exit_code": 1,
+  "stdout": "owasp-top10-2025 FAILED\nowasp-asvs FAILED\nowasp-wstg FAILED\nowasp-api-2023 FAILED\ngitleaks-release FAILED\n",
+  "stderr": ""
+}

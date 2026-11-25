@@ -1,0 +1,12 @@
+{
+  "id": "session-static-run",
+  "started": "2026-11-25T20:39:37.525891+00:00",
+  "finished": "2026-11-25T20:39:43.977751+00:00",
+  "seconds": 6.455,
+  "cwd": ".",
+  "command": "python3 security-audit/scripts/session_static.py",
+  "clean_env": true,
+  "exit_code": 0,
+  "stdout": "{\n  \"time\": \"2026-11-25T20:39:43.928177+00:00\",\n  \"revision\": \"cd56b33ef334d98f81e9d9bde23727ace5d71265\",\n  \"files_inventoried\": 462,\n  \"text_files_read\": 425,\n  \"binary_files_hashed_only\": 37,\n  \"pattern_counts\": {\n    \"file_operation\": 203,\n    \"database_operation\": 168,\n    \"code_execution\": 1,\n    \"security_config\": 20,\n    \"crypto_session\": 171,\n    \"browser_storage\": 130,\n    \"html_sink\": 5,\n    \"external_network\": 39,\n    \"redirect\": 9,\n    \"query_operator\": 1\n  },\n  \"limitation\": \"Lexical triage only. Matches are not vulnerabilities. Generated files, assets, locks and vendored skills included in inventory; application paths receive manual flow review.\"\n}\n",
+  "stderr": ""
+}

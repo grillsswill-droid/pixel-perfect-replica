@@ -1,0 +1,182 @@
+{
+  "resolver": "__23tanstack-start-server-fn-resolver-ed0VfWPd.mjs",
+  "count": 44,
+  "functions": [
+    {
+      "id": "02c087ff342683ece7a265d528626f0cfeaf3f56209cd8c78e4044ed6a9a9eff",
+      "name": "getAdminSessionState"
+    },
+    {
+      "id": "0c57bc23ccc756aea479ebc6704f629137fc9b3724cac016c93cc0efe2795283",
+      "name": "deleteAdminCateringPackage"
+    },
+    {
+      "id": "0e2f56c299c4bc31626d4c9be2344b2553c6caf12292826f3b24ccef3e18a3b5",
+      "name": "addGalleryComment"
+    },
+    {
+      "id": "1752d786f565c0894c2a8822083ceb99117908473a07351f7ea7f200f557b5ef",
+      "name": "toggleGalleryLike"
+    },
+    {
+      "id": "18c77d251ac449c758f4b93cbc780620b13d2d67c6fe4d8cf33cb4303a54f8b1",
+      "name": "saveAdminGalleryItem"
+    },
+    {
+      "id": "1cbc03add95b320aa5fb27073a8fa7485742966d485d17cc5f5075a87bca1d57",
+      "name": "lockAdmin"
+    },
+    {
+      "id": "25af6b30e3a6226412a54b727ac5ceb1d9aa66aeacb954d696cd2803ba22aac7",
+      "name": "getAdminSales"
+    },
+    {
+      "id": "2938966e5aeb46b508b1bf817e2409166c0a80bbc380e84a7d6de505e4d3bae8",
+      "name": "deleteAdminPromotion"
+    },
+    {
+      "id": "31801a35b3f66e9ec8d2fccde13bfe6c63a93326e0cbab52a44868a8158338d8",
+      "name": "submitCateringInquiry"
+    },
+    {
+      "id": "37b62b49e3fe345af3c52fc9d7f12824b0440f040006ce25b2bdf3f80416ee0b",
+      "name": "updateAdminCateringInquiry"
+    },
+    {
+      "id": "444ea18d60cb2f8dc11256923b8dd2249bf994f585fa8aa5594ed59f9c35ad91",
+      "name": "getPublicCateringMenu"
+    },
+    {
+      "id": "4cafc9798a5fb7731e768edc5fc1992770e5e2a5c5472b72de536e64afa7b655",
+      "name": "saveStoreLocation"
+    },
+    {
+      "id": "50139dbe811881680e8e7cc70b73ef394376e9123da45251ddd492fca034e16d",
+      "name": "setAdminOrderStatus"
+    },
+    {
+      "id": "551ccd044b267d9938aaf29ca254a3cee37f775777225ec6ae9cbd9074e502ac",
+      "name": "getCategories"
+    },
+    {
+      "id": "56465473b9fef7f0b9d58a8bcdf4aa1dcd4233c336a75f9d8e86a3abf660e2d3",
+      "name": "unlockAdmin"
+    },
+    {
+      "id": "5684f4a94433b199765d144df691e3376d7a019adf96059968c47ad47b1cfa0e",
+      "name": "unlockKitchen"
+    },
+    {
+      "id": "59be1ac2f7061e933133eec5543ee7d5f9a10f81b631a3df379f888a5fc33be0",
+      "name": "uploadAdminImage"
+    },
+    {
+      "id": "6819ef62a115a9fed5da9cfb07cf9da76d39c84579b91eccca9a635402a4e228",
+      "name": "saveAdminSettings"
+    },
+    {
+      "id": "6f602d242a211117c1c6bdd7e559c6a568fab6fb032c40b2131f45c58acaed5a",
+      "name": "getCart"
+    },
+    {
+      "id": "72806e030dd189275fe5d4ddaa50fa3663bb5eab9f0805af63a343f757a43e93",
+      "name": "getStores"
+    },
+    {
+      "id": "7903da5b571af43e97a76fe8828c47291a3e346774b2903aec6e2100ca8ac844",
+      "name": "lockKitchen"
+    },
+    {
+      "id": "7c3e295bce9b330000c96fec7449b462c9b51cd5aabd76744ade20d636a5598f",
+      "name": "getMenu"
+    },
+    {
+      "id": "7c72df8ebb55eeaf960f06e747431d5f584abd9007b20e2bf38b9ee4f0c5616a",
+      "name": "saveAdminMenuItem"
+    },
+    {
+      "id": "7ddc3cf8b7bc0393802897f6bdffc652c532aff284d0a4b5a2996a472ca90cf7",
+      "name": "setOrderStatus"
+    },
+    {
+      "id": "80af34647d09247c33ec87c6eee02be94955ffc9d2ccf89c6d28ec5a09da47e6",
+      "name": "deleteStoreLocation"
+    },
+    {
+      "id": "821636baacee18098543ca4bd726515143e18f7317d25945c42067dca7f1dfaf",
+      "name": "setItemAvailability"
+    },
+    {
+      "id": "8253f8807d41831c1f953faa2eefcca713835a6bc365486af9b2768ed2a35dc5",
+      "name": "saveAdminCateringPackage"
+    },
+    {
+      "id": "86c6be3a59d632c600457af063731f0d3f1c0028bb17bab4f8735989c6f35aa1",
+      "name": "getCheckoutConfiguration"
+    },
+    {
+      "id": "8d89b7179a61ab3d48e536226751a804c2a4a27f478238699b8c0eb2189983ec",
+      "name": "getOrder"
+    },
+    {
+      "id": "91282c5db51dbdb69754f299eedaa28ea3a67e00b24d67a1e51d9e6b6a0556f8",
+      "name": "getAdminWorkspace"
+    },
+    {
+      "id": "915facbe045fd0e8120c0ce9f27a02f019b562c8d1328bf81f555d20f3fb39b1",
+      "name": "saveAdminPromotion"
+    },
+    {
+      "id": "91e6cff267304dd3212ffcfb95b6c92413c2b2e271e0f2e0930fade2e9b8e10d",
+      "name": "getKitchenBoard"
+    },
+    {
+      "id": "93a347874135d8b8097de8ed719d272580a26747632d9d6438cc6b981b44a20a",
+      "name": "getPublicGalleryItems"
+    },
+    {
+      "id": "a6485a0caa6c7276b8f38fd2e39c7cd965ae3addca5ff318987f97661206380a",
+      "name": "placeOrder"
+    },
+    {
+      "id": "af1e2a5223c1449dff83f03479f982610c57650fbb257c9b76445902170a4f71",
+      "name": "verifyQuickOrderSelection"
+    },
+    {
+      "id": "b658f889c289bb03255dff301d5afaaa5245c0972b59941be421eaebcc682dc7",
+      "name": "getGuestRewards"
+    },
+    {
+      "id": "ba9fa352d64ca605e11d0a432d75580df25bb456317ed31347ccfc963d0ff5db",
+      "name": "saveCart"
+    },
+    {
+      "id": "bdb9e2d93b2d9bca794e4831a32136e42f7a399da0fdef1a74435e96655b76e7",
+      "name": "deleteAdminGalleryItem"
+    },
+    {
+      "id": "c4b4aef687f243eebdbafcf7ba5b93a46da06c3ce488feed3f5fd1afa677071d",
+      "name": "getStorefrontSettings"
+    },
+    {
+      "id": "da394e264ee5b0f46ac70ce3eac54372a8a90a8a53a98542b8490f1e8a8d0aa1",
+      "name": "deleteAdminMenuItem"
+    },
+    {
+      "id": "de7cd390f13a3aa716e433b6749afb85ee12697e405c721135d4ce6c5ea86e95",
+      "name": "saveAdminCategory"
+    },
+    {
+      "id": "fa6479648f9c95bac53ddc65e34fe8380a95ba8a38d59d4d354abe17739f0859",
+      "name": "deleteAdminCateringProtein"
+    },
+    {
+      "id": "fc8d1a4e6a7d8137d3367bfb0e48614cc5ebc580cc69fe4423b91db20257b7ea",
+      "name": "getGalleryFeedback"
+    },
+    {
+      "id": "feeb4fd72426d7275a0ac3798004686db78fa850443a0088d3d2a4c726cbc97a",
+      "name": "saveAdminCateringProtein"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "url": "https://owasp.org/www-project-application-security-verification-standard/",
+  "time": "2026-11-25T20:50:15.855381+00:00",
+  "exit": 0,
+  "sha256": "d5d6718f29cee0457f5996377893d7e229c4a0a8c7058ffadd71955d87af6ef8",
+  "title": "Overview | OWASP Application Security Verification Standard",
+  "version_excerpts": [
+    "ty requirements for designing, developing and testing modern web applications and web services. Download ASVS 5.0.0 ↗ Get involved → Open standard. Shared confidence. Start here Downloads Community About ASVS Find your starting point Put ASVS to work 01 / Understand Understand ASVS Ex",
+    "ute to the standard, or volunteer with the project. Find ways to contribute → The standard, ready to use ASVS 5.0.0 Published 30 May 2025 Stable release PDF Read the standard English · PDF document ↗ DOCX Work with the document English · Word document ↗ CSV Use the requirements Englis",
+    " volunteer with the project. Find ways to contribute → The standard, ready to use ASVS 5.0.0 Published 30 May 2025 Stable release PDF Read the standard English · PDF document ↗ DOCX Work with the document English · Word document ↗ CSV Use the requirements English · Spreadsheet data ↗",
+    "nteer with the project. Find ways to contribute → The standard, ready to use ASVS 5.0.0 Published 30 May 2025 Stable release PDF Read the standard English · PDF document ↗ DOCX Work with the document English · Word document ↗ CSV Use the requirements English · Spreadsheet data ↗ All do",
+    " - Provide a basis for specifying application security verification requirements in contracts. Get the latest stable version of the ASVS (5.0.0) from the Downloads page. How To Reference ASVS Requirements Each requirement has an identifier in the format <chapter>.<section>.<requirement",
+    "fying application security verification requirements in contracts. Get the latest stable version of the ASVS (5.0.0) from the Downloads page. How To Reference ASVS Requirements Each requirement has an identifier in the format <chapter>.<section>.<requirement> , where each element is a",
+    "ue identifies the specific requirement within the chapter and section, for example, 1.2.5 which as of version 5.0.0 of this standard is: Verify that the application protects against OS command injection and that operating system calls use parameterized OS queries or use contextual com",
+    "ormat: v<version>-<chapter>.<section>.<requirement> , where: ‘version’ is the ASVS version tag. For example: v5.0.0-1.2.5 would be understood to mean specifically the 5th requirement in the ‘Injection Prevention’ section of the ‘Encoding and Sanitization’ chapter from version 5.0.0. (",
+    "5th requirement in the ‘Injection Prevention’ section of the ‘Encoding and Sanitization’ chapter from version 5.0.0. (This could be summarized as v<version>-<requirement_identifier> .) Note: The v preceding the version number in the format should always be lowercase. If identifiers ar"
+  ]
+}

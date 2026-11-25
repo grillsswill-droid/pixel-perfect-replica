@@ -1,0 +1,4504 @@
+{
+  "time": "2026-11-25T20:39:43.928177+00:00",
+  "revision": "cd56b33ef334d98f81e9d9bde23727ace5d71265",
+  "files_inventoried": 462,
+  "text_files_read": 425,
+  "binary_files_hashed_only": 37,
+  "pattern_counts": {
+    "file_operation": 203,
+    "database_operation": 168,
+    "code_execution": 1,
+    "security_config": 20,
+    "crypto_session": 171,
+    "browser_storage": 130,
+    "html_sink": 5,
+    "external_network": 39,
+    "redirect": 9,
+    "query_operator": 1
+  },
+  "matches": [
+    {
+      "path": ".agents/skills/brand/SKILL.md",
+      "line": 36,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/SKILL.md",
+      "line": 38,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/SKILL.md",
+      "line": 39,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/SKILL.md",
+      "line": 82,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/SKILL.md",
+      "line": 85,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/SKILL.md",
+      "line": 85,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/references/asset-organization.md",
+      "line": 153,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/references/brand-guideline-template.md",
+      "line": 134,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/references/brand-guideline-template.md",
+      "line": 136,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/references/color-palette-management.md",
+      "line": 3,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/references/color-palette-management.md",
+      "line": 99,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/references/color-palette-management.md",
+      "line": 102,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/references/color-palette-management.md",
+      "line": 104,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/references/color-palette-management.md",
+      "line": 109,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/references/update.md",
+      "line": 60,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/references/update.md",
+      "line": 86,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/references/update.md",
+      "line": 117,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 3,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 5,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 8,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 12,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 13,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 14,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 28,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 30,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 47,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 57,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 68,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 148,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 149,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 149,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 154,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 161,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 165,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 172,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 262,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 263,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 281,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 285,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 287,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 294,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 296,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 310,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 314,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "line": 241,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 5,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 22,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 24,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 30,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 32,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 54,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 55,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 56,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 57,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 63,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 65,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 96,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 98,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 105,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 121,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 153,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 155,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 182,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 184,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 193,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 201,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 218,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 229,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 245,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 328,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 330,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 332,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 333,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 334,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 335,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 336,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 338,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "line": 313,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/sync-brand-to-tokens.cjs",
+      "line": 14,
+      "pattern": "code_execution",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/sync-brand-to-tokens.cjs",
+      "line": 23,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/sync-brand-to-tokens.cjs",
+      "line": 25,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/sync-brand-to-tokens.cjs",
+      "line": 201,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/sync-brand-to-tokens.cjs",
+      "line": 203,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/sync-brand-to-tokens.cjs",
+      "line": 204,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/sync-brand-to-tokens.cjs",
+      "line": 205,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/sync-brand-to-tokens.cjs",
+      "line": 214,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/sync-brand-to-tokens.cjs",
+      "line": 228,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/validate-asset.cjs",
+      "line": 13,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/validate-asset.cjs",
+      "line": 195,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/validate-asset.cjs",
+      "line": 197,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/brand/scripts/validate-asset.cjs",
+      "line": 354,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design-system/SKILL.md",
+      "line": 102,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/embed-tokens.cjs",
+      "line": 57,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/embed-tokens.cjs",
+      "line": 58,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/embed-tokens.cjs",
+      "line": 86,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/embed-tokens.cjs",
+      "line": 87,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/generate-tokens.cjs",
+      "line": 146,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/generate-tokens.cjs",
+      "line": 184,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/generate-tokens.cjs",
+      "line": 198,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/html-token-validator.py",
+      "line": 83,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/validate-tokens.cjs",
+      "line": 130,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/references/design-routing.md",
+      "line": 132,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/references/social-photos-design.md",
+      "line": 60,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/references/social-photos-design.md",
+      "line": 81,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/scripts/cip/generate.py",
+      "line": 256,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/scripts/cip/render-html.py",
+      "line": 110,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/scripts/icon/generate.py",
+      "line": 128,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/scripts/icon/generate.py",
+      "line": 129,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/scripts/icon/generate.py",
+      "line": 150,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/scripts/icon/generate.py",
+      "line": 155,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/scripts/icon/generate.py",
+      "line": 244,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/scripts/icon/generate.py",
+      "line": 251,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/scripts/icon/generate.py",
+      "line": 338,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/scripts/logo/generate.py",
+      "line": 199,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/design/scripts/logo/generate.py",
+      "line": 291,
+      "pattern": "security_config",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/SKILL.md",
+      "line": 194,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/SKILL.md",
+      "line": 230,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/SKILL.md",
+      "line": 272,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/SKILL.md",
+      "line": 278,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-accessibility.md",
+      "line": 304,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-accessibility.md",
+      "line": 304,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-components.md",
+      "line": 195,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-components.md",
+      "line": 195,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-components.md",
+      "line": 198,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-components.md",
+      "line": 198,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-theming.md",
+      "line": 373,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-theming.md",
+      "line": 84,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-theming.md",
+      "line": 88,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-theming.md",
+      "line": 89,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/tailwind-customization.md",
+      "line": 253,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/tailwind-customization.md",
+      "line": 477,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/SKILL.md",
+      "line": 378,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/SKILL.md",
+      "line": 90,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/SKILL.md",
+      "line": 235,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/SKILL.md",
+      "line": 235,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/SKILL.md",
+      "line": 736,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/SKILL.md",
+      "line": 428,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/app-interface.csv",
+      "line": 21,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/app-interface.csv",
+      "line": 20,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/app-interface.csv",
+      "line": 20,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/app-interface.csv",
+      "line": 33,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/app-interface.csv",
+      "line": 33,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/app-interface.csv",
+      "line": 33,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/app-interface.csv",
+      "line": 33,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/colors.csv",
+      "line": 112,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/icons.csv",
+      "line": 84,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/icons.csv",
+      "line": 87,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/icons.csv",
+      "line": 87,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/icons.csv",
+      "line": 88,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/icons.csv",
+      "line": 88,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/icons.csv",
+      "line": 89,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/icons.csv",
+      "line": 89,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/phosphor-icons-upstream.json",
+      "line": 21336,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/phosphor-icons-upstream.json",
+      "line": 21337,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/phosphor-icons-upstream.json",
+      "line": 21939,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/phosphor-icons-upstream.json",
+      "line": 21940,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/phosphor-icons-upstream.json",
+      "line": 21958,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/phosphor-icons-upstream.json",
+      "line": 21959,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/products.csv",
+      "line": 110,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/products.csv",
+      "line": 119,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/products.csv",
+      "line": 112,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/products.csv",
+      "line": 112,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/products.csv",
+      "line": 112,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/products.csv",
+      "line": 164,
+      "pattern": "security_config",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 29,
+      "pattern": "html_sink",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 20,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 20,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 20,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 28,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 2,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 2,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 4,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 17,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 29,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 29,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 36,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 36,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 36,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 36,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 36,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 12,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 12,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 33,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 33,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "line": 33,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/angular.csv",
+      "line": 7,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/angular.csv",
+      "line": 22,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/angular.csv",
+      "line": 18,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/angular.csv",
+      "line": 18,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/angular.csv",
+      "line": 48,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/astro.csv",
+      "line": 20,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/flutter.csv",
+      "line": 3,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/flutter.csv",
+      "line": 15,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/flutter.csv",
+      "line": 15,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/jetpack-compose.csv",
+      "line": 34,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "line": 2,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "line": 27,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "line": 12,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "line": 21,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "line": 21,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "line": 48,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "line": 48,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "line": 51,
+      "pattern": "security_config",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "line": 51,
+      "pattern": "security_config",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "line": 51,
+      "pattern": "html_sink",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "line": 35,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "line": 13,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "line": 13,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "line": 13,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "line": 14,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "line": 14,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "line": 38,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "line": 53,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "line": 52,
+      "pattern": "security_config",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxt-ui.csv",
+      "line": 65,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxt-ui.csv",
+      "line": 65,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxt-ui.csv",
+      "line": 65,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 10,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 12,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 30,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 61,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 62,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 45,
+      "pattern": "redirect",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 56,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 56,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 14,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 63,
+      "pattern": "security_config",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 63,
+      "pattern": "security_config",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 63,
+      "pattern": "security_config",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "line": 63,
+      "pattern": "security_config",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/react-native.csv",
+      "line": 20,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/react-native.csv",
+      "line": 20,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/react-native.csv",
+      "line": 20,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/react-native.csv",
+      "line": 20,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/react-native.csv",
+      "line": 20,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/react.csv",
+      "line": 31,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/svelte.csv",
+      "line": 45,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/swiftui.csv",
+      "line": 3,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/swiftui.csv",
+      "line": 3,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/styles.csv",
+      "line": 32,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ui-reasoning.csv",
+      "line": 112,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ui-reasoning.csv",
+      "line": 164,
+      "pattern": "security_config",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ui-reasoning.csv",
+      "line": 164,
+      "pattern": "security_config",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ux-guidelines.csv",
+      "line": 5,
+      "pattern": "redirect",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ux-guidelines.csv",
+      "line": 61,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ux-guidelines.csv",
+      "line": 61,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ux-guidelines.csv",
+      "line": 61,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ux-guidelines.csv",
+      "line": 61,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ux-guidelines.csv",
+      "line": 61,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ux-guidelines.csv",
+      "line": 108,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ux-guidelines.csv",
+      "line": 108,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "line": 445,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "line": 446,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "line": 484,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "line": 485,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "line": 486,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "line": 487,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "line": 1508,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "line": 1525,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "line": 1549,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "line": 1559,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "line": 1606,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_web_stack_freshness.py",
+      "line": 171,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/validate_data.py",
+      "line": 517,
+      "pattern": "crypto_session",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2537,
+      "pattern": "html_sink",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 58,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 58,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 59,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 59,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 997,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1001,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1005,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1027,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1029,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1041,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1043,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1796,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1802,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1828,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1832,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2418,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 3444,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 945,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 949,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 970,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 974,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1498,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 52,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 52,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 699,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 731,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1538,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1548,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1549,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1559,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1567,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1577,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1581,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1593,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 1653,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2134,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2155,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2163,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2163,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2484,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2490,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2491,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2501,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2511,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2541,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 3088,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 3088,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 3094,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 3104,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 3106,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 3111,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 3112,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 3267,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2954,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "line": 2962,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/README.md",
+      "line": 33,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/README.md",
+      "line": 35,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/README.md",
+      "line": 107,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/README.md",
+      "line": 107,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/SKILL.md",
+      "line": 79,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/SKILL.md",
+      "line": 98,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/SKILL.md",
+      "line": 74,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/SKILL.md",
+      "line": 74,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/SKILL.md",
+      "line": 114,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/SKILL.md",
+      "line": 114,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "line": 2,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "line": 5,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "line": 8,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "line": 16,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "line": 17,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "line": 27,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "line": 35,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "line": 45,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "line": 49,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "line": 61,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-swr-dedup.md",
+      "line": 18,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "line": 5,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "line": 10,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "line": 10,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "line": 16,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "line": 26,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "line": 28,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "line": 33,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "line": 34,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-flatmap-filter.md",
+      "line": 33,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-index-maps.md",
+      "line": 10,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-index-maps.md",
+      "line": 18,
+      "pattern": "database_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-request-idle-callback.md",
+      "line": 96,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hoist-jsx.md",
+      "line": 10,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "line": 63,
+      "pattern": "html_sink",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "line": 5,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "line": 10,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "line": 16,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "line": 17,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "line": 27,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "line": 37,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "line": 67,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-defer-reads.md",
+      "line": 5,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-defer-reads.md",
+      "line": 10,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-lazy-state-init.md",
+      "line": 27,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-lazy-state-init.md",
+      "line": 48,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-lazy-state-init.md",
+      "line": 56,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-lazy-state-init.md",
+      "line": 56,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-memo-with-default-value.md",
+      "line": 3,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-memo-with-default-value.md",
+      "line": 10,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-memo-with-default-value.md",
+      "line": 14,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-memo.md",
+      "line": 2,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-memo.md",
+      "line": 8,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-memo.md",
+      "line": 10,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-auth-actions.md",
+      "line": 5,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-auth-actions.md",
+      "line": 12,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-auth-actions.md",
+      "line": 44,
+      "pattern": "browser_storage",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "line": 74,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "line": 78,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "line": 82,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "line": 104,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "line": 106,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "line": 118,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "line": 120,
+      "pattern": "file_operation",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "line": 22,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "line": 26,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "line": 47,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "line": 51,
+      "pattern": "external_network",
+      "category": "vendored_skill"
+    },
+    {
+      "path": ".env.example",
+      "line": 2,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": ".env.example",
+      "line": 7,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": ".env.example",
+      "line": 7,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": ".env.example",
+      "line": 8,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": ".env.example",
+      "line": 8,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "PRODUCT.md",
+      "line": 38,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "README.md",
+      "line": 42,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "README.md",
+      "line": 29,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "README.md",
+      "line": 30,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "README.md",
+      "line": 33,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "README.md",
+      "line": 34,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "README.md",
+      "line": 146,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "README.md",
+      "line": 169,
+      "pattern": "security_config",
+      "category": "application"
+    },
+    {
+      "path": "bun.lock",
+      "line": 107,
+      "pattern": "crypto_session",
+      "category": "dependency_lock"
+    },
+    {
+      "path": "bun.lock",
+      "line": 761,
+      "pattern": "crypto_session",
+      "category": "dependency_lock"
+    },
+    {
+      "path": "drizzle/migrations/0001_guest_checkout_no_accounts.sql",
+      "line": 19,
+      "pattern": "crypto_session",
+      "category": "legacy_database"
+    },
+    {
+      "path": "my-mongodb-app/package-lock.json",
+      "line": 266,
+      "pattern": "crypto_session",
+      "category": "dependency_lock"
+    },
+    {
+      "path": "roadmap.md",
+      "line": 15,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "scripts/seed-combo-meals.mjs",
+      "line": 319,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "scripts/seed-combo-meals.mjs",
+      "line": 355,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "scripts/seed-combo-meals.mjs",
+      "line": 363,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "scripts/seed-combo-meals.mjs",
+      "line": 387,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "scripts/seed-combo-meals.mjs",
+      "line": 391,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "scripts/seed-mongodb.mjs",
+      "line": 2,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "scripts/seed-mongodb.mjs",
+      "line": 327,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "scripts/seed-mongodb.mjs",
+      "line": 632,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/components/ui/chart.tsx",
+      "line": 73,
+      "pattern": "html_sink",
+      "category": "application"
+    },
+    {
+      "path": "src/components/ui/chart.tsx",
+      "line": 298,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/hooks/use-cart.tsx",
+      "line": 88,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/hooks/use-cart.tsx",
+      "line": 109,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/hooks/use-cart.tsx",
+      "line": 64,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/hooks/use-guest.ts",
+      "line": 14,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/hooks/use-guest.ts",
+      "line": 9,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/hooks/use-guest.ts",
+      "line": 15,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/auth-attacher.ts",
+      "line": 12,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/auth-middleware.ts",
+      "line": 30,
+      "pattern": "external_network",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/auth-middleware.ts",
+      "line": 24,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/auth-middleware.ts",
+      "line": 25,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/auth-middleware.ts",
+      "line": 26,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/auth-middleware.ts",
+      "line": 57,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/auth-middleware.ts",
+      "line": 60,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/auth-middleware.ts",
+      "line": 83,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/auth-middleware.ts",
+      "line": 88,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/client.server.ts",
+      "line": 28,
+      "pattern": "external_network",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/client.server.ts",
+      "line": 22,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/client.server.ts",
+      "line": 23,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/client.server.ts",
+      "line": 24,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/client.server.ts",
+      "line": 52,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/client.ts",
+      "line": 41,
+      "pattern": "external_network",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/client.ts",
+      "line": 44,
+      "pattern": "external_network",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/client.ts",
+      "line": 30,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/client.ts",
+      "line": 31,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/client.ts",
+      "line": 32,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/client.ts",
+      "line": 71,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/cron-auth.ts",
+      "line": 20,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/cron-auth.ts",
+      "line": 24,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/cron-auth.ts",
+      "line": 25,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/cron-auth.ts",
+      "line": 13,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 3,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 39,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 58,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 102,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 118,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 123,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 127,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 130,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 132,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 133,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 134,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "line": 140,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/integrations/supabase/types.ts",
+      "line": 311,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1228,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1235,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1406,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 34,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 35,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 35,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 39,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 52,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 62,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 63,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 409,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 413,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 427,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 429,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 431,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 433,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 544,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 570,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 638,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 655,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 669,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 688,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 896,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 900,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 997,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1000,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1032,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1044,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1085,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1088,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1118,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1121,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1179,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1182,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 43,
+      "pattern": "security_config",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 44,
+      "pattern": "security_config",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 45,
+      "pattern": "security_config",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 412,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 451,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 454,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 494,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 523,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 529,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 562,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 577,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 591,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 608,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 615,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 643,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 647,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 654,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 674,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 695,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 728,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 734,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 739,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 743,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 746,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 752,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 758,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 764,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 770,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 777,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 816,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 874,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 931,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 946,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 958,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 975,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1009,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1022,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1036,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1046,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1065,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1068,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1075,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1091,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1108,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1124,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1141,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1163,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1186,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1257,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1260,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1262,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1283,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1293,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "line": 1361,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/cart.functions.ts",
+      "line": 44,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/cart.functions.ts",
+      "line": 83,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/catalog.functions.ts",
+      "line": 38,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/catalog.functions.ts",
+      "line": 55,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/catalog.functions.ts",
+      "line": 77,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/catalog.functions.ts",
+      "line": 126,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/default-combos.ts",
+      "line": 519,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/default-combos.ts",
+      "line": 527,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/order-access.server.ts",
+      "line": 1,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/order-access.server.ts",
+      "line": 1,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/order-access.server.ts",
+      "line": 12,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/order-access.server.ts",
+      "line": 21,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 266,
+      "pattern": "query_operator",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 115,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 116,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 291,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 349,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 118,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 138,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 141,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 153,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 157,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 176,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 218,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 220,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 262,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 281,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 286,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 319,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 320,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 331,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 355,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 378,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 405,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 410,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 457,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 465,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "line": 471,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payment-types.ts",
+      "line": 36,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 286,
+      "pattern": "external_network",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 249,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 267,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 332,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 516,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 678,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 690,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 802,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1082,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1176,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 280,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 422,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 425,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 429,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 433,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 453,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 588,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 609,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 625,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 639,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 652,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 682,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 696,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 697,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 706,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 751,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 756,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 799,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 800,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 818,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 903,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 921,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 939,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 958,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 989,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 992,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1005,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1016,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1045,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1047,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1062,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1065,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1080,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1100,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1175,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1190,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1201,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1220,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "line": 1244,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 81,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 97,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 144,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 153,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 155,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 159,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 166,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 167,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 192,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 211,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 227,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 250,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "line": 267,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 12,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 13,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 13,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 18,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 30,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 31,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 34,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 38,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 48,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 50,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 51,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 52,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 52,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 53,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 60,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 162,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 164,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 185,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 187,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 22,
+      "pattern": "security_config",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 23,
+      "pattern": "security_config",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 24,
+      "pattern": "security_config",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 73,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 85,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 97,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 105,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 137,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 147,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 163,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 180,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "line": 186,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 849,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 2319,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 2329,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 3195,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 108,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 108,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 139,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 141,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 144,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 199,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 201,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 202,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 205,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 206,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 207,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 208,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 209,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 911,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 1163,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 1269,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "line": 1689,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/api.media.$id.ts",
+      "line": 7,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/api.media.$id.ts",
+      "line": 16,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/api.media.$id.ts",
+      "line": 18,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/api.payments.verify.ts",
+      "line": 10,
+      "pattern": "redirect",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/api.payments.verify.ts",
+      "line": 44,
+      "pattern": "redirect",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/api.payments.verify.ts",
+      "line": 46,
+      "pattern": "redirect",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/api.payments.verify.ts",
+      "line": 55,
+      "pattern": "redirect",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/api.payments.verify.ts",
+      "line": 68,
+      "pattern": "redirect",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/api.payments.verify.ts",
+      "line": 71,
+      "pattern": "redirect",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 293,
+      "pattern": "external_network",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 328,
+      "pattern": "redirect",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 283,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 122,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 129,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 144,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 249,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 267,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 268,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 278,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 285,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "line": 228,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 20,
+      "pattern": "file_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 37,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 37,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 65,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 67,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 70,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 137,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 139,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 140,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 143,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 144,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 145,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 146,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "line": 147,
+      "pattern": "crypto_session",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/locations.tsx",
+      "line": 32,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/routes/orders.$id.tsx",
+      "line": 52,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/server.ts",
+      "line": 51,
+      "pattern": "external_network",
+      "category": "application"
+    },
+    {
+      "path": "src/server.ts",
+      "line": 54,
+      "pattern": "external_network",
+      "category": "application"
+    },
+    {
+      "path": "src/start.ts",
+      "line": 1,
+      "pattern": "security_config",
+      "category": "application"
+    },
+    {
+      "path": "src/start.ts",
+      "line": 23,
+      "pattern": "security_config",
+      "category": "application"
+    },
+    {
+      "path": "src/test/combo-menu.test.ts",
+      "line": 117,
+      "pattern": "database_operation",
+      "category": "application"
+    },
+    {
+      "path": "src/test/flutterwave-payments.test.ts",
+      "line": 306,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/test/flutterwave-payments.test.ts",
+      "line": 331,
+      "pattern": "browser_storage",
+      "category": "application"
+    },
+    {
+      "path": "src/test/pricing.test.ts",
+      "line": 40,
+      "pattern": "database_operation",
+      "category": "application"
+    }
+  ],
+  "limitation": "Lexical triage only. Matches are not vulnerabilities. Generated files, assets, locks and vendored skills included in inventory; application paths receive manual flow review."
+}

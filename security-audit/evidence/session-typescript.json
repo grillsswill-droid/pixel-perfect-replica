@@ -1,0 +1,12 @@
+{
+  "id": "session-typescript",
+  "started": "2026-11-25T20:39:37.514444+00:00",
+  "finished": "2026-11-25T20:39:50.491714+00:00",
+  "seconds": 12.983,
+  "cwd": ".",
+  "command": "node ./node_modules/typescript/bin/tsc --noEmit",
+  "clean_env": true,
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": ""
+}

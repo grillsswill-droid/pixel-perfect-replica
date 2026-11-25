@@ -1,0 +1,122 @@
+{
+  "started": "2026-11-25T21:00:05.820Z",
+  "finished": "2026-11-25T21:00:06.105Z",
+  "environment": "credential-free production-compiled TanStack/Nitro handlers; no listener/outbound network; process-local MemoryMongo",
+  "functionCount": 44,
+  "checks": [
+    {
+      "name": "anonymous admin state is locked",
+      "passed": true,
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-tss-serialized": "true"
+      }
+    },
+    {
+      "name": "public catalog handler returns synthetic menu",
+      "passed": true,
+      "status": 200,
+      "headers": {
+        "content-type": "application/json",
+        "x-tss-serialized": "true"
+      }
+    },
+    {
+      "name": "cross-site server function blocked by real CSRF middleware",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "name": "synthetic admin login succeeds with secure cookie attributes",
+      "passed": true,
+      "status": 200,
+      "httpOnly": true,
+      "secure": true,
+      "sameSiteStrict": true,
+      "cookieValue": "[REDACTED]",
+      "headers": {
+        "content-type": "application/json",
+        "x-tss-serialized": "true"
+      }
+    },
+    {
+      "name": "cross-site private GET RPC blocked",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "name": "order response discloses guest identifier",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "built anonymous guest endpoint returns other private orders and access tokens",
+      "passed": true,
+      "status": 200,
+      "otherOrderReturned": true,
+      "privateEmailReturned": true,
+      "tokenReturned": true
+    },
+    {
+      "name": "built anonymous cart write accepts another guest identifier",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "production compiled legacy checkout creates uncharged reward-bearing order",
+      "passed": true,
+      "status": 200,
+      "uncharged": true,
+      "providerAbsent": true,
+      "rewardsAwarded": true
+    },
+    {
+      "name": "built kitchen board accepts unpaid legacy order for fulfillment",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "malformed payment JSON rejected",
+      "passed": true,
+      "status": 400,
+      "expected": 400
+    },
+    {
+      "name": "wrong-origin payment initialization blocked",
+      "passed": true,
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "name": "unsigned webhook rejected",
+      "passed": true,
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "name": "media traversal identifier rejected",
+      "passed": true,
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "name": "unknown function returns generic failure without stack or path",
+      "passed": true,
+      "status": 500,
+      "headers": {
+        "content-type": "text/html; charset=utf-8"
+      }
+    }
+  ],
+  "failed": 0,
+  "network": "blocked by preload",
+  "limitations": [
+    "No real MongoDB concurrency, server/IAM/TLS/CDN/WAF behaviour.",
+    "Request handler invocation, not TCP/browser-based DAST or ZAP.",
+    "Synthetic cookies/tokens omitted from evidence."
+  ],
+  "logMessages": [
+    "Server function info not found for 0000000000000000000000000000000000000000000000000000000000000000"
+  ]
+}
