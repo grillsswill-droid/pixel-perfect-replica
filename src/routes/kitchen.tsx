@@ -124,7 +124,7 @@ function KitchenPage() {
       <main className="grid min-h-[65vh] place-items-center bg-background px-5 py-12">
         <form
           onSubmit={login}
-          className="w-full max-w-md rounded-3xl bg-card p-7 shadow-card sm:p-9"
+          className="w-full max-w-md rounded-3xl bg-card p-5 shadow-card sm:p-9"
         >
           <span className="grid h-12 w-12 place-items-center rounded-2xl bg-accent text-primary">
             <ShieldCheck />

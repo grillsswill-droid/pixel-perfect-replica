@@ -186,7 +186,7 @@ function AdminPage() {
       <main className="grid min-h-[65vh] place-items-center bg-background px-5 py-12">
         <form
           onSubmit={login}
-          className="w-full max-w-md rounded-3xl bg-card p-7 shadow-card sm:p-9"
+          className="w-full max-w-md rounded-3xl bg-card p-5 shadow-card sm:p-9"
         >
           <span className="grid h-12 w-12 place-items-center rounded-2xl bg-accent text-primary">
             <ShieldCheck />
@@ -215,7 +215,7 @@ function AdminPage() {
               {error}
             </p>
           ) : null}
-          <Button type="submit" variant="hero" size="lg" loading={busy} className="mt-5 w-full">
+          <Button type="submit" variant="hero" size="lg" loading={busy} className="mt-5 w-full whitespace-normal">
             Unlock admin workspace
           </Button>
           <Link

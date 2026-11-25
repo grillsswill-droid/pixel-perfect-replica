@@ -253,6 +253,8 @@
 @keyframes loading-failsafe { to { visibility: hidden; pointer-events: none; } }
 @media (min-width: 1500px) { .hero-title { font-size: 100px; } }
 @media (max-width: 767px) {
+  input, select, textarea { font-size: 16px !important; }
+  main table { font-size: 13px; }
   .storefront-hero { height: clamp(550px, calc(100svh - 180px), 650px); }
   .hero-inner { align-items: flex-start; padding-top: 38px; padding-bottom: 30px; }
   .hero-title { font-size: 58px; }

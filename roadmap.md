@@ -1,8 +1,8 @@
 # Grill & Swill roadmap
 
-- [ ] Bolder storefront design and refined menu cards/navigation
-- [ ] Custom branded website-entry loading animation and page-loading feedback
-- [ ] Resilient scroll reveals with reduced-motion support and desktop/mobile verification
+- [x] Bolder storefront design and refined menu cards/navigation
+- [x] Custom branded website-entry loading animation and page-loading feedback
+- [x] Resilient scroll reveals with reduced-motion support and desktop/mobile verification
 
 - [x] Design system, logo, favicon
 - [x] Home page (hero parallax, start order, category grid, heritage, rewards teaser)
