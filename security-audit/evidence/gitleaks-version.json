@@ -1,0 +1,12 @@
+{
+  "id": "gitleaks-version",
+  "started": "2026-11-25T03:20:38.842529+00:00",
+  "finished": "2026-11-25T03:20:42.356954+00:00",
+  "seconds": 3.514,
+  "cwd": ".",
+  "command": "/var/folders/xy/wjvzkvjx3wn0l8vmwczwrs6c0000gn/T/grill-swill-security-scanner-da0orlh8/gitleaks version",
+  "clean_env": true,
+  "exit_code": 0,
+  "stdout": "8.30.1\n",
+  "stderr": ""
+}

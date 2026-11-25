@@ -1,0 +1,3704 @@
+{
+  "time": "2026-11-25T03:19:17.223835+00:00",
+  "head": "6bc9013ac9e234ba64d3be5ef18c79efb24e21b5",
+  "branch": "main",
+  "status": "?? security-audit/\n",
+  "files": [
+    {
+      "path": ".agents/skills/banner-design/SKILL.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 8326,
+      "sha256": "913d9c4b2a3b405d638d50131e0dd3fe2787c839423d79287b7858ac29255acc",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/banner-design/references/banner-sizes-and-styles.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4993,
+      "sha256": "c8906fb1073a576ee8c680d9bc8586249cbc4ed36690da960d65a1c9c37143b7",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/SKILL.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2939,
+      "sha256": "6a450ee1a83a403d47cec2ede9030feb60a67a81fc425d2406e975339313bd44",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/references/approval-checklist.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4245,
+      "sha256": "4bf8549687f53a7b9684005b4b87de93c26f018e00609b4c506a5812abd13d20",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/references/asset-organization.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5110,
+      "sha256": "de98123417e9c5a1cc71a78131bba979c4c8ed2e5289e6c7a7f166576e488101",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/references/brand-guideline-template.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 3572,
+      "sha256": "392db8cf10fef492221c15a86e68590074bf5716de1f2982f41c01fbe30567cc",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/references/color-palette-management.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4254,
+      "sha256": "c429298ffe3955edb8b22c9f51426fef75e83d02848cd4300e89c0d3fc34b44a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/references/consistency-checklist.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1926,
+      "sha256": "56d8b2d4852cda11e600adec4b9dd68fc89a1b8265382359953bec5c5e5e2c36",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/references/logo-usage-rules.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5464,
+      "sha256": "044c5ddf30cfe0eea047451cfce6ea654939198ffdd8968a19161c97066a5a26",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/references/messaging-framework.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1763,
+      "sha256": "24b2500a72867b55dd10f4bf359178b0eb347fddd852659ce47b69d9f597d4e6",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/references/typography-specifications.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5042,
+      "sha256": "921c3d9e6ddfde2677b9a3e32eee94c7922f54f22c1f380c5ed2eb25a7d5bfa9",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/references/update.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 3365,
+      "sha256": "537cb55ebe260e1de127bd6288b19d8d7b15b6c893545442a58b739cbd342b37",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/references/visual-identity.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1884,
+      "sha256": "63f0cfc5d95403d8e12aca4d839cc28471515574d9a431334bfbb96c15407c31",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/references/voice-framework.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1997,
+      "sha256": "08c15ac79f81cd964c5efbe593131b61a093c7e1b060d5dd28b17f3cc5b331fb",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/scripts/extract-colors.cjs",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 9328,
+      "sha256": "36d21f3905e5762cfc8054b3f3b7276f6bc656884fe57c6bfa539526044778ed",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/scripts/inject-brand-context.cjs",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 9677,
+      "sha256": "5b98abdeb5c636f247102cd235f1d3421db7a4de53fd853360feaa0c471b5c96",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/scripts/sync-brand-to-tokens.cjs",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 9545,
+      "sha256": "390a760570fdba6d6ecfdfd8907fc802b64659b6178f8920349b0c6a2c822106",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/scripts/tests/test_sync_brand_to_tokens.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1970,
+      "sha256": "0ace0cf7c6a8c12c0b9154f317e847b1084eb00b065b6f22431e37b7c7e948d6",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/scripts/validate-asset.cjs",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 10173,
+      "sha256": "4546c9109fb0f4f767426508cb29e60d02b301f8897cf16d8e378b7ce9d997fc",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/brand/templates/brand-guidelines-starter.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 6638,
+      "sha256": "d157a57b15f0b458c79636d11de42f3c89f03d8c0bbea1bdd3cf1c3542b2140d",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/SKILL.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 6875,
+      "sha256": "655468bb723a6bc9d17fcb09a6a005e10e313d63b879f4d74fb2abdc3041ae3f",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/data/slide-backgrounds.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1038,
+      "sha256": "d1bb701b87bef493d72974d6fac1087c8ba4e2df14185fe3e0c36a13fe35f3d1",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/data/slide-charts.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 8631,
+      "sha256": "12ef876cd76e67a6553444bfa2ebf1d5d4d6216289d34db052a6e87421135033",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/data/slide-color-logic.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 877,
+      "sha256": "ea68c737075f1615b2a7e461e2878c06bfe8f803dcabfbcc2977ffe5f9ec9ded",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/data/slide-copy.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 6427,
+      "sha256": "43152937a0e598b3fbfdd418684311c105d44e3c5b333703ddb0b8cb28e40658",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/data/slide-layout-logic.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 981,
+      "sha256": "26b5b75782d5aba89836c0479acd3111cc69b67853db9c2259b30ac1e966bc62",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/data/slide-layouts.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 8760,
+      "sha256": "95d558c1b7d2552d7a75402dc68facbd16125e574985851db5729d1145e14896",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/data/slide-strategies.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 8232,
+      "sha256": "f656be0ab0b3a85fa7fc74202e9701a7236220412d67d5f63eb6dbb100bb2639",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/data/slide-typography.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 735,
+      "sha256": "b96cd11dd4ff1dea8a9454b0b9e898e7f82f9243182f8f237af1f2c9b8824ce5",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/references/component-specs.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 6914,
+      "sha256": "b265d979a741dd748d4e595e6898ae430faeef4f6d13d7a634fa6241b91d2da4",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/references/component-tokens.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4986,
+      "sha256": "e27f8f5999badee425c98235eabbd2cb3ebe2a1a364766d5c7a6b3134ceaaec8",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/references/primitive-tokens.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4562,
+      "sha256": "91e6caa12646c08c8aadf8e09399aed65760a25c8d80595936d81a9131118fc3",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/references/semantic-tokens.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4245,
+      "sha256": "97e16d8061bbc22e82b51966a7015e3fc990932902e4647843506669a1cdebcc",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/references/states-and-variants.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4771,
+      "sha256": "8dacb95d57d4bb37d8a99cc55515ff26da272056f837d29abc74aedcaa3ba104",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/references/tailwind-integration.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5633,
+      "sha256": "6d01092db1479dbd2060567b4232bb2b4bc16e89730ab07e1f87a3e7f5c406b9",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/references/token-architecture.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5365,
+      "sha256": "925f4049c4c4313d9fd5df98cdfd52004112aca49fba1664ad85e76bc9dce4d3",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/embed-tokens.cjs",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2558,
+      "sha256": "23a9ce214e3c0d2fb4c5442b3bf1222c66721f7988a181ab29dcb549a5e5f511",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/fetch-background.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 12287,
+      "sha256": "cecedad0a9054e6e65f31ab7ba7d07eb6af2179e237c5632bc962dad69fd6d66",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/generate-slide.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 28595,
+      "sha256": "0463c98efea54870816925015fe5819e42a29aaba57408c2c38bacb33e2605b9",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/generate-tokens.cjs",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4968,
+      "sha256": "aac8a0f4ec4dccf0d371f9ee5a9111e44977bb0cad7e40a3754aba5571aa1231",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/html-token-validator.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 11894,
+      "sha256": "9556a65e7aacda23388478294ee9a5cb84b315d964fbbf754aa0dcdbcfee58e6",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/search-slides.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 9210,
+      "sha256": "fded9548bc1bbe1303da67fabe34006c6a7c57934c9d171ea3dc3eb5f6eee010",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/slide-token-validator.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 973,
+      "sha256": "66da5da5e8e659d405a89b342e13dd1e469e79726c46002d9d2368c3c7aaf945",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/slide_search_core.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 14756,
+      "sha256": "2464050ae338eb50728086046b644845fa7ae943f32efead3908fdbe1473edbe",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/tests/test_validate_tokens.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1619,
+      "sha256": "a32f34a9e89542a341b6ff3ee4392494b48dea622b22b99652d3cf0c1a1ee966",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/scripts/validate-tokens.cjs",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5942,
+      "sha256": "65f03a29290b9029d8cc27537701f226de7bcffc303b3bc361648fadfa09b77d",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design-system/templates/design-tokens-starter.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 7184,
+      "sha256": "5444f477b06bab9c72e2cc289d4a9104efef653391c9639972bcb712d5f2d81e",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/SKILL.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 12322,
+      "sha256": "413f4ab913d07f7fd92acbadc25d71aad63443be0c40d11234944aea688603b6",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/data/cip/deliverables.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 13385,
+      "sha256": "229912f35c2f5a790508ddd62270cc7a92a84694027025ea5a30f1fb5ba84b70",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/data/cip/industries.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4935,
+      "sha256": "729b1dea6d6f39b0bc22a1e659584e7ca5cead75841146d599c9f8dc00d4da46",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/data/cip/mockup-contexts.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5205,
+      "sha256": "15d61cef16e6746d5aa665976f4de8074fedb64bfc5c7313a40eec1112a1d499",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/data/cip/styles.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5967,
+      "sha256": "4e7f9e209bc90b60df62fd9843a1a73b365e54161dbd820b82817a8e512af4c4",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/data/icon/styles.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2250,
+      "sha256": "a4aa7d326ffe1e50961eb70e25a6351f45c0247cd245461fa1a27cdc72f903b4",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/data/logo/colors.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 10674,
+      "sha256": "d60218f0705bb0f0b892a10468a5c8d9a44eef3d0262ef8df8970ba3fbab567a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/data/logo/industries.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 13274,
+      "sha256": "e58dda4b9d28851f70914f82c1d2a2cff626a991ca41076f64122f33cc8a6525",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/data/logo/styles.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 13678,
+      "sha256": "ea08bdfb7aa557f08d1b6299222423f948700f8e4029321acb58c8f83197bdf2",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/banner-sizes-and-styles.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4993,
+      "sha256": "c8906fb1073a576ee8c680d9bc8586249cbc4ed36690da960d65a1c9c37143b7",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/cip-deliverable-guide.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1735,
+      "sha256": "1424e120b967288e2334f24fcfa5cdc7f238420326a7444f4c5597efecfabc41",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/cip-design.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4589,
+      "sha256": "47a3b2e445bc07185edd0cd24ba8a417229baf86717dcdff7c4e403adbceb3f1",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/cip-prompt-engineering.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2493,
+      "sha256": "4bf3a0c858f38c230e43e872857b72d9eb692e066e8de5920da75aac733e753c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/cip-style-guide.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2357,
+      "sha256": "f3e15408cd981e93804440c1159c12e02d001bc37a3945f455b3fc13729ed4e1",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/design-routing.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5826,
+      "sha256": "32914a913f4f20d4cb1e497e5a87cfc04b71af4e6d75db72ecf50e4f060201c8",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/icon-design.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4343,
+      "sha256": "39281931d070918b4e51ecd71054da99493cabe06a07dfa8f1f682e48637c83f",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/logo-color-psychology.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 3341,
+      "sha256": "3fd0e93e24c3b2ea7f3be778e8f2d03b1c62c7c6eab3ade478c8fca332bff287",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/logo-design.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 3163,
+      "sha256": "2e845fe165c845fd9582c1d74204fa31de607380982a6ea0b5f8db4e293afa3a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/logo-prompt-engineering.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4314,
+      "sha256": "e50f55bf323263eb27b4cd4c5172383a787fb894581d5d2befb3f6e0180b253e",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/logo-style-guide.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 3435,
+      "sha256": "611baa841eedab101f45c113c6bfbd4d7e16e859c9d6ebd2cf941827a6e8dd15",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/slides-copywriting-formulas.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2604,
+      "sha256": "03733d5916ab771834745550045b736deeb94a08226f2b200f7953009c35b219",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/slides-create.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 153,
+      "sha256": "792d647a5d4f87d765cf417f7ac54dd0b2fc4d229cc23ea9df56282d4c1ee086",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/slides-html-template.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 9004,
+      "sha256": "fd5b051a37365fc6059c75bb388ec6f64daf1bd9ae938b287b6d762dc83c0c35",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/slides-layout-patterns.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 3691,
+      "sha256": "0a967ca3bd829d3234e6f1802bade6c76447fabbaddbc8117c41adbae7dfb6df",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/slides-strategies.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2715,
+      "sha256": "27ee3e53ffa0ea679ec83ebeacb0bcfbce498df57277e99f574b9c139dc44286",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/slides.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1742,
+      "sha256": "5630d5daec947ff58ab1ac97c7a1ee77a21cf6f5dce5155535b65d291691979f",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/references/social-photos-design.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 11251,
+      "sha256": "2544c143ff3a4471a775e2271797a3871480f94de91b267178da92e8952192a0",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/scripts/cip/core.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 8062,
+      "sha256": "78a78a51f12d2382b2854414df395dc62b68532626ef724ddd5de713507911e4",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/scripts/cip/generate.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 19430,
+      "sha256": "2745040c9b534cf4113d2f7f4d7a52bc96a9fbfa12204c4f8460be4e15449069",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/scripts/cip/render-html.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 13941,
+      "sha256": "a49a89a017ea4a2c492438055f05dfba3dfb4f91563f5f913359939beeaeccab",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/scripts/cip/search.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4524,
+      "sha256": "6619fbbe71983003a858c5eb79bc59c607b342610a1178b6976c687c2932161b",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/scripts/icon/generate.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 17151,
+      "sha256": "1a6be99dc233f6d9f8b558c26148203418be5b47c677cd83e48e41e78e38780c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/scripts/logo/core.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 6023,
+      "sha256": "4f8b36ffe538e5995d0e0b740053a0899a1adf445ffdf484bd47f94e71ade8d0",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/scripts/logo/generate.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 14630,
+      "sha256": "6e4358f21cd85fec51c8d01b03e3696d6db180815309d7e10a19c623d4d4462c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/design/scripts/logo/search.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4745,
+      "sha256": "693b3a1824831f120d4c60ed72477847604da1f6b654343381f8e9d3800a28f2",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/slides/SKILL.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1137,
+      "sha256": "2b90bdaf63f231919a01f4962f374ecd84af101a7e7545f8d9c68e049025accb",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/slides/references/copywriting-formulas.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2604,
+      "sha256": "03733d5916ab771834745550045b736deeb94a08226f2b200f7953009c35b219",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/slides/references/create.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 153,
+      "sha256": "792d647a5d4f87d765cf417f7ac54dd0b2fc4d229cc23ea9df56282d4c1ee086",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/slides/references/html-template.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 9004,
+      "sha256": "fd5b051a37365fc6059c75bb388ec6f64daf1bd9ae938b287b6d762dc83c0c35",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/slides/references/layout-patterns.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 3691,
+      "sha256": "0a967ca3bd829d3234e6f1802bade6c76447fabbaddbc8117c41adbae7dfb6df",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/slides/references/slide-strategies.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2715,
+      "sha256": "27ee3e53ffa0ea679ec83ebeacb0bcfbce498df57277e99f574b9c139dc44286",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/LICENSE.txt",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 11357,
+      "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/SKILL.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 10045,
+      "sha256": "f8b6c3832d2af51f67b3932e3c4a79bcd8a8596cc61ce1547a686fc951e5c62d",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/canvas-design-system.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 7888,
+      "sha256": "f5de85ff39d9f3a8275c4164b921ba72d5e1d34b8d7a9243d9ee34b3870a4f5f",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-accessibility.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 9976,
+      "sha256": "a22cd4ccf82b635b2b2c4f12416a0c4f7edcd825d219d6089450fa797a0d9511",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-components.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 11155,
+      "sha256": "79c4f91cbf68993a43fa3a95889c35db73de45bdd3dfd83a6830863c01aa598a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/shadcn-theming.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 8672,
+      "sha256": "d17d641474221123ff0e0288043ca2f2dab3ac96908a19eed28d82f9e58865ed",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/tailwind-customization.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 10171,
+      "sha256": "4c5adeed6263a274f74f6eb2c816ca420fd6ef4f35683582988bacd404799afe",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/tailwind-responsive.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 8270,
+      "sha256": "8d00ae620df26daea4623c7bf996d6e612e09d359305fcfa2b40cab757ed840c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/references/tailwind-utilities.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 9980,
+      "sha256": "aba1c40ef84f43beea142ae310371e332541f39d973df90a71f1854823effda1",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/scripts/requirements.txt",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 444,
+      "sha256": "09402d2d274248e18bb5fd0a0267fd7cbf99b7a2440e73e87f054aa8f259f9da",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/scripts/shadcn_add.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 8799,
+      "sha256": "0c11d28ce9f12217df2c3306f24ae1f73527d5116db63707ab55cbe1a8bcf28c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/scripts/tailwind_config_gen.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 14418,
+      "sha256": "2e264ec871499681aecd6111f60743fba31b5ceb7e9ccb2b71b7346039285f89",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/scripts/tests/coverage-ui.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 35121,
+      "sha256": "33bdc1f5998db9a38cac8e6128a82711f8f8b65fbb3dcb0c1680ae260441cbce",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/scripts/tests/requirements.txt",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 52,
+      "sha256": "80846c98ee02a7e9651ec4eee6709f840b785646b469aad5284ab7ab9b344f17",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/scripts/tests/test_shadcn_add.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 9919,
+      "sha256": "35f60ac5d74c4a7f950854a0337883c3e8dd812c58fcf6c5153876e43a6effa2",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-styling/scripts/tests/test_tailwind_config_gen.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 14658,
+      "sha256": "4efa59fdbe318d55e6a452d85401db5d1aa4504f93739878bb40d8bb504af585",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/SKILL.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 55451,
+      "sha256": "e5baf9400d4347e5ed3eb1f6b99cd0b9ba545b8b0e507aabb2b87397bbf73ea1",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/app-interface.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 11046,
+      "sha256": "331e7cf2c0b222d80c566c5f255c63cb339f65bfd02e471a720f28e4864a9f08",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/catalog-summary.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2392,
+      "sha256": "65fe0b64480a8a827738297d0a64ca55c627d4afcb774fe4555c59cea8dd6905",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/charts.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 23365,
+      "sha256": "4115cf1120680f2cedef0676cb648f30c7ef4699e2a947535d4113e71ed3b12a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/colors.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 37940,
+      "sha256": "8162429222bce22df62b564085946a30d07cc9722c58d0a3a494bd0d1d00841c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/data-provenance.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 36686,
+      "sha256": "e82fb33ed49375a300e93d9c11ccd1c1493c999e84ee7ee295e527634786e2e0",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/google-font-licenses.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 433127,
+      "sha256": "35688523f2955795caa1a47c53b83099e60c1708461476f9cc3a050cf3b0148a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/google-fonts.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 747241,
+      "sha256": "1c8c3b2ea1faf6a1012da463756def8b3889db33f2226f0343bb4daa80307d03",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/icons.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 57945,
+      "sha256": "50816c6012030178195a16ee481ebf58b47bd985d70e8ec58886cc83f6eddafc",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/landing.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 25449,
+      "sha256": "9a2edd3bb676c2a58f00ade7a062e285222d4297bfd847c8d5b056f0dbbf52d0",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/motion.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 14679,
+      "sha256": "381affe8df8ea1f66fbbda2598827f9f54299107bbe6a1b4e9b68f6b62091ceb",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/phosphor-icons-upstream.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 823933,
+      "sha256": "2399325233b277b5c97a80e6a5e8941154f5d057beee4e7613db87c87d700236",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/products.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 75623,
+      "sha256": "42473f75e8dde5987bdf89ce55d8c168091b80a356cae691dd60247d80720b70",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/react-performance.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 15080,
+      "sha256": "3d925802539abac5afeb63ae8aa1960b7229ad271b3a47caed40ab2d97ad0734",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/angular.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 19863,
+      "sha256": "704be83f2bad30c7e6de01afb113ffa01e0c458762f48b7102f31ba2367b5553",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/astro.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 14591,
+      "sha256": "2c2f55fadaafc05e04cc321c8194a1a28b656e6757fe2ba316f41b16428299c6",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/avalonia.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 27327,
+      "sha256": "442fca14675a020683473e7e49f08abb27b9df0765c80efe54aef61f1a4ac258",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/flutter.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 14192,
+      "sha256": "64dba0ac17349f28bce517a0f5f48c54d9ed2e487ec0c0258303463b382f41a0",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/html-tailwind.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 16551,
+      "sha256": "d05a581d20af57b8ca0104a6d31d90a07c437d500662a96c3029fc2f9a4678ee",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/javafx.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 33577,
+      "sha256": "2e819b8d5abdd23ad4dae0991650fdb57af497aabd68b37463aa9c442944c869",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/jetpack-compose.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 12295,
+      "sha256": "699de218b286948eaec7d15767b6e1350ee299167e49bf476d82e3ff58724e0a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/laravel.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 20163,
+      "sha256": "854ea4daa5fc61292d22235ad33b49ba3fe22423c3de8d3cb03758ffed3b59f9",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nextjs.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 18687,
+      "sha256": "ecd2c27b2ea0127d203ae726060efcdd7335b5e83f96b99e4f3befbbfeebd5a4",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxt-ui.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 24106,
+      "sha256": "c36ee8470926b4a0748d241363c71664c9969c2edbc62f7f72de0db73880fac6",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/nuxtjs.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 23014,
+      "sha256": "3d9b54ed2d151bd9c86e9e5609b8a6f88a00c4c52fa601a30af96c49b2c4d176",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/react-native.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 14049,
+      "sha256": "ba31dd9c0c04da6bc02a74448bf121f9c0728ae5ba3b4d47b487778b0a1135b5",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/react.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 19036,
+      "sha256": "2d2b9c198e875106a30f7ee68341a9ee0033cad60a7e130cf23152783e08aeda",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/shadcn.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 23184,
+      "sha256": "e56cfde5b74907836ac3582a4779d5b7f3d206a702ab81b8669a1b668c3eeb51",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/svelte.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 15078,
+      "sha256": "f6e379ba802941ba26b01d4ffbe3cd39120f2587659a1d93851c707f66bc13db",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/swiftui.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 15323,
+      "sha256": "bdd9231ff3ad658f4e7c063e1eb49df2fd09ac8d90631a86df899b39833b9623",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/threejs.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 46051,
+      "sha256": "97542e0ba34915a0ff7578be20e1619495df47c95c8c1c39b83e3785e1de771f",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/uno.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 30091,
+      "sha256": "a0474363e4225b5367214d5675fd3e075f137026f9500f0d04357882ef4f6d48",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/uwp.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 24692,
+      "sha256": "c409f08c1fbba1f1029f1acaa554e7b4471cc85517a5751c9f2e62465badcd5c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/vue.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 12813,
+      "sha256": "b655f1ebb9dff2652d15981f31b1784c8a6d4759efd2815a14f3088257569f95",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/winui.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 27890,
+      "sha256": "e676dc1c13ee6c205c40b0746f1335150a346c7a49a0616d2545bc3d2c930c85",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/stacks/wpf.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 24158,
+      "sha256": "9781a9950b20333637b30a02e498b7efca21b618a3eeb8665836f3ac6e974da7",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/styles.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 149478,
+      "sha256": "a93a4d9d7025856575d7b7583bda020be9043013432c5af7c58af9dbdfb206b7",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/typography.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 49997,
+      "sha256": "321fc446e89024488ebae96dda93efc4d2307bd8bddb240857ad51364f6782c8",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ui-reasoning.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 77360,
+      "sha256": "f0774dd741cecdad5eec842034bd6d5e9ea50e9f220a1910069748daa0bb8e9a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/data/ux-guidelines.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 27516,
+      "sha256": "ff81ec613f70ba9fc3fcce52dbe4ae35d44b2079dbe6dc066d2d6e38c28facd5",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/core.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 41234,
+      "sha256": "e544826963efefce3c59b65e18d83d92a5baf571f05458025bf1fa9021eced42",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/design_system.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 70937,
+      "sha256": "6a94743c3362c9c7e6d1450b94f4014d9ea752e7b4e151f6f0bdb217e0544bf7",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/reasoning_contract.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5824,
+      "sha256": "b8bac1af82aa280d3e06f00aabaeac4337e632996b07fed874e2b6ee6e9c5913",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/search.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 9123,
+      "sha256": "8373e2dd2d560d9853ec116140de0e0d5bee45a6abe5e041173c84e1c36a7f87",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/catalogs/google-api.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1079,
+      "sha256": "22d8dc81a7d6827b7e8b64b53e7d184210fb9759e8e294e0d5133c81cc460176",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/catalogs/google-catalog.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1772,
+      "sha256": "c608ad5c4084ebc50a4bbbfb69ea2456c01fd5519c457e18410fffd250ae948f",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/catalogs/google-existing.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 480,
+      "sha256": "4e0761b839dc6b2187a370e82eddc0aed8a7ff10c09e28dd814bb3656dac595b",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/catalogs/google-metadata.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 328,
+      "sha256": "30bffc29ae348416a2de2f9c6c418e768e4578f136b0f4bac5d2f70124f2e9ba",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/catalogs/google-overrides.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 97,
+      "sha256": "6243a48a4619986768c4628e2d0c98ff195beba71ba9be5df8f0c52fc6d90c0b",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/catalogs/icons-curated.csv",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 495,
+      "sha256": "68362c9a700c13b96f000784a0198c1c7e117a7088a01c85744e44233038fe9d",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/catalogs/phosphor-core.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 571,
+      "sha256": "ae4d0bb076240824e1b643c2270d1f8cc0952a69502ec1e622b7dedd85b930bb",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/catalogs/phosphor-package.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 370,
+      "sha256": "500588c757d6de03e3d7e69b27a8b8b1f88ccf6bb0333e4c1e9b0d6a4f112475",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/catalogs/phosphor-react-exports.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 87,
+      "sha256": "d79f2ee0afdbc2f87776733e145df3538a16a25d7c2fba0056bb48295dad0ded",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/catalogs/phosphor-react-package.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 81,
+      "sha256": "1c57a1d76bcc0cdd3632d4c18b9c0e79576b4591df39831c9607e5d0eb4f2cec",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/relevance-baseline.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 89436,
+      "sha256": "38398452985116e74e31bd6bccca0f4decd1bbfe4eebc1ac99f7a1836baaf77f",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/relevance-cases.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 36734,
+      "sha256": "e77d36eebbf6ddc2860946a02cdb659351da6c09f2688f1ed30939a418099646",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/fixtures/relevance-thresholds.json",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5079,
+      "sha256": "9d738e11c6b82fecc8d0946e7b38515518ded5ed3294a7eb19a021c4edb5b57d",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_catalog_refresh.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 19466,
+      "sha256": "3e2ca5d12702318f641ae62d0c14f22a3bcc84d84e79b863c0e947d475604adb",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 16680,
+      "sha256": "3527fe2f4b852f69f07c17ddc0d615d9a6e025c924e45a33985579a94a8d2118",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_core_data_quality.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 8954,
+      "sha256": "3ffc6b4905c9ea26d7ac4527ab154d153584231aee71b2ae4bd017977fa09cc5",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_data_contracts.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 19513,
+      "sha256": "0360d6e10080c0bca214f2b0bbad582ba50702a542ce21013351aca54938df3a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_design_system_mode.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 7690,
+      "sha256": "517ba1ba6195c94811126d1162139c51aff77fc68c3e320c7bb6c1e89e76bc9b",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_native_desktop_stack_freshness.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 8170,
+      "sha256": "904f90bc6d364763673fa6067d98a4227d535760fa8b6d26abe22208176997ca",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_relevance_evaluator.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 8430,
+      "sha256": "2fe56a4d6fe5fff15ff592274b0eeaba925146cefea6c0fa29d8f1b77c9aca1f",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_style_taxonomy.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 7425,
+      "sha256": "cd14d0092e8a454d213aa104b53e4e70ba698491fa00fde9fdec5ca8a3d70011",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_text_layout_resilience.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 5874,
+      "sha256": "b51d32ee8a15505b87cb81957fb2d1b385e041e8beb4463c311d236bfd29ebd4",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests/test_web_stack_freshness.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 7699,
+      "sha256": "becc5fa40e7516613d4e9930f226aa483e3796090c17cb16542c93d1927e680d",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/ui-ux-pro-max/scripts/validate_data.py",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 52064,
+      "sha256": "718ad4cbb227436015c9c2bc80fc583d6ed738b01c1a940ef85e350780d99f58",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/AGENTS.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 108261,
+      "sha256": "fc93e7421177bbf869cce892bc60a6c83a4517d974bc3bf65c4e2c1e58a6ccf6",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/README.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 3360,
+      "sha256": "9eafb2123d3b8b2aef41fba0db2648a3f4f49996f8c7c8bb2c86263befd8b48a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/SKILL.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 7251,
+      "sha256": "71ed7794962fa6e803ee83030517b5b93a9f70fbfeb431ec4535c5480a8d8355",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/_sections.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1554,
+      "sha256": "01c59969e4e867f0708c8f8ef9c6d87fab9a07d0586244f429ff84013db8a115",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/_template.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 631,
+      "sha256": "99df2a3ea088c6c22de2484ddc7e964d0e9923846f44c63380343ecc64455442",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/advanced-effect-event-deps.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1802,
+      "sha256": "55ed8f9f27a1bff803d6fa55828176207714b02123cbb97ddb8a90d88024a723",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/advanced-event-handler-refs.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1483,
+      "sha256": "a3097edeecfb2ff6851cd66ed8cdf0617c3c88180504bee824aa6e75a215bbbc",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/advanced-init-once.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 958,
+      "sha256": "3e4dc22173eb0e2b6dcf583e3babd862b8696328f8f59aee7c4d746c5bc05f6c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/advanced-use-latest.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1072,
+      "sha256": "8a3f64dfe5a77d1564248faf17fe662ae75b55d497a243cb30b38eb07ccbbf9a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/async-api-routes.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1125,
+      "sha256": "523338540d73427dc14c0cbb19f2741ebccdf8b105a7b2c1b33d2905cf237a42",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/async-cheap-condition-before-await.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1220,
+      "sha256": "03107c1f70a293cd58a8abc5474c5548e20ea4efdf01b6d45aae7ad0ac1cb32c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/async-defer-await.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2208,
+      "sha256": "f3c142d090615abdcc99d31c123be37b31f0f1ed8d9ec9f7789a3bc6883ae0fb",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/async-dependencies.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1293,
+      "sha256": "16ef469f877e30c6b8e1e1b4bc3e527312fa3c6318cb785a4eca186ea236131a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/async-parallel.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 654,
+      "sha256": "6d2f841896279e976dfcdc1ac89e70771ac188baadfd43c096b5706cb838b961",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/async-suspense-boundaries.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2510,
+      "sha256": "de05fedac2eb7ae563b887b5a424464ec3dfaf84e5b7797467ebe2a796ac8afc",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/bundle-analyzable-paths.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2382,
+      "sha256": "62090b5c815fd71bf1133dce754f51abc16a9456d0ccd025fd627de27726e92a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/bundle-barrel-imports.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2795,
+      "sha256": "e648f6d54525f07a691357040ca5bff6ea3424788a91ff63812adb29622a671b",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/bundle-conditional.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 949,
+      "sha256": "09c8259c3efb04fc0abb8e412ccbda217c222ae8118516283e571c995fe3a7d4",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/bundle-defer-third-party.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 920,
+      "sha256": "3719fb47b191e8db4fe22686ec88448ad5af9e6838585425abbe103d0b642e37",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/bundle-dynamic-imports.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 791,
+      "sha256": "401817a7369f315fc5a68a1095742ff7d53d0461906880dc9d64a41495ee1986",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/bundle-preload.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1149,
+      "sha256": "d1f7cc28da7cd5ab249acd287edc5b761afcfb194e9cb62cd44c5f3543db2de2",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-event-listeners.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1969,
+      "sha256": "242a873349febc1ce685e85617994784dbab92c2eaa68aed7fed5a83e7680e93",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-localstorage-schema.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1950,
+      "sha256": "0fb7cdf9dc93fdf22f87e3669f953fb9d4ac9b0be42eec4a29fe9a2560610b88",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-passive-event-listeners.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1644,
+      "sha256": "1f35016f9053de69e884ee9be00654e37979c2ca85f5e57764dc2626ff7acb4b",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/client-swr-dedup.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1159,
+      "sha256": "644652c39c6cc00de8d1c77a7273612e868dc3f7edda30764164c12ec0f764a3",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-batch-dom-css.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 3266,
+      "sha256": "480b891b9eaf96e929dc1e964274a4828e3a78009b7d00ccd965a0d425215959",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-cache-function-results.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1949,
+      "sha256": "3daaa11d24f4295cb6be8bc6f407f2ce83cc7b5bd1f0e68891ea8ab835721dc7",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-cache-property-access.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 532,
+      "sha256": "73e47431e74878a927061bf0ddc7cd91a7556cb35d2573f3421e82300d9ae311",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-cache-storage.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1651,
+      "sha256": "11b826b0433898c1ece2d3547010d8e77db9fb240185748c45db91493de9b6cc",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-combine-iterations.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 753,
+      "sha256": "71add08aeeb43091d4ff4c0b2842cce8b4bdef8ad3e732cc034bb5a84827e746",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-early-exit.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1133,
+      "sha256": "925ce5ce87f3347186ca62212f29cc6baa2b8c85a96d2720ad07c3d0abf781c0",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-flatmap-filter.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1411,
+      "sha256": "9e5b166a41914d975bef7635467f8fb32cd98b5c3126c0bc6f163490812fb5f0",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-hoist-regexp.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1028,
+      "sha256": "f9e9aef2f7c2307dd7310f283df85dcada45fc43e9bb941b0c3aa414dec21ec4",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-index-maps.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 837,
+      "sha256": "5df1bdc2cfabb2c98abd55d26762e5c18189535c2e686184f426082e62920391",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-length-check-first.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1747,
+      "sha256": "8b54a311c826b299272f29187fc58bc55772a04c4a72eeb29456ee96dc9fc624",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-min-max-loop.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2290,
+      "sha256": "87dfb67e2f39df6ad8bcfb5b78c5fb364d3c07554ad188a202408d99f3763421",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-request-idle-callback.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2647,
+      "sha256": "ee08f83905b4011abbc33d594033157d77561b5bbd9b36b04f0f409581ffec32",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-set-map-lookups.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 532,
+      "sha256": "a7fd781a6ba9ad49065961b6f9a90ef486bf6b648390e1a08704025f98e1642b",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/js-tosorted-immutable.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1782,
+      "sha256": "d0a5e1b0fec48a0a81397957e2f068e224329f7c42cb5feeed8aae6fa64025e8",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-activity.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 564,
+      "sha256": "1e5e7eaf3555e61d6a2e900089c676527d26259501db5594f59544b6c664f85a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-animate-svg-wrapper.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1185,
+      "sha256": "9c6ae0ca7a51434e803887c64cded760956579a1452ccb80a461a03f9c937c77",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-conditional-render.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 980,
+      "sha256": "2ec2fa23c4148285144687050c52369adba3da2fbe3d486f8d3e0aad8f06f2bc",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-content-visibility.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 815,
+      "sha256": "64eee6d5b916fe74df33363994b27fc7f71bea3bcedc7ee04bda23107ca3e6e4",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hoist-jsx.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1039,
+      "sha256": "93b229560fae92005ed9a2a829064607b39b2e984e92d221d05b2d41df2b7c0e",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-no-flicker.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2308,
+      "sha256": "dc7ab358c67c177bca6e6f360fbc935ebe4efa928c0ba3ebd3f9f3d9e2000ca3",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-hydration-suppress-warning.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 872,
+      "sha256": "915bacb934e2927d84b37a3f3d225a47b309ac8f9e494ed2bcb66ce07c5676a2",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-resource-hints.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2549,
+      "sha256": "351b1095d641717b930f1b2253282b7120af3023bc74e06c17675168d4286864",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-script-defer-async.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1868,
+      "sha256": "4cea07b7875ba7fc2c7465ff23b63a2bb334f90aaf2d9293d38d67b05fdb32ab",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-svg-precision.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 588,
+      "sha256": "ed468533f6e95f622859c884b122cf21f9f593ed6bb3d500a54de4b9f9bcb9fb",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rendering-usetransition-loading.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2074,
+      "sha256": "3a1249c3f13026b6f54ab5712c388df219d6af01b12aa542749acd99a46f4bc1",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-defer-reads.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 973,
+      "sha256": "234050a77faf50cb306be10a9e15bd4421134ab5907e75f13e6d78e2bd262dc9",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-dependencies.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 824,
+      "sha256": "17eb5830956fb56486fd3cfc7431f5849d39751730c05ad9e77dd4f0c27169c5",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-derived-state-no-effect.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1201,
+      "sha256": "cb11ec76f50aa7b6847269f02d79b120c889a30d9ecd2c1d578f75144419c77a",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-derived-state.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 728,
+      "sha256": "1c326bb67b01fb084eb00c8911b0a7cff54681c2315b629f88e49b64eaa6481d",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-functional-setstate.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2968,
+      "sha256": "5e68df6b2ae8058e67f476ff1ac67bde159f5a9d18df439e46eabcdeb7b52e58",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-lazy-state-init.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2016,
+      "sha256": "4ae844740f266fc8cbf050701230286624a2440ec5be67b9a63d9edc3c580573",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-memo-with-default-value.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1173,
+      "sha256": "81c47476564ad8a79fc68fc442734255ca7d6829424359464503fda0a9f9a0dd",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-memo.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1148,
+      "sha256": "1f258990c2f27ff6256b3cc5c43300631bb3f0d81f749aed08d07fcdcc131dd1",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-move-effect-to-event.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1268,
+      "sha256": "abc2cbf167bee056743023351e96806a411d3398da8802093620aecf0721f029",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-no-inline-components.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2135,
+      "sha256": "1cc32907a770272524ba682eef9e7efdd8ad4533b6f89b718a1fcd7d1d0eb6a3",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-simple-expression-in-memo.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1018,
+      "sha256": "5bdcf2d1558ba5204e643c887b7b4060f89630969425651eb68e96427d97f800",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-split-combined-hooks.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1844,
+      "sha256": "6f45d703343484ef9acef9388397f3642966ae6a5a258899a0cf1f9977cfbf6c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-transitions.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1055,
+      "sha256": "60f4033909a62df5e5b8c601494f9e50a562e2f8c1c2d81eac24f38142265f1c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-use-deferred-value.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1846,
+      "sha256": "8c3579576a61a949884167745dcfaf1d5426ba305cc61fd0a79602d70fda4909",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/rerender-use-ref-transient-values.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1742,
+      "sha256": "f1a649af9d1d0b5c762f6c9c4c1c70c90d7df82aa10296ee87aadb78c1b76c54",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-after-nonblocking.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2012,
+      "sha256": "d0b8d24a3db9f0f65f9e2bddbf230b0e03a5f60e1229d93a4a18f5e7a991c7c2",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-auth-actions.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2649,
+      "sha256": "a2ca8aa102839251c7971ec784560fab943c20b36fe6f80365d4110c13260c23",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-cache-lru.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1353,
+      "sha256": "1924b64561841923b88a657085097a0aeba3e0ba2d5470b9f5c15cc10d6ae70f",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-cache-react.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2228,
+      "sha256": "fddeea6c870bb3da4134b61d54b7d09b83d2603f929b7547cd3dc1dc269edd5c",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-dedup-props.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 2060,
+      "sha256": "c2747424cdac46be62f835f245a0aa887b0090b416d28e2ac8676702645eeb37",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-hoist-static-io.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 4423,
+      "sha256": "5abea4dd882b13661bd5f7dfb93f9e547d5f08176c61c448ade91b210ed5d49f",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-no-shared-module-state.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1766,
+      "sha256": "4d869bf1cd2f1632e5ca4c0e64b1cf0e71c5f5a0f940bc8a22174d205e735ed7",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-parallel-fetching.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1554,
+      "sha256": "569a2e9fc04f9606686cd75c5894ef8781b502786a7fffe241396846c7733472",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-parallel-nested-fetching.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 992,
+      "sha256": "ad5d9656984d4a959997a2367bf59cc6632297b4634a1dd13a087939d83f30b3",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/vercel-react-best-practices/rules/server-serialization.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 996,
+      "sha256": "f4c7d68b29c82381baad059c4a7f09e868e71ec9c3115a26ad3ae7d24c0dfe1f",
+      "text": true
+    },
+    {
+      "path": ".agents/skills/web-design-guidelines/SKILL.md",
+      "tracked": true,
+      "category": "vendored_skill",
+      "bytes": 1231,
+      "sha256": "f4647ca866a3accf763777f83e7682954f0187cd6bea7eea0399796652414e8f",
+      "text": true
+    },
+    {
+      "path": ".env.example",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1102,
+      "sha256": "7bc251b3b85fad56631196a209b16346d1e81c350aab0bfb0154e6c68ace7bcd",
+      "text": true
+    },
+    {
+      "path": ".gitignore",
+      "tracked": true,
+      "category": "application",
+      "bytes": 368,
+      "sha256": "5e9d74a05c95a17054436387aa7cb7f40eb6f10c29a2b65565841885d65737b2",
+      "text": true
+    },
+    {
+      "path": ".impeccable/surfaces/src-routes-index-tsx.md",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2956,
+      "sha256": "f9ba7b5596d365622be8f6332c71aed3a8b950a3062589b2e5ea96ad13138709",
+      "text": true
+    },
+    {
+      "path": ".lovable/north-star/north-star.md",
+      "tracked": true,
+      "category": "application",
+      "bytes": 271,
+      "sha256": "49add6af82c99d7a3e1d5b3bf15e9170258ff15e60a6457dc3d27fe8970bc3c6",
+      "text": true
+    },
+    {
+      "path": ".lovable/project.json",
+      "tracked": true,
+      "category": "application",
+      "bytes": 124,
+      "sha256": "7a367a55e9267fac6657cf2fb64d4ae57e423fb79d0cbd6c4b21221f52f53049",
+      "text": true
+    },
+    {
+      "path": ".prettierignore",
+      "tracked": true,
+      "category": "application",
+      "bytes": 92,
+      "sha256": "52c7c767ff0615eec4eb64cc71265877f7f423eb597d665b5e439f337c661a5a",
+      "text": true
+    },
+    {
+      "path": ".prettierrc",
+      "tracked": true,
+      "category": "application",
+      "bytes": 90,
+      "sha256": "1ed88d3b99eced8dc3b6f58f26645466dd1ceaca6c5a9b818531c941ac28e55b",
+      "text": true
+    },
+    {
+      "path": "AGENTS.md",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1949,
+      "sha256": "3c6445e85d74bb7e0aa13668ca5eb61374a5fa56fd411c2ce44791fd952d55e6",
+      "text": true
+    },
+    {
+      "path": "PRODUCT.md",
+      "tracked": true,
+      "category": "application",
+      "bytes": 5111,
+      "sha256": "517486de5748af5ac6a6b93fdb521d2c341eae3dd9ec639d01ca30121ef980ce",
+      "text": true
+    },
+    {
+      "path": "README.md",
+      "tracked": true,
+      "category": "application",
+      "bytes": 8301,
+      "sha256": "be477ef43a9f6f5a912d6e667ad9c732002bb2256280c458be075796cad42df3",
+      "text": true
+    },
+    {
+      "path": "bun.lock",
+      "tracked": true,
+      "category": "dependency_lock",
+      "bytes": 197806,
+      "sha256": "bae409cbc0db8eb3f86e0b2f00dd4683caa111048755408bf52a13a355557cc8",
+      "text": true
+    },
+    {
+      "path": "bunfig.toml",
+      "tracked": true,
+      "category": "application",
+      "bytes": 407,
+      "sha256": "1ed9b1fc5131fd50c2e0975635c3e98a8362362103f4061910b56eac510b748e",
+      "text": true
+    },
+    {
+      "path": "components.json",
+      "tracked": true,
+      "category": "application",
+      "bytes": 443,
+      "sha256": "37c484818824d2521eee3367e7aa2c2abbd19635d8103d19734b6e24603d0292",
+      "text": true
+    },
+    {
+      "path": "drizzle.config.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 245,
+      "sha256": "091bb5bda4b36dcbc2ef729cdc65afd67163149c221e8a5b0c6f38ebc542da2c",
+      "text": true
+    },
+    {
+      "path": "drizzle/migrations/0000_grill_swill_core.sql",
+      "tracked": true,
+      "category": "legacy_database",
+      "bytes": 18564,
+      "sha256": "683dcc41cc11e5394f6acd76e79cc11a31dd4812d6df7acd27bfc00a3ce9ccb9",
+      "text": true
+    },
+    {
+      "path": "drizzle/migrations/0001_guest_checkout_no_accounts.sql",
+      "tracked": true,
+      "category": "legacy_database",
+      "bytes": 1518,
+      "sha256": "c50ee88c24e01a6872d4861c9fa8b2b58d4f416d63a76b82eb8f6b2eb5e50131",
+      "text": true
+    },
+    {
+      "path": "drizzle/migrations/meta/0000_snapshot.json",
+      "tracked": true,
+      "category": "legacy_database",
+      "bytes": 336,
+      "sha256": "e84c116ceb5f412da5202271277c8bc0557b7882add3181610cc1d569ae8c69f",
+      "text": true
+    },
+    {
+      "path": "drizzle/migrations/meta/0001_snapshot.json",
+      "tracked": true,
+      "category": "legacy_database",
+      "bytes": 336,
+      "sha256": "2809061e7c4d10ba4b5b0ba495b76543a4bc1790260b71c5f0d2895100a5a057",
+      "text": true
+    },
+    {
+      "path": "drizzle/migrations/meta/_journal.json",
+      "tracked": true,
+      "category": "legacy_database",
+      "bytes": 365,
+      "sha256": "723c9a6dc0a864eb16f6429a0e53f4df972f673207f44f693d64f7f53aa19bbc",
+      "text": true
+    },
+    {
+      "path": "drizzle/schema.ts",
+      "tracked": true,
+      "category": "legacy_database",
+      "bytes": 60,
+      "sha256": "834fff8005e00606dfdff9ff71393309dc72160c108fdad72418986573cf9448",
+      "text": true
+    },
+    {
+      "path": "eslint.config.js",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1250,
+      "sha256": "3266245a1ff610a0b37dbb8b8c77b93a125e0d8758b9838cfd04b2e0a1397d56",
+      "text": true
+    },
+    {
+      "path": "lovimg/Cheeseburger.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 228661,
+      "sha256": "c0a877ceb8892c5854c888ecc3e4502fba29cd53f4c49f5cb898b9fd0dcda360",
+      "text": false
+    },
+    {
+      "path": "lovimg/Gemini_Generated_Image_57lisa57lisa57li.jpeg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 581521,
+      "sha256": "ee47b16d2f2334332517cef0c9379b227e9c374bd7f7987927076297817db5a8",
+      "text": false
+    },
+    {
+      "path": "lovimg/Little-Burger.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 224642,
+      "sha256": "9462f599c1c7e78cb992bce37d2abbf7b2f641a5ca73f228a1ee0fb9c0971cfa",
+      "text": false
+    },
+    {
+      "path": "my-mongodb-app/.env.local.example",
+      "tracked": true,
+      "category": "application",
+      "bytes": 44,
+      "sha256": "39f1b0956863c26a6d75826eb5dc3e12a89e139f2add54b7b18aa7a0200f78cb",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/.gitignore",
+      "tracked": true,
+      "category": "application",
+      "bytes": 437,
+      "sha256": "d917b58f24ebb26d844a6885efc5d465952524c7f60c67e824a855e95afe85db",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/README.md",
+      "tracked": true,
+      "category": "application",
+      "bytes": 3495,
+      "sha256": "56504e0ae12c71d41577abc39f081a0d45d9eabf4bdabee0797f1613284ce457",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/app/actions.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 589,
+      "sha256": "2d9a47631647ec9a5070b7601f540bb06eb9dd519f2d598aa47198ea242201f5",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/app/app-demo/page.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 7500,
+      "sha256": "799473df8d16087111406dedd5d84941990f73cb5d3956687af2a96bff617c74",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/app/favicon.ico",
+      "tracked": true,
+      "category": "application",
+      "bytes": 25931,
+      "sha256": "2b8ad2d33455a8f736fc3a8ebf8f0bdea8848ad4c0db48a2833bd0f9cd775932",
+      "text": false
+    },
+    {
+      "path": "my-mongodb-app/app/layout.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 470,
+      "sha256": "b85997e4c664767d903b5203d9e47bc7200feadd5547e0b5e7093553d2ab51b9",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/lib/mongodb.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 968,
+      "sha256": "55ce2993b4d32f417341bc2f4ea4280c91a1df2258d68fafe6224fb229afb7f8",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/next.config.js",
+      "tracked": true,
+      "category": "application",
+      "bytes": 94,
+      "sha256": "549704cecfddd6f6c20e181566bbabb2e390f729be865edf881a4464ff50f50d",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/package-lock.json",
+      "tracked": true,
+      "category": "dependency_lock",
+      "bytes": 240521,
+      "sha256": "dee3a3c52fe5ed9613bd8a745b0b1a5cdecc211a10af6edafa995d64daf2915d",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/package.json",
+      "tracked": true,
+      "category": "application",
+      "bytes": 523,
+      "sha256": "e4fceb2fe29b73ccceb6d9df97c0912a2cbe7e8d7a72b992f5c9d179935359ec",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/pages/_app.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 181,
+      "sha256": "1f583617583bc241540c1867222e0d4bbc9ae2f1fbe0200c541d648990f75bea",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/pages/_document.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 233,
+      "sha256": "7a1c264423bd3f5cadb3b1d831af81a989a54d9bc6b659e87dc646cadd98017e",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/pages/index.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 8135,
+      "sha256": "f1fd7212f569be2c20fb0ff1c8c01db86001de43f4758c508c60cb54656c1d60",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/postcss.config.js",
+      "tracked": true,
+      "category": "application",
+      "bytes": 72,
+      "sha256": "8fa4b01f6633f478ec8ea70633058c85858e2298649cf0aee711362e5bce7b7a",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/public/mongodb.svg",
+      "tracked": true,
+      "category": "application",
+      "bytes": 11382,
+      "sha256": "6441c0c4027760a21d8e6e8d87ff045694af433109f3c148f0319ae4e9537566",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/public/next.svg",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1375,
+      "sha256": "55995dfad6ecb4945a1e856ddca03c5e16aa5bf13fd21b4df6a74ae79357bcfc",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/public/vercel.svg",
+      "tracked": true,
+      "category": "application",
+      "bytes": 629,
+      "sha256": "3fa5cd757b418e18afc68ddebad55f443206e410327921ddb2bf1be731658880",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/styles/globals.css",
+      "tracked": true,
+      "category": "application",
+      "bytes": 502,
+      "sha256": "b258222efb3befdf88d05e049665b1d372e406b7a9362c1e48aba81421cc69b4",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/tailwind.config.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 498,
+      "sha256": "ff9126203edbe510cf53e455cbf66149596ecac259ed5311e06817c6191a6681",
+      "text": true
+    },
+    {
+      "path": "my-mongodb-app/tsconfig.json",
+      "tracked": true,
+      "category": "application",
+      "bytes": 741,
+      "sha256": "dbc59bbb9c8b6773ffff9dc97f3029384f550c71a15f166faee95f7e1906621d",
+      "text": true
+    },
+    {
+      "path": "package-lock.json",
+      "tracked": true,
+      "category": "dependency_lock",
+      "bytes": 265929,
+      "sha256": "d31756ef9d7cde7fb7f2219a995c89a2efd9290963f96ad09503f6d9a68cdac0",
+      "text": true
+    },
+    {
+      "path": "package.json",
+      "tracked": true,
+      "category": "application",
+      "bytes": 3556,
+      "sha256": "af41a0a3ea1f0a3587defe356bef2239a99358322db3f95e7cc08ce1153fd641",
+      "text": true
+    },
+    {
+      "path": "public/favicon.png",
+      "tracked": true,
+      "category": "application",
+      "bytes": 7081,
+      "sha256": "295676096f7efcd4a5bd0fb1bf1ebb5bd25aa0d8d435dcfeba254a96957dd10e",
+      "text": false
+    },
+    {
+      "path": "public/robots.txt",
+      "tracked": true,
+      "category": "application",
+      "bytes": 160,
+      "sha256": "a3d27b3ca5ce32341fa9f96f01169b521b1657c05d1860c45d1e53a6258e9e8b",
+      "text": true
+    },
+    {
+      "path": "roadmap.md",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1269,
+      "sha256": "de94b5383a0ab4a021abaea78c7138a630e046344c7544008b95f47cd9132dd9",
+      "text": true
+    },
+    {
+      "path": "scripts/seed-combo-meals.mjs",
+      "tracked": true,
+      "category": "application",
+      "bytes": 12989,
+      "sha256": "b2dd1d43592dd6b66db42c2f3bdd053c044602703c31060c00c3728ebed2bb99",
+      "text": true
+    },
+    {
+      "path": "scripts/seed-mongodb.mjs",
+      "tracked": true,
+      "category": "application",
+      "bytes": 15575,
+      "sha256": "b2e6e7434dec71a3c77e2aff82d5d582981983a9b93adab6485579ca6ff66fdd",
+      "text": true
+    },
+    {
+      "path": "skills-lock.json",
+      "tracked": true,
+      "category": "dependency_lock",
+      "bytes": 564,
+      "sha256": "a5d369605fcc8a1392dc1d24cf0360179597e110274f329d18ddda7bb3923b27",
+      "text": true
+    },
+    {
+      "path": "src/assets/food-bacon-burger.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 180992,
+      "sha256": "d9c5ef9fb418a8da3863a5ac42e25e4a8093296527f7bb7beafe40391b8c7656",
+      "text": false
+    },
+    {
+      "path": "src/assets/food-burger.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 184226,
+      "sha256": "d5a0e1efa46b735e9403cb4334ccc8fed9e9ddc0a505d6080603b957af472e85",
+      "text": false
+    },
+    {
+      "path": "src/assets/food-chicken.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 180398,
+      "sha256": "952c86fd94987787ae94f3d5fbdf7457e10148d11f83627a052c56f36ecc81da",
+      "text": false
+    },
+    {
+      "path": "src/assets/food-coldbrew.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 114748,
+      "sha256": "579537c3f8d0ac4e0fe5bf7e90ef28eed69bfac21f7a481eae79c49a0fe873d3",
+      "text": false
+    },
+    {
+      "path": "src/assets/food-fries.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 142447,
+      "sha256": "bff3925e690d10ef36ec5a7e07633029862fb07f45e37118e9efad69b36cdace",
+      "text": false
+    },
+    {
+      "path": "src/assets/food-hot-chicken.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 195355,
+      "sha256": "203071ea362fdaa4bfa734b9bbc8fd78fc978078075a2a90ba1b7b137231cac3",
+      "text": false
+    },
+    {
+      "path": "src/assets/food-lemonade.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 115028,
+      "sha256": "12d1629ccb62109d8ab1737e3342780054a6ec33a467b653a4698bdc3628d263",
+      "text": false
+    },
+    {
+      "path": "src/assets/food-margherita.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 240349,
+      "sha256": "061bdeea786e2029ec31af3b2bf327a8eeb0f958c646041252c7716410e737cf",
+      "text": false
+    },
+    {
+      "path": "src/assets/food-onion-rings.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 157960,
+      "sha256": "3115dd0f3d4ab1ce39835410e9f3cb3411c5900896c31590b30acc5f0ed3b6a0",
+      "text": false
+    },
+    {
+      "path": "src/assets/food-pizza.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 210947,
+      "sha256": "5f9321dac9ba3dfef8590ab38ee77766f368d5a53e24d216d53af097571331d9",
+      "text": false
+    },
+    {
+      "path": "src/assets/food-shake.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 86551,
+      "sha256": "7d4785dafb32267318be0bbddb15148546df5d755bafddb17410d1d5c2bd2b92",
+      "text": false
+    },
+    {
+      "path": "src/assets/grill-swill-logo.png.asset.json",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 467,
+      "sha256": "aeb665162972419f436f93683b554ec41d89e2834a5ec0e30583a840b4b67bd4",
+      "text": true
+    },
+    {
+      "path": "src/assets/hero-feast.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 251476,
+      "sha256": "fb1da8bbbb542239ada0c87af6082a06d2ae94a8bc9bd8a669583e532009b46f",
+      "text": false
+    },
+    {
+      "path": "src/assets/kitchen-grill.jpg",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 199225,
+      "sha256": "418da4764903ebd27459f834d77f9490165dc317e110e9c8c74a4bd3f83e36ee",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/combo-double-stack-smokehouse.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 117172,
+      "sha256": "037a4b26f5c0b8f4ca8e251bcb101f2d8059f446ab404894d5ab54c9103a7451",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/combo-firecracker-chicken.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 101334,
+      "sha256": "6fecb30b4e54a919ae7bac05ac0187a22f68c5a14735f48d75df7c3457a2cbb0",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/combo-flame-grilled-chicken.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 112492,
+      "sha256": "4de629ab6eae32030441daae0b8e8c5ed478636be6b78df084b8022a07ba4a86",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/combo-pizza-for-two.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 131420,
+      "sha256": "e2f595da6e8b20436f6c59a4e4d4a2b1c7fd4d0dbdf2abd4a4b0cbf7c82f7164",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/combo-pizza-wings-night.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 143882,
+      "sha256": "2f65bbfacc4f791bad50d9f5b593376715fc24d6c7791e2498b6ca93bbee80ff",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/combo-solo-pizza-box.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 99222,
+      "sha256": "135565caf9c8b8f7e97740e502dfb2173bb73ecedfbc00c88c9764c9f1d7d2ca",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/combo-sticky-bbq-wings.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 102396,
+      "sha256": "a87e86b360ff25b491700a39fa6831787bdff840dabeb2a86a6eebc9e398a707",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/combo-swill-crunch.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 112538,
+      "sha256": "20765dbf63c0e4794e92ba0196d93cd7ec297d95fbc3ff4e822d3e0b16046ea7",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/combo-swill-pizza-feast.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 125704,
+      "sha256": "6beff3894e02ca5a5aa0a1b6364a2bd397e8d6b8af19941ca7f08419ad0059f3",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/combo-swillhouse-classic.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 91960,
+      "sha256": "3d0955d58dda121f4f176e9962971cce68bab392906ece3f6020e7d44100d161",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/dessert-brownie-blast-sundae.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 84722,
+      "sha256": "1b82267f395cb891a327b9098aa8d825855887413dfd9722e78a7ce96ff4998e",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/dessert-cookie-crunch-sundae.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 113122,
+      "sha256": "3723dacb95cc2fa7719a1d1a4afd8656f3d8f517cb7536d757425fe307932d90",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/dessert-double-scoop-dream.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 43196,
+      "sha256": "6f9007775f332e66773078d1fbe963c4f4d7b57750d19e4afdb0b420a5075f7c",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/dessert-swill-scoop-cup.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 40794,
+      "sha256": "b902bca9eb51c1c3c0c869c1ac489ab60cbd56c911a55f91798529857117eeea",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/kids-chicken-dippers-box.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 77284,
+      "sha256": "a5862e5a487d78c2cbad7bd8a283b34b106f15db3435903709cdac40f74e0c92",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/kids-little-grillers-box.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 93066,
+      "sha256": "d3f9e03f9d35dfc929b948b5cbb3cdd936e51f7a3dcd74f9380081b488e4a425",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/kids-little-swill-burger-box.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 57590,
+      "sha256": "cc17da1875c59d7f18dd6ed364a84f468d6991c42afdb4802c5e4b436b610de2",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/kids-mini-pizza-pals.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 87794,
+      "sha256": "622e3577de57394281db2f131ebcf6cc933d112dbd6fa9f1861fb72364ebe60b",
+      "text": false
+    },
+    {
+      "path": "src/assets/menu/side-loaded-swill-fries.webp",
+      "tracked": true,
+      "category": "asset",
+      "bytes": 119672,
+      "sha256": "da7f2a0b521df43d1fe77390f72cae82cd9634d98c04916df691fcd08313c742",
+      "text": false
+    },
+    {
+      "path": "src/components/site/cart-drawer.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 9042,
+      "sha256": "4fbe9c4e326565a3296568d1fed89dd5ab5991e3f16d72f4601f40c5a2ff1661",
+      "text": true
+    },
+    {
+      "path": "src/components/site/field.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1323,
+      "sha256": "6f4fb25abdf969443910119dbd3216245f6fcb36e5262c6afe4c54a9bc95bdca",
+      "text": true
+    },
+    {
+      "path": "src/components/site/item-customizer.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 12352,
+      "sha256": "0b845fb6fa77cf9e47c595344290ead0a5d1d653c2d6ae97460771ab3a4f6429",
+      "text": true
+    },
+    {
+      "path": "src/components/site/logo.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 848,
+      "sha256": "c583914af9306953a46fd1713049dfc11608a5a035ac07b5b63d0929656d5ab0",
+      "text": true
+    },
+    {
+      "path": "src/components/site/menu-card.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2833,
+      "sha256": "79bbebe0913162150837b22d0301c8c396849dd15764f0431ecfb65204d21ed0",
+      "text": true
+    },
+    {
+      "path": "src/components/site/page-intro.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1329,
+      "sha256": "df5d15960b31539f6bbf09225130d6784505f0fc00550277f78262da3026d9b9",
+      "text": true
+    },
+    {
+      "path": "src/components/site/quantity-stepper.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1252,
+      "sha256": "e031217f0d39fd994e86d47590291a437b5d7f4d302a3648d21c8a43ba442325",
+      "text": true
+    },
+    {
+      "path": "src/components/site/reveal.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 779,
+      "sha256": "33a9630693d99af0daf8e2c6b4dee410bf9a824a59f814fd2e4459f361c8ae85",
+      "text": true
+    },
+    {
+      "path": "src/components/site/site-footer.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 4170,
+      "sha256": "365f4615c8039ab360aa07c51b3b1b21fdbcd80975ec0b4f7eaaae6fa61093fb",
+      "text": true
+    },
+    {
+      "path": "src/components/site/site-header.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 11133,
+      "sha256": "34ea1dac8deb7b96ac8ed3c4f0853c3c802bfbae530c298a6e560f3b60f47129",
+      "text": true
+    },
+    {
+      "path": "src/components/site/site-motion.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 6430,
+      "sha256": "3818b1e537f175ca090f6d7805a63e585604485cf04f3b0c500ad7ecb3f85794",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/accordion.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2015,
+      "sha256": "0903efcd7b746eef0a10c954a541b0dfa7aa1172f3c380a1a88f4e19a317fda3",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/alert-dialog.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 4183,
+      "sha256": "ee4d7f3341a1e5592787b7dac8e924bd226189492819f6704d8a7faf8fe64d20",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/alert.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1589,
+      "sha256": "e7f4c2e6f78c59270905b4152b7d3ef4d5c6b9e3b2d370daa7b301aa7cbd27b3",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/aspect-ratio.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 143,
+      "sha256": "d72c73d629e37995a0a71647d851d68d6fdcd7ec120797f36ab83a8ee89f2cab",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/avatar.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1413,
+      "sha256": "0326c9041c5a0b1ba31ff29822c51950b6aeac485cd0985e7df714741a54e7f4",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/badge.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1123,
+      "sha256": "6519775252fe729f21c60b92c7c9feefd1fe7d0a8c2cf16d6f1c2fa7e153fe75",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/breadcrumb.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2749,
+      "sha256": "d5224e87344b3ac0f8b002e5dda6a71ff8fee296db8a5fbe6b034d06bd5c2ae1",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/button.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2996,
+      "sha256": "7198cd8f8fd7573de8bf3beec62d8ca3efdd791155f2b6b902c6a6c2c7529228",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/calendar.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 7226,
+      "sha256": "e883f2245873fdf360764f77fc8f391426bef5776c6397537012c46970ebd6ee",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/card.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1817,
+      "sha256": "f13878a0078a5ef9f3e92af29259fc1e93ea56ea80cb992e0c4dea4e35396459",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/carousel.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 6200,
+      "sha256": "568e00e8edbfab8af67ee902ca9ef5ceb6d5ed6f3045e7f9b3c15b4f7ef9e974",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/chart.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 10570,
+      "sha256": "81b1f692f9334ba3030213ff37eeaf2dd762b644e5d96e51ada7072109f07430",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/checkbox.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1043,
+      "sha256": "c44d02535d5c9c92807576804407dd63d01e7189dbde526e925b53885e645fd4",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/collapsible.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 335,
+      "sha256": "5f0a45d8f6ca72d37ed10bf0a85306158b67d7cbc386319186ce013ead9bc0a6",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/command.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 4876,
+      "sha256": "ba8c0f8b23044ce9a5066e66d7ab7be3a3c79bfc4a0ab7dfae6ffafe439145a3",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/context-menu.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 7360,
+      "sha256": "b299f50a0a7840b136db5670f2b2e7eec6fc62b3c06bc2ad0015800959cc381b",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/dialog.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 3648,
+      "sha256": "e3a6de153fb15597ea95be9c4549211a297c060267787915599e3d680d476bd9",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/drawer.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2973,
+      "sha256": "478c487f66245641d5fa0f0d1c53a07d68bd60c4b3c497ec4c41ce08b482e14b",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/dropdown-menu.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 7565,
+      "sha256": "a6b87c89f5a806225b7f3a81f13a6577289c67e5787c2a56b5a22bd1edea02ce",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/form.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 4201,
+      "sha256": "1ed53d4ab564a64708938643de590f2bef3718b0b2a309c1019c57e9c1fde23f",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/hover-card.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1246,
+      "sha256": "69dc172ece56ac77bf3a044a1cd60ed601b0041945d16b5da4c6cc4f42116988",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/input-otp.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2232,
+      "sha256": "45b7c4fd518616f76dd611b9da13bc60bece1352e050878bf943e1cc6a4ed678",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/input.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 776,
+      "sha256": "92debb7d6d2d96d9e607a42d5ce8f37b2d63384ae5dd9ffbbf5f047b680ffb85",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/label.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 716,
+      "sha256": "9f72e2ecf16206593aa9e3c4fbc14cd8e81aa8488d57d92d4a950b30935a9fa9",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/menubar.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 8515,
+      "sha256": "5bd157c3a446ea1e451867e63724b2e87ad6bba6251c8b5f1b267d1df7bd4e0e",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/navigation-menu.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 5152,
+      "sha256": "755aecc77b7911ab61159c9fbb9b25254009eb4c32c95b1430b6b5b7d37ed8f0",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/pagination.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2739,
+      "sha256": "cbe8559c578ee2d34c7daef5ee75dc3afeb795851e294b111dec375ba44a9a2d",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/popover.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1352,
+      "sha256": "861c18577ea5988c6f5ca00d1c677200319fd427cf8b424e59a5cca6ff24f830",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/progress.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 781,
+      "sha256": "418f612946a520d1380b7a0d058185bb6a6d09846846dd6d6904a0016152dd4a",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/radio-group.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1405,
+      "sha256": "8c55aa0496b00a27fc4f609ca8b43a7e82c6802f6bf613998438b7632899fa96",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/resizable.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1552,
+      "sha256": "f0399fec7bc334f06433b41b6ebf34255942ce4916b99173898893fa7fcc8281",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/scroll-area.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1635,
+      "sha256": "b607f562455152a079d70a22538c95072b0267e0d59a1a1cf16a905a2e373a6f",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/select.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 5749,
+      "sha256": "6d4deee18cf7ced0354eb719300833a83caf46400de6ee9c3d1942fa4c579ad4",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/separator.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 723,
+      "sha256": "bf5838b692e5f74fde7083280b99492dd402bce6966e912e79f5e23f14bc98eb",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/sheet.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 4248,
+      "sha256": "a82f9341962e766ee925a2fe883b0a9ab5d5dd8475c402ac8e491ee37dc95fde",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/sidebar.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 23975,
+      "sha256": "9f44f4523271f965adec608ae1c3b8a2f350f2f45ba1401a2c7ee33bc5eda238",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/skeleton.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 239,
+      "sha256": "f4c42257d73925b0b856a3500e2cbdd918fe6744fcd6be87ef28bb88e7eb7366",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/slider.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1025,
+      "sha256": "d307cf3ff05b54be4a04389ef4379f9e8b4dc49720197937991ce843a8d4b5ec",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/sonner.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 734,
+      "sha256": "3ad40f66c339e799b1a57c00e10b4627294c7d580d99d8a48ae0d8d4c13cf931",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/switch.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1156,
+      "sha256": "c3c298df4ffb56695e4a8f0ff3e37eee08437dec542a677153ec16bed0820107",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/table.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2820,
+      "sha256": "1e945e564c2cc5ca3ef33019ba7da7a8b94cbc73feb3cbc2b7b33c36ea648d92",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/tabs.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1934,
+      "sha256": "e9b454d2f987c83b36cc8870bba47d9355db4e8f5c733b310dbc1119a7d27654",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/textarea.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 677,
+      "sha256": "35617a2cf053e52c9e56983bde82d556861d38e462f9e578876c8e99a0432687",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/toggle-group.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1752,
+      "sha256": "d59cd3937c967a3e221fdfcfe4ea5cd57eb97cbe37e1ac98126664c9c7db49c1",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/toggle.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1534,
+      "sha256": "62e6e21993f1ab633b9f830cbbf0c181f3d161bae3a7792dbf2d842d42a2f09c",
+      "text": true
+    },
+    {
+      "path": "src/components/ui/tooltip.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1278,
+      "sha256": "9682690fc3755d0f4b8684f2d7b1f77945876d41a45b723d0761b26804ad5010",
+      "text": true
+    },
+    {
+      "path": "src/hooks/use-cart.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 7217,
+      "sha256": "999c0823a930bfd87a6492822ce4d716b657cea42dfd2e12492b6c80d3698286",
+      "text": true
+    },
+    {
+      "path": "src/hooks/use-guest.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 610,
+      "sha256": "c8d9821e8684952a46724590c012888c474c958a2a09cd6e80d4276bb757be98",
+      "text": true
+    },
+    {
+      "path": "src/hooks/use-mobile.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 576,
+      "sha256": "21eff740f9e5c965c7f0782925a7e8f67ddfcdf0f58b6613550f99c3e1c454e9",
+      "text": true
+    },
+    {
+      "path": "src/integrations/lovable/index.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 973,
+      "sha256": "2b71954d100f88b414b15bcea1bae05450f4761727e030b3a21a0448ce9c6222",
+      "text": true
+    },
+    {
+      "path": "src/integrations/supabase/auth-attacher.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 611,
+      "sha256": "24d0dbdf8dc0fd49b391a948bd04e1db43b97a1d851acc391dd3d1b13b9797fd",
+      "text": true
+    },
+    {
+      "path": "src/integrations/supabase/auth-middleware.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 3236,
+      "sha256": "ae40b141ce933b52252e00bfacd3e69fa7a8e6ef88a2c92809780bf7d1bb76cc",
+      "text": true
+    },
+    {
+      "path": "src/integrations/supabase/client.server.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2753,
+      "sha256": "56ec7f9ac40ccdf96d8aba4f7fe33a586590ac63420b81e6cd5dc1e4777ee28e",
+      "text": true
+    },
+    {
+      "path": "src/integrations/supabase/client.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 3569,
+      "sha256": "b300e9491d5b8500ee77137fbaeef8e5b46b5f5e8a9463fc2dc01adc104e1807",
+      "text": true
+    },
+    {
+      "path": "src/integrations/supabase/cron-auth.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1109,
+      "sha256": "18430aa4c7faff5b44c572a8a4dfa6482daa52acbea09f384b872f087e58e738",
+      "text": true
+    },
+    {
+      "path": "src/integrations/supabase/previewAuthStorage.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 6712,
+      "sha256": "03dd0ffe0501fa1f0b055d8644e079c573e7197a36e2e08fd494e70831484d18",
+      "text": true
+    },
+    {
+      "path": "src/integrations/supabase/types.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 12174,
+      "sha256": "8988d83f6b91d622976236bef74de1540c363015b7642e15cdd467e7f5ad8f8b",
+      "text": true
+    },
+    {
+      "path": "src/lib/admin.functions.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 49374,
+      "sha256": "e76032f40539bc18e8ee313533a04933e953cbaca427f1e7b19408866c8dbad7",
+      "text": true
+    },
+    {
+      "path": "src/lib/cart.functions.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2924,
+      "sha256": "c163df0d550400ea04866fd17647b493d708d67806e9313bec0b3362da73e449",
+      "text": true
+    },
+    {
+      "path": "src/lib/catalog.functions.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 4626,
+      "sha256": "1ae457d6180e25363cd18541660ff35366192bfb4e55dac90cfe2c00a05cf690",
+      "text": true
+    },
+    {
+      "path": "src/lib/default-catalog.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 12519,
+      "sha256": "2445f31ab37f7db5669cf1f8ad1806db54dde197ae4140aa3fe9b4671b7a7308",
+      "text": true
+    },
+    {
+      "path": "src/lib/default-combos.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 13717,
+      "sha256": "9b5611b318c236cf5a7bf5b1e3ecb30f51a4b9689076553d1772de05d42db6b0",
+      "text": true
+    },
+    {
+      "path": "src/lib/error-capture.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2898,
+      "sha256": "d6fa7756cbc4c399f4e891b174c2dce8160e2354972c2ae68413dfd1db843088",
+      "text": true
+    },
+    {
+      "path": "src/lib/error-page.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1371,
+      "sha256": "635915886f5d44a18b6add2a53959dbe2e8ba1bb3f7e597fc714650e74157bb6",
+      "text": true
+    },
+    {
+      "path": "src/lib/food-images.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 5247,
+      "sha256": "56560d9fd3e9b09550e518dfac48c0c9901cd588f7089d2c35cdf7ebd1c6c29c",
+      "text": true
+    },
+    {
+      "path": "src/lib/lovable-error-reporting.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2219,
+      "sha256": "0a2e8b5f3ffd2dd682ab78be1a9b0998b73284a6525080e4960f85827cd608d3",
+      "text": true
+    },
+    {
+      "path": "src/lib/menu-types.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 5324,
+      "sha256": "89d296e57fef1cf750f5801be45b1fd9e7ba1231930dcdd7b04a904ebd161867",
+      "text": true
+    },
+    {
+      "path": "src/lib/mongodb.server.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 9944,
+      "sha256": "27636e700e00658a2202da058f74ed8fb222730600ce34a966ca8d92af803ee6",
+      "text": true
+    },
+    {
+      "path": "src/lib/order-access.server.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 897,
+      "sha256": "e7e1ae86ef257558a73001e933a4c1f88b8f210fbce631e5f8d17fc038b7d09f",
+      "text": true
+    },
+    {
+      "path": "src/lib/order-queries.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 574,
+      "sha256": "8a0f98c15ca98c2f04ffb76d9d2cc82e4ae87866890f83091f122056f8bcc887",
+      "text": true
+    },
+    {
+      "path": "src/lib/order-status.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2082,
+      "sha256": "51ac73101f68657f25a7e0370f12ada8e7ad6ba5d672662ab68dc3fd3ceff0a0",
+      "text": true
+    },
+    {
+      "path": "src/lib/orders.functions.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 18423,
+      "sha256": "a41d8ff55396eae61556f8078509028137ef1b59a7c411200f839d64558f868c",
+      "text": true
+    },
+    {
+      "path": "src/lib/payment-types.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2558,
+      "sha256": "4775efbde19116437bf745388cf1c0fec8bd1e2d32a2b2f1611b9293ef8255b5",
+      "text": true
+    },
+    {
+      "path": "src/lib/payments.server.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 41845,
+      "sha256": "201d6e51b7964c0f753138611715a3a79a651ff35ce60e3ef76072355544aa1c",
+      "text": true
+    },
+    {
+      "path": "src/lib/pricing.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 13597,
+      "sha256": "eabf1ddc3fd68d0283d10683d3b4bb2b850019bea85f009c8ac71c2668efc3e9",
+      "text": true
+    },
+    {
+      "path": "src/lib/site-content.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 250,
+      "sha256": "c7e7b5e6075237b261c954027b43191d389b719e82edf189dba3212dc35db822",
+      "text": true
+    },
+    {
+      "path": "src/lib/staff.functions.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 7187,
+      "sha256": "0ee2062abf6178caeca8dcb4cbe8297be7da927f9b599a1c7b6ec86bdc78466f",
+      "text": true
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 169,
+      "sha256": "d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27",
+      "text": true
+    },
+    {
+      "path": "src/routeTree.gen.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 12857,
+      "sha256": "fefcc02acf493aec4586cc5667972af5e34a981fd764fa7446a81b76e73ffa5c",
+      "text": true
+    },
+    {
+      "path": "src/router.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1085,
+      "sha256": "d092fe4d268a666b451a88ae8e6de79e57b2db75de4bae2f035e707abd908cb4",
+      "text": true
+    },
+    {
+      "path": "src/routes/README.md",
+      "tracked": true,
+      "category": "application",
+      "bytes": 835,
+      "sha256": "5c8187dbe79dac7a3c494f2600585508f5d15e75f04f21ea364d0de14de10575",
+      "text": true
+    },
+    {
+      "path": "src/routes/__root.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 4950,
+      "sha256": "b9e636dfe3d2a6ff91cd65ac1cdfe97fd597db109fb21f96e7a257789625f76b",
+      "text": true
+    },
+    {
+      "path": "src/routes/account.orders.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 4914,
+      "sha256": "d9e3de05b53a52158773e4af9669f46ce059737364069e491b46c2fdfd3e1a6e",
+      "text": true
+    },
+    {
+      "path": "src/routes/admin.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 114616,
+      "sha256": "20950e93fba147806e0e8a9d2fdf2350306a149305ad79e1cc48a9079f00a27d",
+      "text": true
+    },
+    {
+      "path": "src/routes/api.media.$id.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1611,
+      "sha256": "9b2d22e70c16ca9aa1556c1ac5a77fc149e33956b898d5f2f9347e815eb5e487",
+      "text": true
+    },
+    {
+      "path": "src/routes/api.payments.initialize.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 3916,
+      "sha256": "e9548e797131d549e278492e1049bc4ba5e0ab3b63a2b9f1bc3b6e0874f484ad",
+      "text": true
+    },
+    {
+      "path": "src/routes/api.payments.verify.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 3091,
+      "sha256": "6e7b91cac01f8f33d5d70ed95fa80fd408c219ffd5d3b81342dc2d290aac566c",
+      "text": true
+    },
+    {
+      "path": "src/routes/api.webhooks.flutterwave.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 4255,
+      "sha256": "a52f9c3052da72d4bb9db9cdc7eac8d6f4db6d5394864d2f013b3e38f34ea36d",
+      "text": true
+    },
+    {
+      "path": "src/routes/catering.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 11725,
+      "sha256": "a4defc1f396f137d5029fd4f07cbb11e5337922d3d94c5c0d2c949170db4584c",
+      "text": true
+    },
+    {
+      "path": "src/routes/checkout.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 34410,
+      "sha256": "7003d995b3a3be8bb6613358a35213f6805b4a532512e8bf087120671c52462d",
+      "text": true
+    },
+    {
+      "path": "src/routes/deals.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 3231,
+      "sha256": "da2bc0c832b64163e864cb588cc8b70e2bc7ae118fcabc94f9e41d682fb2d7ce",
+      "text": true
+    },
+    {
+      "path": "src/routes/gallery.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 9709,
+      "sha256": "3e0eb8ad955396c4f6ed589afdb7764491987e5f5510012ca8782a3899fe131d",
+      "text": true
+    },
+    {
+      "path": "src/routes/index.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 30636,
+      "sha256": "0623ecfc40c413366a594881abe17cad3d1582ae0226202d02d0330a119371a8",
+      "text": true
+    },
+    {
+      "path": "src/routes/kitchen.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 16449,
+      "sha256": "27659cdbc10ca5dd7b07590d1b50f9dba5ad3872131aad8aa1905a40bbef6fb4",
+      "text": true
+    },
+    {
+      "path": "src/routes/locations.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 4430,
+      "sha256": "0cf173678dbcf0bc66c3b6b73dcac102fe157cd3080218c6c988178580941862",
+      "text": true
+    },
+    {
+      "path": "src/routes/menu.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 9060,
+      "sha256": "89446bd9074f04ad899286076bbc3d57104e5f803694348c2e7e429a580da253",
+      "text": true
+    },
+    {
+      "path": "src/routes/orders.$id.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 11091,
+      "sha256": "a3d4f45842a5046b7bcf315a6c79a19d338aefded16fad97f97d039593057533",
+      "text": true
+    },
+    {
+      "path": "src/routes/receipts.$id.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 9342,
+      "sha256": "e6b65db7458de3f3297a8a55ab513505f0042709ae257a2b8e6431eb27a75f45",
+      "text": true
+    },
+    {
+      "path": "src/routes/rewards.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 11907,
+      "sha256": "ff80e62a917648d4283857d221865043f8b81263751bbca7b6b5a5c32ab45cf3",
+      "text": true
+    },
+    {
+      "path": "src/server.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2260,
+      "sha256": "09ef10e6695043f59778240f9ac813ae80c9826474a47a120cd14074a7ca5e10",
+      "text": true
+    },
+    {
+      "path": "src/start.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1024,
+      "sha256": "7a401b008f04a926f1b961670c6f5804a03e95f451fc5aa47c01ac5adec3456f",
+      "text": true
+    },
+    {
+      "path": "src/styles.css",
+      "tracked": true,
+      "category": "application",
+      "bytes": 14298,
+      "sha256": "6f4bf9e822127dcbcbfb58e90d28c29769681836ed97106dfd940d538bdd1bd3",
+      "text": true
+    },
+    {
+      "path": "src/test/app-routing.test.tsx",
+      "tracked": true,
+      "category": "application",
+      "bytes": 885,
+      "sha256": "d069dbad93a00d6f950b6b0d5d8d17dfc98d06301ddd5e84dd66bc6cefa2594e",
+      "text": true
+    },
+    {
+      "path": "src/test/cart-schema.test.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1416,
+      "sha256": "8d2c6565ff3d03b9a3cda4b6733ed81f259665845d4bb87f82225b5bf5a52443",
+      "text": true
+    },
+    {
+      "path": "src/test/cart.test.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1597,
+      "sha256": "c6d357b72749e45e93956e15b8445c521373a27b97ab048dada62f1a8513a4dc",
+      "text": true
+    },
+    {
+      "path": "src/test/combo-menu.test.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 5294,
+      "sha256": "69362c0b5d957ee063fcba0798c3fb7fb227e28ec69255c34ff66e4a2241532a",
+      "text": true
+    },
+    {
+      "path": "src/test/flutterwave-payments.test.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 15894,
+      "sha256": "b1a67a41617252581237c6211d17ad848d82cb935f8d5525293056c3233682e9",
+      "text": true
+    },
+    {
+      "path": "src/test/food-images.test.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1518,
+      "sha256": "1d3a15110f48800f9580bd0bb3e140a2631a9d2a587e33c04e3e4ed55af89c62",
+      "text": true
+    },
+    {
+      "path": "src/test/mongodb-config.test.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1469,
+      "sha256": "f25a48b7c9ad42ce466d62c8f01309384769269d49901feea79e01d912c88797",
+      "text": true
+    },
+    {
+      "path": "src/test/order-status.test.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 736,
+      "sha256": "4680346416c6505d7a28204ac09bbf26a0e55dfcf23baaa0af8f7dca7ff0d2a2",
+      "text": true
+    },
+    {
+      "path": "src/test/orders-schema.test.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1622,
+      "sha256": "6100ed98cdab5afc49651ca795836511e12bb01d7475c9466696be5f570f6b45",
+      "text": true
+    },
+    {
+      "path": "src/test/pricing.test.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 2213,
+      "sha256": "21caa64fd27c7c6bc36bd76d1cffb3f2bd7241d254e309ffc888813e13548966",
+      "text": true
+    },
+    {
+      "path": "src/test/setup.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 446,
+      "sha256": "049fd55d8c3bf8742482f5684ecf15407eadd752bad5e86907032112dc05a558",
+      "text": true
+    },
+    {
+      "path": "supabase/config.toml",
+      "tracked": true,
+      "category": "application",
+      "bytes": 35,
+      "sha256": "cf8233915e111dfa3a1e7101b29d23f0b925c45aabd7c76dec701c688d811aa1",
+      "text": true
+    },
+    {
+      "path": "tsconfig.json",
+      "tracked": true,
+      "category": "application",
+      "bytes": 884,
+      "sha256": "9404f3c25a4b3eca54f4358b8717f0ebd386b29b2e3784b1913ea9f050b435d5",
+      "text": true
+    },
+    {
+      "path": "vite.config.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 1844,
+      "sha256": "85e08c7f4b071b86a9a9c974e515b67e8fcec6767ad924d947161f6c2b31d173",
+      "text": true
+    },
+    {
+      "path": "vitest.config.ts",
+      "tracked": true,
+      "category": "application",
+      "bytes": 396,
+      "sha256": "0158325852b8c6c2c4c9e2ae02196430b432a7f40772eb546e227ce16b9da97b",
+      "text": true
+    }
+  ]
+}

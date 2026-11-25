@@ -1,0 +1,366 @@
+{
+  "firstPartyTextFiles": 178,
+  "serverFunctions": 44,
+  "fileRoutes": 17,
+  "explicitApiMethods": 4,
+  "nextActions": 1,
+  "databaseOperationSites": 150,
+  "externalCallSites": 10,
+  "parseErrors": [],
+  "functions": [
+    {
+      "name": "getAdminSessionState",
+      "method": "GET",
+      "path": "src/lib/admin.functions.ts",
+      "line": 421,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "unlockAdmin",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 426,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "lockAdmin",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 439,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "getCheckoutConfiguration",
+      "method": "GET",
+      "path": "src/lib/admin.functions.ts",
+      "line": 445,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "getPublicGalleryItems",
+      "method": "GET",
+      "path": "src/lib/admin.functions.ts",
+      "line": 488,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "getPublicCateringMenu",
+      "method": "GET",
+      "path": "src/lib/admin.functions.ts",
+      "line": 516,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "submitCateringInquiry",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 541,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "getGalleryFeedback",
+      "method": "GET",
+      "path": "src/lib/admin.functions.ts",
+      "line": 581,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "toggleGalleryLike",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 635,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "addGalleryComment",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 666,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "getAdminWorkspace",
+      "method": "GET",
+      "path": "src/lib/admin.functions.ts",
+      "line": 707,
+      "guard": "admin_session"
+    },
+    {
+      "name": "getStorefrontSettings",
+      "method": "GET",
+      "path": "src/lib/admin.functions.ts",
+      "line": 868,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "saveAdminMenuItem",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 892,
+      "guard": "admin_session"
+    },
+    {
+      "name": "deleteAdminMenuItem",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 940,
+      "guard": "admin_session"
+    },
+    {
+      "name": "saveAdminCategory",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 952,
+      "guard": "admin_session"
+    },
+    {
+      "name": "saveAdminSettings",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 967,
+      "guard": "admin_session"
+    },
+    {
+      "name": "saveStoreLocation",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 993,
+      "guard": "admin_session"
+    },
+    {
+      "name": "deleteStoreLocation",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1016,
+      "guard": "admin_session"
+    },
+    {
+      "name": "saveAdminPromotion",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1028,
+      "guard": "admin_session"
+    },
+    {
+      "name": "deleteAdminPromotion",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1058,
+      "guard": "admin_session"
+    },
+    {
+      "name": "saveAdminCateringPackage",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1081,
+      "guard": "admin_session"
+    },
+    {
+      "name": "deleteAdminCateringPackage",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1102,
+      "guard": "admin_session"
+    },
+    {
+      "name": "saveAdminCateringProtein",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1114,
+      "guard": "admin_session"
+    },
+    {
+      "name": "deleteAdminCateringProtein",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1135,
+      "guard": "admin_session"
+    },
+    {
+      "name": "updateAdminCateringInquiry",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1147,
+      "guard": "admin_session"
+    },
+    {
+      "name": "saveAdminGalleryItem",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1175,
+      "guard": "admin_session"
+    },
+    {
+      "name": "uploadAdminImage",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1195,
+      "guard": "admin_session"
+    },
+    {
+      "name": "deleteAdminGalleryItem",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1250,
+      "guard": "admin_session"
+    },
+    {
+      "name": "setAdminOrderStatus",
+      "method": "POST",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1268,
+      "guard": "admin_session"
+    },
+    {
+      "name": "getAdminSales",
+      "method": "GET",
+      "path": "src/lib/admin.functions.ts",
+      "line": 1312,
+      "guard": "admin_session"
+    },
+    {
+      "name": "getCart",
+      "method": "GET",
+      "path": "src/lib/cart.functions.ts",
+      "line": 39,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "saveCart",
+      "method": "POST",
+      "path": "src/lib/cart.functions.ts",
+      "line": 56,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "getCategories",
+      "method": "GET",
+      "path": "src/lib/catalog.functions.ts",
+      "line": 49,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "getMenu",
+      "method": "GET",
+      "path": "src/lib/catalog.functions.ts",
+      "line": 66,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "verifyQuickOrderSelection",
+      "method": "POST",
+      "path": "src/lib/catalog.functions.ts",
+      "line": 106,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "getStores",
+      "method": "GET",
+      "path": "src/lib/catalog.functions.ts",
+      "line": 121,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "placeOrder",
+      "method": "POST",
+      "path": "src/lib/orders.functions.ts",
+      "line": 110,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "getGuestRewards",
+      "method": "GET",
+      "path": "src/lib/orders.functions.ts",
+      "line": 399,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "getOrder",
+      "method": "GET",
+      "path": "src/lib/orders.functions.ts",
+      "line": 449,
+      "guard": "order_bearer"
+    },
+    {
+      "name": "unlockKitchen",
+      "method": "POST",
+      "path": "src/lib/staff.functions.ts",
+      "line": 47,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "lockKitchen",
+      "method": "POST",
+      "path": "src/lib/staff.functions.ts",
+      "line": 59,
+      "guard": "public_or_guest_identifier"
+    },
+    {
+      "name": "getKitchenBoard",
+      "method": "GET",
+      "path": "src/lib/staff.functions.ts",
+      "line": 66,
+      "guard": "staff_session"
+    },
+    {
+      "name": "setOrderStatus",
+      "method": "POST",
+      "path": "src/lib/staff.functions.ts",
+      "line": 123,
+      "guard": "staff_session"
+    },
+    {
+      "name": "setItemAvailability",
+      "method": "POST",
+      "path": "src/lib/staff.functions.ts",
+      "line": 173,
+      "guard": "staff_session"
+    }
+  ],
+  "apiRoutes": [
+    {
+      "route": "/api/media/$id",
+      "path": "src/routes/api.media.$id.ts",
+      "line": 3,
+      "methods": [
+        {
+          "method": "GET",
+          "line": 6
+        }
+      ]
+    },
+    {
+      "route": "/api/payments/initialize",
+      "path": "src/routes/api.payments.initialize.ts",
+      "line": 105,
+      "methods": [
+        {
+          "method": "POST",
+          "line": 108
+        }
+      ]
+    },
+    {
+      "route": "/api/payments/verify",
+      "path": "src/routes/api.payments.verify.ts",
+      "line": 26,
+      "methods": [
+        {
+          "method": "GET",
+          "line": 29
+        }
+      ]
+    },
+    {
+      "route": "/api/webhooks/flutterwave",
+      "path": "src/routes/api.webhooks.flutterwave.ts",
+      "line": 34,
+      "methods": [
+        {
+          "method": "POST",
+          "line": 37
+        }
+      ]
+    }
+  ]
+}

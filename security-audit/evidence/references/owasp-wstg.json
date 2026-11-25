@@ -1,0 +1,6 @@
+{
+  "source": "owasp-wstg",
+  "url": "https://owasp.org/www-project-web-security-testing-guide/",
+  "time": "2026-11-25T03:03:57.658479+00:00",
+  "error": "HTTPError: HTTP Error 308: Permanent Redirect"
+}

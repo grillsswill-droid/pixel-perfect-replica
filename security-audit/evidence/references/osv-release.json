@@ -1,0 +1,19 @@
+{
+  "source": "osv-release",
+  "url": "https://api.github.com/repos/google/osv-scanner/releases/latest",
+  "time": "2026-11-25T03:03:51.500519+00:00",
+  "status": 200,
+  "final_url": "https://api.github.com/repos/google/osv-scanner/releases/latest",
+  "sha256": "24a4f6b73f72ef5c0ccc9bba13fd1ed301e8268bfa48d940df93227bd132f7c2",
+  "version": "v2.7.1",
+  "published_at": "2026-11-09T04:15:04Z",
+  "release_url": "https://github.com/google/osv-scanner/releases/tag/v2.7.1",
+  "assets": [
+    {
+      "name": "osv-scanner_darwin_amd64",
+      "url": "https://github.com/google/osv-scanner/releases/download/v2.7.1/osv-scanner_darwin_amd64",
+      "bytes": 59352784,
+      "digest": "sha256:b8420d5485ba792626315f1bf9a5a2046e971d38eea75bf9090c38852dbc3b1b"
+    }
+  ]
+}
