@@ -59,10 +59,14 @@ export function handleSeoRoute(request: Request): Response | null {
     });
   }
 
-  const entries = PUBLIC_SEO_PAGES.map(
-    (page) =>
-      `  <url><loc>${escapeXml(new URL(page.path, configuration.origin!).href)}</loc></url>`,
-  ).join("\n");
+  // Locations are conditional on administrator configuration. Their page is discovered
+  // through the storefront links only when available, rather than this static sitemap.
+  const entries = PUBLIC_SEO_PAGES.filter((page) => page.path !== "/locations")
+    .map(
+      (page) =>
+        `  <url><loc>${escapeXml(new URL(page.path, configuration.origin!).href)}</loc></url>`,
+    )
+    .join("\n");
   const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
   return new Response(headOnly ? null : body, {
     headers: { ...headers, "Content-Type": "application/xml; charset=utf-8" },

@@ -1,4 +1,4 @@
-import { createServerFn } from "@tanstack/react-start";
+import { createServerFn, createServerOnlyFn } from "@tanstack/react-start";
 import type { Document } from "mongodb";
 import { z } from "zod";
 
@@ -53,10 +53,10 @@ async function getAdminSession() {
   return createSession<AdminSession>(adminSessionConfig());
 }
 
-async function requireAdmin() {
+export const requireAdmin = createServerOnlyFn(async () => {
   const session = await getAdminSession();
   if (!session.data.admin) throw new Error("Administrator access is required.");
-}
+});
 
 async function secretMatches(input: string, expected: string) {
   const { createHash, timingSafeEqual } = await import("node:crypto");

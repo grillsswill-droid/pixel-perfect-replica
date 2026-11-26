@@ -13,6 +13,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import { useCart } from "@/hooks/use-cart";
+import { useStorefrontLocations } from "@/hooks/use-storefront-locations";
 import { foodImage } from "@/lib/food-images";
 import { FREE_DELIVERY_THRESHOLD_CENTS, formatMoney } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,7 @@ import { QuantityStepper } from "./quantity-stepper";
 
 export function CartDrawer() {
   const cart = useCart();
+  const { hasLocations } = useStorefrontLocations();
   const navigate = useNavigate();
   const { data: config } = useQuery({
     queryKey: ["checkout-configuration"],
@@ -46,35 +48,41 @@ export function CartDrawer() {
         </SheetHeader>
 
         <div className="px-6 pt-4">
-          <div
-            className="grid grid-cols-2 gap-1 rounded-full bg-muted p-1"
-            role="radiogroup"
-            aria-label="How do you want it?"
-          >
-            {(["delivery", "pickup"] as const).map((f) => (
-              <button
-                key={f}
-                role="radio"
-                aria-checked={cart.fulfillment === f}
-                onClick={() => cart.setFulfillment(f)}
-                className={cn(
-                  "relative flex items-center justify-center gap-2 rounded-full py-2 text-sm font-bold capitalize transition",
-                  cart.fulfillment === f ? "text-primary-foreground" : "text-charcoal/70",
-                )}
-              >
-                {cart.fulfillment === f && (
-                  <motion.span
-                    layoutId="drawer-fulfil"
-                    className="absolute inset-0 rounded-full bg-primary"
-                  />
-                )}
-                <span className="relative flex items-center gap-2">
-                  {f === "delivery" ? <Bike className="h-4 w-4" /> : <Store className="h-4 w-4" />}
-                  {f}
-                </span>
-              </button>
-            ))}
-          </div>
+          {hasLocations ? (
+            <div
+              className="grid grid-cols-2 gap-1 rounded-full bg-muted p-1"
+              role="radiogroup"
+              aria-label="How do you want it?"
+            >
+              {(["delivery", "pickup"] as const).map((f) => (
+                <button
+                  key={f}
+                  role="radio"
+                  aria-checked={cart.fulfillment === f}
+                  onClick={() => cart.setFulfillment(f)}
+                  className={cn(
+                    "relative flex items-center justify-center gap-2 rounded-full py-2 text-sm font-bold capitalize transition",
+                    cart.fulfillment === f ? "text-primary-foreground" : "text-charcoal/70",
+                  )}
+                >
+                  {cart.fulfillment === f && (
+                    <motion.span
+                      layoutId="drawer-fulfil"
+                      className="absolute inset-0 rounded-full bg-primary"
+                    />
+                  )}
+                  <span className="relative flex items-center gap-2">
+                    {f === "delivery" ? (
+                      <Bike className="h-4 w-4" />
+                    ) : (
+                      <Store className="h-4 w-4" />
+                    )}
+                    {f}
+                  </span>
+                </button>
+              ))}
+            </div>
+          ) : null}
           {cart.fulfillment === "delivery" && cart.count > 0 && (
             <div className="mt-4">
               <p className="text-xs font-semibold text-muted-foreground">

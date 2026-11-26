@@ -9,10 +9,10 @@ SEO service, tracking script or dependency.
 
 | Area | Implementation |
 |---|---|
-| Public pages | `/`, `/menu`, `/deals`, `/catering`, `/gallery`, `/locations` |
+| Public pages | `/`, `/menu`, `/deals`, `/catering`, `/gallery`, `/locations`, `/faq`, `/support`, `/privacy`, `/terms`, `/refund-policy`, `/delivery-policy`, `/allergens`, `/cookies`, `/accessibility` |
 | Metadata | Unique titles/descriptions, absolute canonical and Open Graph URLs, Twitter cards and a real food photo |
 | Structured data | Homepage `WebSite`/`Organization`; public-page breadcrumbs; script-safe JSON serialization |
-| Discovery | Runtime `/robots.txt` and `/sitemap.xml`, supporting GET/HEAD without database/session calls |
+| Discovery | Runtime `/robots.txt` and `/sitemap.xml`, supporting GET/HEAD without database/session calls; 14 stable public URLs, with conditional Locations discovered through storefront links |
 | Private pages | Checkout, rewards/device history, orders, receipts, accounts, admin and kitchen excluded from sitemap and marked `noindex` |
 | Other responses | APIs, RPCs, unknown/error pages and preview/alternate hosts marked `noindex`; valid canonical-production public JPEG/PNG/WebP media remains indexable |
 | Canonical filters | `/menu?cat=pizza` points to `/menu`; tracking parameters/fragments never enter SEO URLs |
@@ -21,7 +21,14 @@ SEO service, tracking script or dependency.
 The public route registry in [seo.ts](../src/lib/seo.ts) drives metadata and the
 sitemap together. Adding a future public landing page requires its real route,
 its metadata entry and a verification test. Private workflow pages must remain
-outside that registry.
+outside that registry. The public Support page is indexable; support records and
+administrative replies have no public lookup and remain outside search.
+
+Locations depend on actual administrator configuration. The static sitemap
+omits `/locations` so it does not advertise an unavailable location page; the
+storefront links to it when real locations exist. The customer pages are lazy
+loaded, and their longer policy/FAQ content is not bundled into the shared SEO
+metadata module.
 
 The sitemap omits invented update timestamps, `priority` and `changefreq`.
 Restaurant addresses, phone numbers, hours, reviews, ratings and social profiles
@@ -77,7 +84,7 @@ work.
    an API credential.
 3. Confirm `https://your-domain.example/robots.txt` advertises the preferred
    sitemap and `https://your-domain.example/sitemap.xml` returns XML with the
-   six preferred public URLs. Use the actual production domain in those URLs.
+   14 preferred public URLs. Use the actual production domain in those URLs.
 4. Submit `sitemap.xml` in Search Console → Sitemaps.
 5. Use URL Inspection on the homepage and menu to check crawlability,
    Google-selected canonical, rendered HTML and indexing eligibility. Request

@@ -23,15 +23,23 @@ export const Route = createFileRoute("/orders/$id")({
   loaderDeps: ({ search }) => ({ token: search.token }),
   loader: ({ params, deps }) =>
     deps.token ? getOrder({ data: { id: params.id, token: deps.token } }) : null,
-  head: () => ({ meta: [
-    { title: "Track your order | Grill & Swill" },
-    { name: "description", content: "Follow your Grill & Swill order from grill to pickup or delivery." },
-    { property: "og:title", content: "Track your order | Grill & Swill" },
-    { property: "og:description", content: "Follow your Grill & Swill order from grill to pickup or delivery." },
-    { property: "og:type", content: "website" },
-    { name: "twitter:card", content: "summary" },
-    { name: "robots", content: "noindex, nofollow" },
-  ] }),
+  head: () => ({
+    meta: [
+      { title: "Track your order | Grill & Swill" },
+      {
+        name: "description",
+        content: "Follow your Grill & Swill order from grill to pickup or delivery.",
+      },
+      { property: "og:title", content: "Track your order | Grill & Swill" },
+      {
+        property: "og:description",
+        content: "Follow your Grill & Swill order from grill to pickup or delivery.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
   component: OrderPage,
 });
 
@@ -228,7 +236,7 @@ function OrderPage() {
               </p>
             )}
             <p className="mt-4 text-xs text-muted-foreground">
-              Prepared at {order.stores?.name ?? "your selected Grill & Swill"}
+              {order.stores ? `Prepared at ${order.stores.name}` : "Prepared by Grill & Swill"}
             </p>
             {order.customer_phone ? (
               <p className="mt-1 text-xs text-muted-foreground">{order.customer_phone}</p>

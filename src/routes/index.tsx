@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { CATEGORY_IMAGES, foodImage } from "@/lib/food-images";
 import { categoriesQuery, menuQuery } from "@/lib/catalog.functions";
 import { useCart } from "@/hooks/use-cart";
+import { useStorefrontLocations } from "@/hooks/use-storefront-locations";
 import { CATEGORIES, type MenuItem, type QuickOrderGroup } from "@/lib/menu-types";
 import { defaultSelections, formatMoney } from "@/lib/pricing";
 import { verifyQuickOrderSelection } from "@/lib/catalog.functions";
@@ -54,7 +55,12 @@ function HomePage() {
     <>
       <Hero />
       <div className="flavor-strip" aria-hidden="true">
-        <span>Smash. Sip. Repeat.</span><Flame /><span>Big flavour. Zero shortcuts.</span><Flame /><span>Grill & Swill</span><Flame />
+        <span>Smash. Sip. Repeat.</span>
+        <Flame />
+        <span>Big flavour. Zero shortcuts.</span>
+        <Flame />
+        <span>Grill & Swill</span>
+        <Flame />
       </div>
       <QuickOrderMeals />
       <CategoryGrid />
@@ -168,24 +174,31 @@ function QuickOrderMeals() {
       return searchable.includes(normalizedQuery);
     });
 
-    if (sort === "price-low") return next.sort((left, right) => left.price_cents - right.price_cents);
-    if (sort === "price-high") return next.sort((left, right) => right.price_cents - left.price_cents);
+    if (sort === "price-low")
+      return next.sort((left, right) => left.price_cents - right.price_cents);
+    if (sort === "price-high")
+      return next.sort((left, right) => right.price_cents - left.price_cents);
     if (sort === "name") return next.sort((left, right) => left.name.localeCompare(right.name));
     return next.sort((left, right) => {
       if (left.is_available !== right.is_available) return left.is_available ? -1 : 1;
       if (left.is_featured !== right.is_featured) return left.is_featured ? -1 : 1;
       return (
-        (left.quick_order_order ?? left.sort_order) -
-        (right.quick_order_order ?? right.sort_order)
+        (left.quick_order_order ?? left.sort_order) - (right.quick_order_order ?? right.sort_order)
       );
     });
   }, [activeFilter, combos, deferredQuery, sort]);
 
   return (
     <>
-      <section id="quick-order" className="quick-order-section bg-cream px-5 py-16 text-charcoal sm:px-8 sm:py-24">
+      <section
+        id="quick-order"
+        className="quick-order-section bg-cream px-5 py-16 text-charcoal sm:px-8 sm:py-24"
+      >
         <div className="mx-auto max-w-7xl">
-          <div className="mb-9 flex flex-wrap items-end justify-between gap-6" data-reveal="heading">
+          <div
+            className="mb-9 flex flex-wrap items-end justify-between gap-6"
+            data-reveal="heading"
+          >
             <div className="max-w-2xl">
               <h2 className="text-4xl leading-[0.95] font-black uppercase sm:text-6xl">
                 Quick order. Everything in one place.
@@ -203,7 +216,10 @@ function QuickOrderMeals() {
             </Link>
           </div>
 
-          <div className="quick-order-controls mb-7 rounded-2xl bg-card p-4 sm:p-5" data-reveal="rise">
+          <div
+            className="quick-order-controls mb-7 rounded-2xl bg-card p-4 sm:p-5"
+            data-reveal="rise"
+          >
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_15rem]">
               <label className="grid gap-2 text-xs font-bold uppercase tracking-[0.12em] text-charcoal/70">
                 Find a meal
@@ -247,7 +263,11 @@ function QuickOrderMeals() {
               </label>
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Filter Quick Order meals">
+            <div
+              className="mt-4 flex flex-wrap gap-2"
+              role="group"
+              aria-label="Filter Quick Order meals"
+            >
               {QUICK_ORDER_FILTERS.map((filter) => (
                 <button
                   key={filter.id}
@@ -273,7 +293,7 @@ function QuickOrderMeals() {
                   ? "Loading Quick Order meals…"
                   : `${visibleItems.length} meal${visibleItems.length === 1 ? "" : "s"} ready to browse`}
               </p>
-              {(query || activeFilter !== "all" || sort !== "recommended") ? (
+              {query || activeFilter !== "all" || sort !== "recommended" ? (
                 <button
                   type="button"
                   onClick={() => {
@@ -304,7 +324,10 @@ function QuickOrderMeals() {
                 ))}
               </div>
             ) : isError ? (
-              <div role="alert" className="rounded-2xl border border-destructive/25 bg-destructive/5 p-6 text-center">
+              <div
+                role="alert"
+                className="rounded-2xl border border-destructive/25 bg-destructive/5 p-6 text-center"
+              >
                 <p className="font-bold">The combo menu couldn’t load.</p>
                 <button
                   type="button"
@@ -329,7 +352,9 @@ function QuickOrderMeals() {
             ) : (
               <div className="rounded-2xl bg-card p-8 text-center shadow-card">
                 <p className="font-display text-2xl font-black uppercase">
-                  {combos.length ? "No meals match those filters" : "Signature combos are being prepared"}
+                  {combos.length
+                    ? "No meals match those filters"
+                    : "Signature combos are being prepared"}
                 </p>
                 <button
                   type="button"
@@ -402,7 +427,9 @@ function QuickOrderCard({
           </span>
           <span
             className={`rounded-full px-2.5 py-1 text-[9px] font-black tracking-[0.12em] uppercase sm:px-3 sm:py-1.5 sm:text-[10px] ${
-              item.is_available ? "bg-success text-charcoal" : "bg-destructive text-destructive-foreground"
+              item.is_available
+                ? "bg-success text-charcoal"
+                : "bg-destructive text-destructive-foreground"
             }`}
           >
             {item.is_available ? "Available" : "Sold out"}
@@ -410,7 +437,9 @@ function QuickOrderCard({
         </span>
       </Button>
       <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
-        <h3 className="font-display line-clamp-2 leading-[1.02] font-black uppercase">{item.name}</h3>
+        <h3 className="font-display line-clamp-2 leading-[1.02] font-black uppercase">
+          {item.name}
+        </h3>
         <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
           {item.description}
         </p>
@@ -444,7 +473,11 @@ function QuickOrderCard({
               {!item.is_available ? "Sold" : needsCustomization ? "Choose" : "Add"}
             </span>
             <span className="hidden sm:inline">
-              {!item.is_available ? "Sold out" : needsCustomization ? "Choose options" : "Quick add"}
+              {!item.is_available
+                ? "Sold out"
+                : needsCustomization
+                  ? "Choose options"
+                  : "Quick add"}
             </span>
           </Button>
         </div>
@@ -454,6 +487,7 @@ function QuickOrderCard({
 }
 
 function Hero() {
+  const { hasLocations } = useStorefrontLocations();
   const heroRef = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const prefersReducedMotion = useReducedMotion();
@@ -477,10 +511,14 @@ function Hero() {
       <div className="hero-inner mx-auto flex max-w-7xl items-center px-5 sm:px-8">
         <div className="hero-copy max-w-2xl">
           <h1 className="hero-title font-black uppercase">
-            Grill <span className="text-ember">&</span><br />Swill<span className="text-ember">.</span>
+            Grill <span className="text-ember">&</span>
+            <br />
+            Swill<span className="text-ember">.</span>
           </h1>
 
-          <p className="mt-5 font-display text-xl font-bold uppercase text-cream sm:text-2xl">Big bites. Good times.</p>
+          <p className="mt-5 font-display text-xl font-bold uppercase text-cream sm:text-2xl">
+            Big bites. Good times.
+          </p>
 
           <p className="mt-4 max-w-md text-base leading-relaxed text-cream/80">
             Smash burgers, hand-breaded chicken, 48-hour pizza dough. Made fresh, served fast, and
@@ -493,12 +531,14 @@ function Hero() {
                 Start your order <ArrowRight />
               </Link>
             </Button>
-            <Link
-              to="/locations"
-              className="inline-flex items-center gap-2 px-2 py-3 text-sm font-bold text-cream transition hover:text-primary"
-            >
-              <MapPin className="h-4 w-4" /> Find your nearest grill
-            </Link>
+            {hasLocations ? (
+              <Link
+                to="/locations"
+                className="inline-flex items-center gap-2 px-2 py-3 text-sm font-bold text-cream transition hover:text-primary"
+              >
+                <MapPin className="h-4 w-4" /> Find your nearest grill
+              </Link>
+            ) : null}
           </div>
 
           <div className="mt-8 flex items-center gap-3 text-xs font-semibold text-cream/65">
@@ -629,6 +669,7 @@ function Heritage() {
 }
 
 function RewardsTeaser() {
+  const { hasLocations } = useStorefrontLocations();
   return (
     <section className="bg-cream px-5 py-16 sm:px-8 sm:py-20">
       <div className="mx-auto max-w-7xl">
@@ -655,10 +696,7 @@ function RewardsTeaser() {
 
           <div className="mt-8 grid gap-4 md:grid-cols-4">
             {rewardTiers.map((tier) => (
-              <div
-                key={tier.points}
-                className="border-l-2 border-primary p-4 text-left"
-              >
+              <div key={tier.points} className="border-l-2 border-primary p-4 text-left">
                 <div className="flex items-center justify-between">
                   <p className="text-xs font-black tracking-[0.2em] text-primary uppercase">
                     {tier.points} pts
@@ -674,30 +712,29 @@ function RewardsTeaser() {
           </div>
         </div>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
-          <Reveal className="border-t border-charcoal/20 py-5">
-            <Clock3 className="h-8 w-8 text-primary" />
-            <h3 className="mt-4 text-2xl font-black uppercase">Fast pickup</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Warm, ready-to-go bags in about 15 minutes, even on the busiest lunch rush.
-            </p>
-          </Reveal>
+        <div className={`mt-10 grid gap-4 ${hasLocations ? "md:grid-cols-3" : "md:grid-cols-2"}`}>
+          {hasLocations ? (
+            <Reveal className="border-t border-charcoal/20 py-5">
+              <Clock3 className="h-8 w-8 text-primary" />
+              <h3 className="mt-4 text-2xl font-black uppercase">Fast pickup</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Warm, ready-to-go bags in about 15 minutes, even on the busiest lunch rush.
+              </p>
+            </Reveal>
+          ) : null}
 
-          <Reveal
-            delay={0.07}
-            className="border-t border-charcoal/20 py-5"
-          >
+          <Reveal delay={0.07} className="border-t border-charcoal/20 py-5">
             <Truck className="h-8 w-8 text-primary" />
             <h3 className="mt-4 text-2xl font-black uppercase">Fresh delivery</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Local drops from your nearest grill. Check checkout for current delivery thresholds.
+              {hasLocations
+                ? "Local drops from your nearest grill."
+                : "Your favourites brought to your door."}{" "}
+              Check checkout for current delivery thresholds.
             </p>
           </Reveal>
 
-          <Reveal
-            delay={0.14}
-            className="border-t border-charcoal/20 py-5"
-          >
+          <Reveal delay={0.14} className="border-t border-charcoal/20 py-5">
             <BadgeCheck className="h-8 w-8 text-primary" />
             <h3 className="mt-4 text-2xl font-black uppercase">Always consistent</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">

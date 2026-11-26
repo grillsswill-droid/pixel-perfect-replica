@@ -1,0 +1,275 @@
+{
+  "checks": 48,
+  "passed": 48,
+  "failed": [],
+  "environment": "credential-free compiled Node build, process-local synthetic Mongo, outbound networking denied, providers disabled",
+  "results": [
+    {
+      "name": "No locations redirect to menu",
+      "passed": true,
+      "status": 307
+    },
+    {
+      "name": "Public compiled SSR /",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /menu",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /menu",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /deals",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /deals",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /catering",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /catering",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /gallery",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /gallery",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /locations",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /locations",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /faq",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /faq",
+      "passed": true
+    },
+    {
+      "name": "All32 FAQ answers in SSR",
+      "passed": true,
+      "count": 32
+    },
+    {
+      "name": "Public compiled SSR /support",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /support",
+      "passed": true
+    },
+    {
+      "name": "Support form in compiled SSR",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /privacy",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /privacy",
+      "passed": true
+    },
+    {
+      "name": "Policy date and counter disclosure in SSR",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /terms",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /terms",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /refund-policy",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /refund-policy",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /delivery-policy",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /delivery-policy",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /allergens",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /allergens",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /cookies",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /cookies",
+      "passed": true
+    },
+    {
+      "name": "Public compiled SSR /accessibility",
+      "passed": true,
+      "status": 200,
+      "headingCount": 1,
+      "canonicalCount": 1,
+      "schemaCount": 1
+    },
+    {
+      "name": "Public links and secret isolation /accessibility",
+      "passed": true
+    },
+    {
+      "name": "Private compiled SSR /admin",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Private compiled SSR /kitchen",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Private compiled SSR /rewards",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Private compiled SSR /account/orders",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Private compiled SSR /checkout",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "Compiled sitemap14 public URLs",
+      "passed": true,
+      "count": 14
+    },
+    {
+      "name": "Compiled support durable202",
+      "passed": true,
+      "status": 202,
+      "savedRecords": 1
+    },
+    {
+      "name": "Compiled support idempotent retry",
+      "passed": true
+    },
+    {
+      "name": "Compiled support changed payload blocked",
+      "passed": true,
+      "status": 409
+    },
+    {
+      "name": "Compiled support cross-origin blocked",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "name": "Compiled support invalid input blocked",
+      "passed": true,
+      "status": 400
+    },
+    {
+      "name": "Compiled support wrong method blocked",
+      "passed": true,
+      "status": 405
+    },
+    {
+      "name": "Missing page404 remains noindex",
+      "passed": true,
+      "status": 404
+    },
+    {
+      "name": "Preview support excluded from indexing",
+      "passed": true
+    }
+  ]
+}

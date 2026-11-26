@@ -3,7 +3,7 @@ import { randomUUID, timingSafeEqual } from "node:crypto";
 import type { Db } from "mongodb";
 import { z } from "zod";
 
-import type { CategoryId, MenuItem, OrderLineSnapshot, Store } from "./menu-types";
+import type { CategoryId, MenuItem, OrderLineSnapshot } from "./menu-types";
 import type {
   AdminLogDocument,
   GuestDocument,
@@ -13,6 +13,7 @@ import type {
 } from "./mongodb.server";
 import { collection, getMongoDatabase } from "./mongodb.server";
 import { createOrderAccessToken } from "./order-access.server";
+import { OrderLocationError, resolveOrderStoreId } from "./storefront-locations.server";
 import {
   PaymentConfigurationError,
   PaymentVerificationError,
@@ -86,7 +87,7 @@ export const initializeFlutterwavePaymentSchema = z
     requestId: z.string().uuid().optional(),
     lines: z.array(checkoutLineSchema).min(1, "Your bag is empty").max(40),
     fulfillment: z.enum(["delivery", "pickup"]),
-    storeId: z.string().uuid(),
+    storeId: z.string().uuid().nullable().default(null),
     address: paymentAddressSchema.nullable(),
     promoCode: z.string().trim().max(20).optional().nullable(),
     pointsToRedeem: z.number().int().min(0).max(100_000),
@@ -103,6 +104,13 @@ export const initializeFlutterwavePaymentSchema = z
   })
   .strict()
   .superRefine((value, context) => {
+    if (value.fulfillment === "pickup" && !value.storeId) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Choose a pickup location.",
+        path: ["storeId"],
+      });
+    }
     if (value.fulfillment === "delivery" && !value.address) {
       context.addIssue({
         code: z.ZodIssueCode.custom,
@@ -417,15 +425,15 @@ export async function createFlutterwaveCheckout(order: OrderDocument): Promise<P
 
 async function prepareOrder(db: Db, data: ParsedInitializePaymentInput): Promise<PreparedOrder> {
   const ids = [...new Set(data.lines.map((line) => line.itemId))];
-  const [items, store, settings, storedPromotion] = await Promise.all([
+  const [items, , settings, storedPromotion] = await Promise.all([
     collection<MenuItem>(db, "menu_items")
       .find({ id: { $in: ids } })
       .project<MenuItem>({ _id: 0 })
       .toArray(),
-    collection<Store>(db, "stores").findOne(
-      { id: data.storeId },
-      { projection: { _id: 0, id: 1 } },
-    ),
+    resolveOrderStoreId(db, data).catch((error: unknown) => {
+      if (error instanceof OrderLocationError) throw new PaymentRequestError(error.message);
+      throw error;
+    }),
     db.collection<StorefrontPricingSettings>("site_settings").findOne({ _id: "storefront" }),
     data.promoCode
       ? db
@@ -433,8 +441,6 @@ async function prepareOrder(db: Db, data: ParsedInitializePaymentInput): Promise
           .findOne({ code: data.promoCode.trim().toUpperCase() })
       : Promise.resolve(null),
   ]);
-
-  if (!store) throw new PaymentRequestError("Please choose a store.");
 
   const linkedIds = [
     ...new Set(

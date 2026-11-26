@@ -9,6 +9,7 @@ import {
   ClipboardList,
   ImagePlus,
   LockKeyhole,
+  Mail,
   MapPin,
   RefreshCw,
   Settings,
@@ -21,6 +22,9 @@ import {
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { AdminSupportPanel } from "@/components/customer/admin-support-panel";
+import { GalleryImagePicker } from "@/components/gallery/gallery-image-picker";
+import { prepareGalleryImage } from "@/lib/gallery-image";
 import {
   deleteAdminCateringPackage,
   deleteAdminCateringProtein,
@@ -64,6 +68,7 @@ type Tab =
   | "menu"
   | "categories"
   | "customers"
+  | "support"
   | "locations"
   | "promotions"
   | "catering"
@@ -78,6 +83,7 @@ const TABS: { id: Tab; label: string; icon: typeof Activity }[] = [
   { id: "menu", label: "Menu & combos", icon: Utensils },
   { id: "categories", label: "Categories", icon: Boxes },
   { id: "customers", label: "Customers", icon: Users },
+  { id: "support", label: "Support inbox", icon: Mail },
   { id: "locations", label: "Locations", icon: MapPin },
   { id: "promotions", label: "Promotions", icon: Tags },
   { id: "catering", label: "Catering", icon: ShoppingBag },
@@ -162,6 +168,7 @@ function AdminPage() {
     try {
       await action();
       await queryClient.invalidateQueries({ queryKey: ["checkout-configuration"] });
+      await queryClient.invalidateQueries({ queryKey: ["stores"] });
       await refresh();
       toast.success(successMessage);
       return true;
@@ -215,7 +222,13 @@ function AdminPage() {
               {error}
             </p>
           ) : null}
-          <Button type="submit" variant="hero" size="lg" loading={busy} className="mt-5 w-full whitespace-normal">
+          <Button
+            type="submit"
+            variant="hero"
+            size="lg"
+            loading={busy}
+            className="mt-5 w-full whitespace-normal"
+          >
             Unlock admin workspace
           </Button>
           <Link
@@ -295,6 +308,7 @@ function AdminPage() {
           <CategoriesPanel data={data} runAction={runAction} busy={busy} />
         ) : null}
         {tab === "customers" ? <CustomersPanel data={data} /> : null}
+        {tab === "support" ? <AdminSupportPanel /> : null}
         {tab === "locations" ? (
           <LocationsPanel data={data} runAction={runAction} busy={busy} />
         ) : null}
@@ -2294,7 +2308,7 @@ function CateringPanel({
   );
 }
 
-function GalleryPanel({
+export function GalleryPanel({
   data,
   runAction,
   busy,
@@ -2303,115 +2317,187 @@ function GalleryPanel({
   runAction: (action: () => Promise<unknown>, message: string) => Promise<boolean>;
   busy: boolean;
 }) {
+  const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<string | undefined>();
   const [url, setUrl] = useState("");
+  const [file, setFile] = useState<File | null>(null);
   const [mediaType, setMediaType] = useState<"image" | "video">("image");
   const [caption, setCaption] = useState("");
   const [active, setActive] = useState(true);
-
-  async function upload(file?: File) {
-    if (!file) return;
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 2_000_000) {
-      toast.error("Choose a JPEG, PNG or WebP image smaller than 2 MB.");
-      return;
-    }
-    await runAction(async () => {
-      const dataUrl = await readFileAsDataUrl(file);
-      const result = await uploadAdminImage({ data: { dataUrl } });
-      setUrl(result.url);
-      setMediaType("image");
-    }, "Gallery image uploaded");
-  }
+  const [formError, setFormError] = useState("");
 
   return (
     <Panel
       title="Gallery management"
-      description="Upload image assets to MongoDB GridFS or add secure external media URLs. Active entries appear on the public gallery."
+      description="Upload photos from your computer or add a video link. Published photos and reels appear in the gallery."
     >
       <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <form
-          className="space-y-4 rounded-2xl bg-background p-5"
+          className="rounded-2xl bg-background p-5"
+          aria-busy={busy}
           onSubmit={(event) => {
             event.preventDefault();
+            if (!file && !url.trim()) {
+              setFormError(
+                mediaType === "image"
+                  ? "Choose a photo from your computer or add an image URL."
+                  : "Add a direct HTTPS video link.",
+              );
+              return;
+            }
+            setFormError("");
             void runAction(
-              () =>
-                saveAdminGalleryItem({
+              async () => {
+                let mediaUrl = url.trim();
+                if (mediaType === "image" && file) {
+                  const dataUrl = await prepareGalleryImage(file);
+                  const uploaded = await uploadAdminImage({ data: { dataUrl } });
+                  mediaUrl = uploaded.url;
+                  // Retain the stored URL if publishing fails so retrying does not upload twice.
+                  setUrl(mediaUrl);
+                  setFile(null);
+                }
+                await saveAdminGalleryItem({
                   data: {
                     ...(editingId ? { id: editingId } : {}),
-                    url,
+                    url: mediaUrl,
                     media_type: mediaType,
                     caption,
                     active,
                   },
-                }),
+                });
+                await queryClient.invalidateQueries({ queryKey: ["gallery"] });
+              },
               editingId ? "Gallery item updated" : "Gallery item published",
             ).then((success) => {
               if (success) {
                 setEditingId(undefined);
                 setUrl("");
+                setFile(null);
                 setCaption("");
+                setMediaType("image");
                 setActive(true);
               }
             });
           }}
         >
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="font-display text-xl font-black uppercase">
-              {editingId ? "Edit media" : "Add media"}
-            </h3>
-            {editingId ? (
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={() => {
-                  setEditingId(undefined);
-                  setUrl("");
-                  setCaption("");
-                  setMediaType("image");
-                  setActive(true);
-                }}
-              >
-                New
-              </Button>
-            ) : null}
-          </div>
-          <SelectInput
-            label="Media type"
-            value={mediaType}
-            onChange={(value) => setMediaType(value as "image" | "video")}
-            options={[
-              ["image", "Image"],
-              ["video", "Video"],
-            ]}
-          />
-          <TextInput
-            label={mediaType === "video" ? "HTTPS video URL" : "Image key or HTTPS URL"}
-            value={url}
-            onChange={setUrl}
-            placeholder="Upload an image or paste a secure URL"
-            required
-          />
-          {mediaType === "image" ? (
+          <fieldset disabled={busy} className="space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="font-display text-xl font-black uppercase">
+                {editingId ? "Edit media" : "Add media"}
+              </h3>
+              {editingId ? (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setEditingId(undefined);
+                    setUrl("");
+                    setFile(null);
+                    setCaption("");
+                    setMediaType("image");
+                    setActive(true);
+                    setFormError("");
+                  }}
+                >
+                  New
+                </Button>
+              ) : null}
+            </div>
+            <SelectInput
+              label="Media type"
+              value={mediaType}
+              onChange={(value) => {
+                setMediaType(value as "image" | "video");
+                setFile(null);
+                setUrl("");
+                setFormError("");
+              }}
+              options={[
+                ["image", "Photo"],
+                ["video", "Video / Reel"],
+              ]}
+            />
+            {mediaType === "image" ? (
+              <>
+                <GalleryImagePicker
+                  file={file}
+                  url={url}
+                  disabled={busy}
+                  onSelect={(selected) => {
+                    setFile(selected);
+                    setUrl("");
+                    setFormError("");
+                  }}
+                  onRemove={() => {
+                    setFile(null);
+                    setUrl("");
+                  }}
+                />
+                <details>
+                  <summary className="flex min-h-11 cursor-pointer items-center text-sm font-semibold text-primary">
+                    Use an image URL instead
+                  </summary>
+                  <TextInput
+                    label="Image key or HTTPS URL"
+                    value={url}
+                    onChange={(value) => {
+                      setUrl(value);
+                      setFile(null);
+                      setFormError("");
+                    }}
+                    placeholder="Paste an image URL"
+                  />
+                </details>
+              </>
+            ) : (
+              <div className="space-y-2">
+                <TextInput
+                  label="HTTPS video URL"
+                  value={url}
+                  onChange={(value) => {
+                    setUrl(value);
+                    setFormError("");
+                  }}
+                  type="url"
+                  placeholder="https://…/video.mp4"
+                  required
+                />
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  Use a direct link to an MP4 or WebM file. Vertical videos work best for Reels.
+                </p>
+                {url.startsWith("https://") ? (
+                  <video
+                    src={url}
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="max-h-72 w-full rounded-xl bg-charcoal object-contain"
+                  />
+                ) : null}
+              </div>
+            )}
             <label className="block text-sm font-semibold">
-              Upload image (JPEG, PNG or WebP; max 2 MB)
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                disabled={busy}
-                onChange={(event) => {
-                  void upload(event.currentTarget.files?.[0]);
-                  event.currentTarget.value = "";
-                }}
-                className="mt-1 block w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-accent file:px-3 file:py-2 file:font-bold"
+              Caption <span className="font-normal text-muted-foreground">(optional)</span>
+              <textarea
+                value={caption}
+                onChange={(event) => setCaption(event.target.value)}
+                rows={3}
+                maxLength={300}
+                className={`${inputClass} mt-1 h-auto min-h-20 py-2`}
               />
             </label>
-          ) : null}
-          <TextArea label="Caption" value={caption} onChange={setCaption} />
-          <CheckInput label="Visible on public gallery" checked={active} onChange={setActive} />
-          <Button type="submit" variant="hero" loading={busy}>
-            {editingId ? "Save gallery item" : "Publish gallery item"}
-          </Button>
+            <CheckInput label="Visible on public gallery" checked={active} onChange={setActive} />
+            {formError ? (
+              <p role="alert" className="text-sm text-destructive">
+                {formError}
+              </p>
+            ) : null}
+            <Button type="submit" variant="hero" loading={busy}>
+              {editingId ? "Save gallery item" : "Publish gallery item"}
+            </Button>
+          </fieldset>
         </form>
         <div className="grid gap-4 sm:grid-cols-2">
           {data.gallery.map((item) => (
@@ -2444,12 +2530,15 @@ function GalleryPanel({
                   <Button
                     size="sm"
                     variant="outline"
+                    disabled={busy}
                     onClick={() => {
                       setEditingId(item.id);
                       setUrl(item.url);
+                      setFile(null);
                       setMediaType(item.media_type);
                       setCaption(item.caption);
                       setActive(item.active);
+                      setFormError("");
                     }}
                   >
                     Edit

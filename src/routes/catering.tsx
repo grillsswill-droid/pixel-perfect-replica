@@ -8,9 +8,9 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { PageIntro } from "@/components/site/page-intro";
 import { useGuestId } from "@/hooks/use-guest";
+import { useStorefrontLocations } from "@/hooks/use-storefront-locations";
 import { getPublicCateringMenu, submitCateringInquiry } from "@/lib/admin.functions";
 import { foodImage } from "@/lib/food-images";
-import { storesQuery } from "@/lib/catalog.functions";
 import { formatMoney } from "@/lib/pricing";
 
 const cateringMenuQuery = () =>
@@ -29,13 +29,13 @@ export const Route = createFileRoute("/catering")({
 function CateringPage() {
   const guestId = useGuestId();
   const { data, isLoading, isError } = useQuery(cateringMenuQuery());
-  const { data: stores = [] } = useQuery(storesQuery());
+  const { stores } = useStorefrontLocations();
 
   return (
     <div className="min-h-[65vh] bg-background">
       <PageIntro
         title="Catering"
-        description="Fresh favourites for your next get-together. Compare packages, then send your event details so the nearest grill can confirm timing, availability and portions."
+        description="Fresh favourites for your next get-together. Compare packages, then send your event details so our team can confirm timing, availability and portions."
         tone="charcoal"
       />
       <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-14">
@@ -53,7 +53,9 @@ function CateringPage() {
               Catering menus are being prepared
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Call your nearest location to discuss a custom order.
+              {stores.length
+                ? "Call your nearest location to discuss a custom order."
+                : "Send your event details below to discuss a custom order."}
             </p>
           </div>
         ) : null}

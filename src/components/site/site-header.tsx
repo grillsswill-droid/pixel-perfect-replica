@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
+import { useStorefrontLocations } from "@/hooks/use-storefront-locations";
 import { getCheckoutConfiguration } from "@/lib/admin.functions";
 import { DEFAULT_TICKER_MESSAGES } from "@/lib/site-content";
 import { cn } from "@/lib/utils";
@@ -19,10 +20,13 @@ const NAV = [
   { to: "/gallery", label: "Gallery" },
   { to: "/locations", label: "Locations" },
   { to: "/rewards", label: "Rewards" },
+  { to: "/faq", label: "Help" },
 ] as const;
 
 export function SiteHeader() {
   const { count, setOpen } = useCart();
+  const { hasLocations } = useStorefrontLocations();
+  const nav = NAV.filter((item) => item.to !== "/locations" || hasLocations);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const { data: checkoutConfiguration } = useQuery({
     queryKey: ["checkout-configuration"],
@@ -109,9 +113,7 @@ export function SiteHeader() {
       <div
         className={cn(
           "border-b transition-all duration-300",
-          scrolled
-            ? "border-border bg-card/95 backdrop-blur-md"
-            : "border-border bg-card",
+          scrolled ? "border-border bg-card/95 backdrop-blur-md" : "border-border bg-card",
         )}
       >
         <div
@@ -121,27 +123,29 @@ export function SiteHeader() {
           )}
         >
           <Logo />
-          <nav className="ml-6 hidden items-center gap-1 lg:flex" aria-label="Main">
-            {NAV.filter((item) => item.to !== "/").map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className="relative min-h-11 px-3 py-3 text-sm font-bold text-charcoal/80 transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                activeProps={{ className: "text-charcoal" }}
-              >
-                {({ isActive }) => (
-                  <>
-                    {item.label}
-                    {isActive && (
-                      <motion.span
-                        layoutId="nav-pill"
-                        className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-primary"
-                      />
-                    )}
-                  </>
-                )}
-              </Link>
-            ))}
+          <nav className="ml-6 hidden items-center gap-1 xl:flex" aria-label="Main">
+            {nav
+              .filter((item) => item.to !== "/")
+              .map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="relative min-h-11 px-3 py-3 text-sm font-bold text-charcoal/80 transition-colors hover:text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  activeProps={{ className: "text-charcoal" }}
+                >
+                  {({ isActive }) => (
+                    <>
+                      {item.label}
+                      {isActive && (
+                        <motion.span
+                          layoutId="nav-pill"
+                          className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-primary"
+                        />
+                      )}
+                    </>
+                  )}
+                </Link>
+              ))}
           </nav>
           <div className="ml-auto flex items-center gap-2">
             <Button
@@ -174,7 +178,7 @@ export function SiteHeader() {
               variant="ghost"
               ref={menuButtonRef}
               type="button"
-              className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary lg:hidden"
+              className="grid h-11 w-11 place-items-center rounded-full transition hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary xl:hidden"
               onClick={() => setMobileOpen(true)}
               aria-label="Open navigation"
               aria-expanded={mobileOpen}
@@ -188,7 +192,7 @@ export function SiteHeader() {
 
       <div
         id="mobile-navigation"
-        className={`fixed inset-0 z-50 lg:hidden ${mobileOpen ? "" : "pointer-events-none"}`}
+        className={`fixed inset-0 z-50 xl:hidden ${mobileOpen ? "" : "pointer-events-none"}`}
         aria-hidden={!mobileOpen}
       >
         <button
@@ -228,7 +232,7 @@ export function SiteHeader() {
             <Logo light onClick={closeDrawer} />
           </div>
           <div className="flex flex-col">
-            {NAV.map((item, index) => {
+            {nav.map((item, index) => {
               const active = item.to === "/" ? pathname === "/" : pathname.startsWith(item.to);
               return (
                 <Link

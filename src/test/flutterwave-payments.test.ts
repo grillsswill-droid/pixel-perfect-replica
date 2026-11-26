@@ -100,6 +100,19 @@ afterEach(() => {
 });
 
 describe("Flutterwave payment request validation", () => {
+  it("accepts delivery without a store and requires a store for pickup", () => {
+    expect(
+      initializeFlutterwavePaymentSchema.safeParse({ ...validPayment, storeId: null }).success,
+    ).toBe(true);
+    expect(
+      initializeFlutterwavePaymentSchema.safeParse({
+        ...validPayment,
+        fulfillment: "pickup",
+        storeId: null,
+        address: null,
+      }).success,
+    ).toBe(false);
+  });
   it("accepts checkout details and normalizes email and state", () => {
     const result = initializeFlutterwavePaymentSchema.parse(validPayment);
 

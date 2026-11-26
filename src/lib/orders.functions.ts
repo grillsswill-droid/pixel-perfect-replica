@@ -77,7 +77,7 @@ export const placeOrderSchema = z
       .min(1, "Your bag is empty")
       .max(40),
     fulfillment: z.enum(["delivery", "pickup"]),
-    storeId: z.string().uuid(),
+    storeId: z.string().uuid().nullable().default(null),
     address: addressSchema.nullable(),
     pickupName: z.string().trim().max(80).optional(),
     promoCode: z.string().trim().max(20).optional().nullable(),
@@ -85,6 +85,13 @@ export const placeOrderSchema = z
     paymentLast4: z.string().regex(/^\d{4}$/),
   })
   .superRefine((v, ctx) => {
+    if (v.fulfillment === "pickup" && !v.storeId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Choose a pickup location",
+        path: ["storeId"],
+      });
+    }
     if (v.fulfillment === "delivery" && !v.address) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -133,15 +140,17 @@ export const placeOrder = createServerFn({ method: "POST" })
     }
 
     const ids = [...new Set(data.lines.map((l) => l.itemId))];
-    const [items, store, settings, storedPromotion] = await Promise.all([
+    const { OrderLocationError, resolveOrderStoreId } =
+      await import("./storefront-locations.server");
+    const [items, locationResult, settings, storedPromotion] = await Promise.all([
       collection<MenuItem>(db, "menu_items")
         .find({ id: { $in: ids } })
         .project<MenuItem>({ _id: 0 })
         .toArray(),
-      collection<Store>(db, "stores").findOne(
-        { id: data.storeId },
-        { projection: { _id: 0, id: 1 } },
-      ),
+      resolveOrderStoreId(db, data).catch((error: unknown) => {
+        if (error instanceof OrderLocationError) return error;
+        throw error;
+      }),
       db
         .collection<{
           _id: string;
@@ -157,7 +166,9 @@ export const placeOrder = createServerFn({ method: "POST" })
             .findOne({ code: data.promoCode.trim().toUpperCase() })
         : Promise.resolve(null),
     ]);
-    if (!store) return { ok: false as const, error: "Please choose a store." };
+    if (locationResult instanceof OrderLocationError) {
+      return { ok: false as const, error: locationResult.message };
+    }
 
     const linkedIds = [
       ...new Set(
@@ -467,17 +478,19 @@ export const getOrder = createServerFn({ method: "GET" })
         { $set: { receipt_number: order.receipt_number } },
       );
     }
-    const store = await collection<Store>(db, "stores")
-      .find({ id: order.store_id })
-      .project<Pick<Store, "name" | "address" | "city" | "state" | "phone">>({
-        _id: 0,
-        name: 1,
-        address: 1,
-        city: 1,
-        state: 1,
-        phone: 1,
-      })
-      .next();
+    const store = order.store_id
+      ? await collection<Store>(db, "stores")
+          .find({ id: order.store_id })
+          .project<Pick<Store, "name" | "address" | "city" | "state" | "phone">>({
+            _id: 0,
+            name: 1,
+            address: 1,
+            city: 1,
+            state: 1,
+            phone: 1,
+          })
+          .next()
+      : null;
     const stores = store
       ? {
           name: store.name,

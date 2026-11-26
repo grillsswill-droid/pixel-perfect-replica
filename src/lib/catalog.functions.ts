@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
 
-import { defaultCategories, defaultMenu, defaultStores } from "./default-catalog";
+import { defaultCategories, defaultMenu } from "./default-catalog";
 import { buildDefaultCombos } from "./default-combos";
 import type { MenuCategory, MenuItem, Store } from "./menu-types";
 import {
@@ -24,10 +24,6 @@ function getFallbackMenu(): MenuItem[] {
 
 export function resolveMenuCatalog(menu: MenuItem[]): MenuItem[] {
   return withMenuBundleAvailability(menu.length ? menu : getFallbackMenu());
-}
-
-function getFallbackStores(): Store[] {
-  return defaultStores;
 }
 
 async function loadMenuCatalog(): Promise<MenuItem[]> {
@@ -127,9 +123,9 @@ export const getStores = createServerFn({ method: "GET" }).handler(async (): Pro
       .project<Store>({ _id: 0 })
       .sort({ sort_order: 1 })
       .toArray();
-    return stores.length ? stores : getFallbackStores();
+    return stores;
   } catch {
-    return getFallbackStores();
+    return [];
   }
 });
 
@@ -138,4 +134,9 @@ export const menuQuery = () =>
 export const categoriesQuery = () =>
   queryOptions({ queryKey: ["categories"], queryFn: () => getCategories(), staleTime: 5 * 60_000 });
 export const storesQuery = () =>
-  queryOptions({ queryKey: ["stores"], queryFn: () => getStores(), staleTime: 5 * 60_000 });
+  queryOptions({
+    queryKey: ["stores"],
+    queryFn: () => getStores(),
+    staleTime: 30_000,
+    refetchOnWindowFocus: "always",
+  });

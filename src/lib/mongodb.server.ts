@@ -1,4 +1,3 @@
-import { existsSync } from "node:fs";
 import { MongoClient, ObjectId, type Db, type Document } from "mongodb";
 
 import type {
@@ -10,6 +9,7 @@ import type {
   Store,
 } from "./menu-types";
 import type { OrderStatus } from "./order-status";
+import { loadLocalServerEnvironment } from "./server-environment.server";
 
 export type PaymentProvider = "stripe" | "paypal" | "flutterwave";
 export type PaymentStatus =
@@ -68,7 +68,7 @@ export interface OrderDocument {
   status: OrderStatus;
   status_history?: { status: OrderStatus; updated_at: string }[];
   fulfillment: "delivery" | "pickup";
-  store_id: string;
+  store_id: string | null;
   address: OrderAddress | null;
   items: OrderLineSnapshot[];
   currency: "USD";
@@ -182,14 +182,8 @@ export function requireMongoUri(uri: string | undefined): string {
   return normalized;
 }
 
-function loadLocalEnvironment(): void {
-  for (const path of [".env.local", ".env"]) {
-    if (existsSync(path)) process.loadEnvFile(path);
-  }
-}
-
 function getClient(): MongoClient {
-  if (!process.env["MONGODB_URI"]?.trim()) loadLocalEnvironment();
+  loadLocalServerEnvironment();
   const uri = requireMongoUri(process.env["MONGODB_URI"]);
 
   if (!globalMongo.__grillSwillMongoClient) {

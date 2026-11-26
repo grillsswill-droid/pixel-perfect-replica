@@ -45,7 +45,7 @@ WebP images (up to 2 MB each) are stored in MongoDB GridFS.
 
 Public pages have server-rendered titles, descriptions, canonical URLs, social
 sharing metadata and JSON-LD website/organization/breadcrumb data. The runtime
-`/sitemap.xml` lists the six public marketing pages. Private order, receipt,
+`/sitemap.xml` lists the public marketing and customer-help pages. Private order, receipt,
 checkout, rewards, account and operations pages use `noindex`; public food images
 remain available to search engines. The runtime `/robots.txt` advertises the
 sitemap only on the preferred production origin.
@@ -65,6 +65,27 @@ Inspection and validate its structured data. Real store details should be
 confirmed before enabling local-business markup.
 
 See [the SEO setup guide](docs/SEO.md) for configuration and verification.
+
+## Customer help, policies and support
+
+The site includes `/faq`, `/support`, privacy and ordering terms, cancellation/refund
+requests, delivery/pickup information, food/allergen guidance, browser-storage controls
+and an accessibility statement. The confirmed public support inbox defaults to
+`grillsswill@gmail.com`; `SUPPORT_EMAIL` can override it with another verified contact.
+Worldwide website access does not guarantee food delivery at every address.
+
+The online form records requests in MongoDB for the authenticated Admin → Support
+workspace. Optional Resend email delivery requires a server-only `RESEND_API_KEY`
+and `SUPPORT_FROM_EMAIL` on an owned, Resend-verified domain. A Gmail address can
+receive support mail, but cannot be used as the automated sender. With email delivery
+unset, staff can still review cases, save replies and use the manual email workflow.
+Saving a case or changing its status does not automatically issue a payment refund.
+
+See [customer support setup](docs/CUSTOMER_SUPPORT_SETUP.md) for configuration,
+local verification and operational review, and [the policy review](docs/CUSTOMER_POLICY_REVIEW.md)
+for source evidence and remaining legal/business facts. Configure actual legal
+operator details and support hours only after they are confirmed; no legal jurisdiction,
+refund deadline or response SLA is invented.
 
 ## Flutterwave payments
 

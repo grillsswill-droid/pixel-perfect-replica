@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { QueryClient } from "@tanstack/react-query";
-import { createRouter } from "@tanstack/react-router";
-
-import { routeTree } from "@/routeTree.gen";
+import { getRouter } from "@/router";
 
 import {
   createPublicPageHead,
@@ -24,10 +21,7 @@ const robots = (head: ReturnType<typeof createPublicPageHead>) =>
 
 describe("Public page SEO and privacy", () => {
   it("uses direct root loader configuration in every public route head without duplicate metadata", async () => {
-    const router = createRouter({
-      routeTree,
-      context: { queryClient: new QueryClient() },
-    });
+    const router = getRouter();
 
     for (const page of PUBLIC_SEO_PAGES) {
       // Match and inspect head callbacks; never execute catalog or database loaders.
@@ -36,8 +30,10 @@ describe("Public page SEO and privacy", () => {
         loaderData: index === 0 ? configuration : undefined,
       }));
       const leaf = matches.at(-1)!;
-      const headFunction = router.routesById[leaf.routeId]!.options.head!;
-      const head = await headFunction({ matches } as never);
+      const routeId = leaf.routeId as keyof typeof router.routesById;
+      const headFunction = router.routesById[routeId]!.options.head!;
+      const head = (await headFunction({ matches } as never)) as
+        Partial<ReturnType<typeof createPublicPageHead>> | undefined;
       expect(head?.links).toContainEqual({
         rel: "canonical",
         href: new URL(page.path, ORIGIN).href,
@@ -59,15 +55,55 @@ describe("Public page SEO and privacy", () => {
     }
   });
 
-  it("limits the public registry to marketing pages with distinct titles/descriptions", () => {
-    expect(PUBLIC_SEO_PAGES.map((page) => page.path)).toEqual([
+  it("preserves existing storefront/operator routes while adding customer help routes", () => {
+    const paths = [
       "/",
       "/menu",
       "/deals",
       "/catering",
       "/gallery",
       "/locations",
-    ]);
+      "/rewards",
+      "/account/orders",
+      "/checkout",
+      "/admin",
+      "/kitchen",
+      "/orders/00000000-0000-4000-8000-000000000001",
+      "/receipts/00000000-0000-4000-8000-000000000001",
+      ...PUBLIC_SEO_PAGES.map((page) => page.path),
+    ];
+    for (const router of [getRouter(), getRouter()]) {
+      for (const path of paths)
+        expect(router.matchRoutes(path).at(-1)?.routeId).not.toBe("__root__");
+    }
+  });
+
+  it("includes public marketing/help pages while excluding personal and administrative paths", () => {
+    const paths = PUBLIC_SEO_PAGES.map((page) => page.path);
+    expect(paths).toEqual(
+      expect.arrayContaining([
+        "/",
+        "/menu",
+        "/deals",
+        "/catering",
+        "/gallery",
+        "/locations",
+        "/faq",
+        "/support",
+        "/privacy",
+        "/terms",
+        "/refund-policy",
+        "/delivery-policy",
+        "/allergens",
+        "/cookies",
+        "/accessibility",
+      ]),
+    );
+    expect(new Set(paths).size).toBe(paths.length);
+    expect(paths.every((path) => path.startsWith("/") && !/[?#]/.test(path))).toBe(true);
+    expect(paths.join(" ")).not.toMatch(
+      /\/orders|\/receipts|\/account|\/admin|\/kitchen|\/rewards|\/checkout|\/api/,
+    );
     const titles = PUBLIC_SEO_PAGES.map((page) => {
       const head = createPublicPageHead(page.path, configuration);
       expect(head.meta).toContainEqual({ name: "description", content: page.description });
@@ -158,14 +194,12 @@ describe("Public page SEO and privacy", () => {
 
 describe("SEO configuration serialization boundary", () => {
   it("emits one verification meta tag from the root loader's public token", async () => {
-    const router = createRouter({
-      routeTree,
-      context: { queryClient: new QueryClient() },
-    });
+    const router = getRouter();
     const root = router.matchRoutes("/")[0]!;
-    const head = await router.routesById[root.routeId]!.options.head!({
+    const rootId = root.routeId as keyof typeof router.routesById;
+    const head = (await router.routesById[rootId]!.options.head!({
       loaderData: { ...configuration, googleSiteVerification: "synthetic-google-proof" },
-    } as never);
+    } as never)) as Partial<ReturnType<typeof createPublicPageHead>> | undefined;
     expect(
       head?.meta?.filter(
         (entry) => entry && "name" in entry && entry.name === "google-site-verification",

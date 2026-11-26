@@ -100,7 +100,9 @@ export const getKitchenBoard = createServerFn({ method: "GET" }).handler(async (
       .limit(12)
       .toArray(),
   ]);
-  const storeIds = [...new Set(orders.map((order) => order.store_id))];
+  const storeIds = [
+    ...new Set(orders.flatMap((order) => (order.store_id ? [order.store_id] : []))),
+  ];
   const stores = await collection<Store>(db, "stores")
     .find({ id: { $in: storeIds } })
     .project<Store>({ _id: 0 })
@@ -111,7 +113,7 @@ export const getKitchenBoard = createServerFn({ method: "GET" }).handler(async (
     unlocked: true as const,
     orders: orders.map((order) => ({
       ...order,
-      stores: storesById.get(order.store_id) ?? null,
+      stores: order.store_id ? (storesById.get(order.store_id) ?? null) : null,
       address: order.address as DeliveryAddress | null,
       items: order.items as OrderLineSnapshot[],
     })),

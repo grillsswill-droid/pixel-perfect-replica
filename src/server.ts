@@ -4,6 +4,8 @@ import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { handleSeoRoute } from "./lib/seo-routes.server";
 import { applySeoResponseHeaders } from "./lib/seo.server";
+import { handleSupportRequest } from "./lib/support.server";
+import { loadLocalServerEnvironment } from "./lib/server-environment.server";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -52,13 +54,31 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      loadLocalServerEnvironment();
       const seoResponse = handleSeoRoute(request);
       if (seoResponse) return seoResponse;
+      if (new URL(request.url).pathname === "/api/support")
+        return await handleSupportRequest(request);
 
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return applySeoResponseHeaders(request, await normalizeCatastrophicSsrResponse(response));
     } catch (error) {
+      if (new URL(request.url).pathname === "/api/support") {
+        console.warn("Support request unavailable.", { code: "support_handler_failed" });
+        void request.body?.cancel().catch(() => undefined);
+        return Response.json(
+          { ok: false, error: "We couldn't save your message. Please try again." },
+          {
+            status: 503,
+            headers: {
+              "cache-control": "no-store",
+              "x-robots-tag": "noindex, nofollow",
+              "retry-after": "60",
+            },
+          },
+        );
+      }
       console.error(error);
       return applySeoResponseHeaders(
         request,

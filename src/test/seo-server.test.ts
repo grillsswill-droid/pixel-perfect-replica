@@ -18,11 +18,11 @@ import {
   parsePublicSiteOrigin,
 } from "@/lib/seo.server";
 import { handleSeoRoute } from "@/lib/seo-routes.server";
+import { PUBLIC_SEO_PAGES } from "@/lib/seo";
 import server from "../server";
 
 // Synthetic deployment configuration. Tests never contact this host or a provider.
 const ORIGIN = "https://grill-swill.com";
-const PUBLIC_PATHS = ["/", "/menu", "/deals", "/catering", "/gallery", "/locations"];
 const request = (path: string, method = "GET", origin = ORIGIN) =>
   new Request(`${origin}${path}`, { method });
 
@@ -122,7 +122,7 @@ describe("Robots and sitemap HTTP discovery", () => {
     expect(mocks.frameworkFetch).not.toHaveBeenCalled();
   });
 
-  it("publishes only the six public canonical URLs in valid sitemap XML", async () => {
+  it("publishes registered public canonical URLs without personal data in valid sitemap XML", async () => {
     const response = await server.fetch(
       request("/sitemap.xml?token=synthetic-private-value"),
       {},
@@ -134,9 +134,16 @@ describe("Robots and sitemap HTTP discovery", () => {
     const document = new DOMParser().parseFromString(text, "application/xml");
     expect(document.querySelector("parsererror")).toBeNull();
     const locations = [...document.querySelectorAll("loc")].map((node) => node.textContent);
-    expect(locations).toEqual(PUBLIC_PATHS.map((path) => new URL(path, ORIGIN).href));
+    expect(locations).toEqual(
+      PUBLIC_SEO_PAGES.filter((page) => page.path !== "/locations").map(
+        (page) => new URL(page.path, ORIGIN).href,
+      ),
+    );
+    expect(locations).toEqual(
+      expect.arrayContaining([`${ORIGIN}/faq`, `${ORIGIN}/support`, `${ORIGIN}/privacy`]),
+    );
     expect(text).not.toMatch(
-      /token=|guestId|checkout|receipts|orders|account|admin|kitchen|rewards/,
+      /token=|guestId|checkout|receipts|orders|account|admin|kitchen|rewards|\/locations/,
     );
     expect(mocks.database).not.toHaveBeenCalled();
     expect(mocks.frameworkFetch).not.toHaveBeenCalled();

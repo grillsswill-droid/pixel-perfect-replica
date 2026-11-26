@@ -28,8 +28,8 @@ import { Field } from "@/components/site/field";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
 import { useGuestId } from "@/hooks/use-guest";
+import { useStorefrontLocations } from "@/hooks/use-storefront-locations";
 import { getCheckoutConfiguration } from "@/lib/admin.functions";
-import { storesQuery } from "@/lib/catalog.functions";
 import { foodImage } from "@/lib/food-images";
 import { guestRewardsQuery } from "@/lib/order-queries";
 import { deliveryAddressSchema, type DeliveryAddress } from "@/lib/orders.functions";
@@ -54,11 +54,10 @@ export const Route = createFileRoute("/checkout")({
       { title: "Checkout | Grill & Swill" },
       {
         name: "description",
-        content:
-          "Finish your Grill & Swill order for delivery or pickup. Guest checkout, no account needed.",
+        content: "Finish your Grill & Swill order. Guest checkout, no account needed.",
       },
       { property: "og:title", content: "Checkout | Grill & Swill" },
-      { property: "og:description", content: "Guest checkout for delivery or pickup." },
+      { property: "og:description", content: "Guest checkout for your Grill & Swill order." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "robots", content: "noindex" },
@@ -90,7 +89,7 @@ function CheckoutPage() {
   const cart = useCart();
   const guestId = useGuestId();
   const { payment } = Route.useSearch();
-  const { data: stores = [] } = useQuery(storesQuery());
+  const { stores, hasLocations, isPending: locationsPending } = useStorefrontLocations();
   const { data: rewards } = useQuery(guestRewardsQuery(guestId));
   const { data: checkoutConfiguration } = useQuery({
     queryKey: ["checkout-configuration"],
@@ -158,10 +157,6 @@ function CheckoutPage() {
   useEffect(() => {
     if (serverError) serverErrorRef.current?.focus();
   }, [serverError]);
-
-  useEffect(() => {
-    if (!cart.storeId && stores[0]) cart.setStoreId(stores[0].id);
-  }, [cart, stores]);
 
   const availablePoints = rewards?.points ?? 0;
   const pricedLines = useMemo(
@@ -274,7 +269,14 @@ function CheckoutPage() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!validateDetails() || !guestId || !cart.storeId || !totals) return;
+    if (
+      !validateDetails() ||
+      !guestId ||
+      !totals ||
+      locationsPending ||
+      (hasLocations && !cart.storeId)
+    )
+      return;
     const savedRequestId = window.sessionStorage.getItem(CHECKOUT_REQUEST_KEY);
     const checkoutRequestId =
       requestId.current ??
@@ -395,8 +397,11 @@ function CheckoutPage() {
             >
               {step === 0 && (
                 <Panel title="How do you want it?">
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    {(["delivery", "pickup"] as const).map((f) => (
+                  <div className={cn("grid gap-3", hasLocations && "sm:grid-cols-2")}>
+                    {(hasLocations
+                      ? (["delivery", "pickup"] as const)
+                      : (["delivery"] as const)
+                    ).map((f) => (
                       <button
                         key={f}
                         type="button"
@@ -429,36 +434,43 @@ function CheckoutPage() {
                       </button>
                     ))}
                   </div>
-                  <h3 className="mt-8 font-display text-sm font-black tracking-wider uppercase">
-                    {cart.fulfillment === "delivery" ? "Delivering from" : "Pick up at"}
-                  </h3>
-                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                    {stores.map((s) => (
-                      <button
-                        key={s.id}
-                        type="button"
-                        aria-pressed={cart.storeId === s.id}
-                        onClick={() => cart.setStoreId(s.id)}
-                        className={cn(
-                          "rounded-2xl border-2 bg-card p-4 text-left transition",
-                          cart.storeId === s.id
-                            ? "border-primary"
-                            : "border-transparent hover:border-border",
-                        )}
-                      >
-                        <span className="flex items-center gap-2 font-bold">
-                          <MapPin className="h-4 w-4 text-primary" /> {s.name}
-                        </span>
-                        <span className="mt-1 block text-sm text-muted-foreground">
-                          {s.address}, {s.city}
-                        </span>
-                        <span className="mt-0.5 block text-xs text-muted-foreground">
-                          {s.hours}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                  <NextButton disabled={!cart.storeId} onClick={() => setStep(1)}>
+                  {hasLocations ? (
+                    <>
+                      <h3 className="mt-8 font-display text-sm font-black tracking-wider uppercase">
+                        {cart.fulfillment === "delivery" ? "Delivering from" : "Pick up at"}
+                      </h3>
+                      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                        {stores.map((s) => (
+                          <button
+                            key={s.id}
+                            type="button"
+                            aria-pressed={cart.storeId === s.id}
+                            onClick={() => cart.setStoreId(s.id)}
+                            className={cn(
+                              "rounded-2xl border-2 bg-card p-4 text-left transition",
+                              cart.storeId === s.id
+                                ? "border-primary"
+                                : "border-transparent hover:border-border",
+                            )}
+                          >
+                            <span className="flex items-center gap-2 font-bold">
+                              <MapPin className="h-4 w-4 text-primary" /> {s.name}
+                            </span>
+                            <span className="mt-1 block text-sm text-muted-foreground">
+                              {s.address}, {s.city}
+                            </span>
+                            <span className="mt-0.5 block text-xs text-muted-foreground">
+                              {s.hours}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  ) : null}
+                  <NextButton
+                    disabled={locationsPending || (hasLocations && !cart.storeId)}
+                    onClick={() => setStep(1)}
+                  >
                     Continue
                   </NextButton>
                 </Panel>
@@ -708,11 +720,39 @@ function CheckoutPage() {
                       size="xl"
                       className="mt-6 w-full"
                       loading={placing}
-                      disabled={!guestId || !totals}
+                      disabled={
+                        !guestId || !totals || locationsPending || (hasLocations && !cart.storeId)
+                      }
                     >
                       <Lock className="h-4 w-4" aria-hidden="true" /> Continue to Flutterwave{" "}
                       {totals ? `· ${formatMoney(totals.totalCents)}` : ""}
                     </Button>
+                    <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                      Please review our{" "}
+                      <Link to="/terms" className="font-semibold underline underline-offset-4">
+                        terms
+                      </Link>
+                      ,{" "}
+                      <Link
+                        to="/refund-policy"
+                        className="font-semibold underline underline-offset-4"
+                      >
+                        cancellation and refund policy
+                      </Link>{" "}
+                      and{" "}
+                      <Link to="/allergens" className="font-semibold underline underline-offset-4">
+                        allergen guidance
+                      </Link>{" "}
+                      before paying. Read our{" "}
+                      <Link to="/privacy" className="font-semibold underline underline-offset-4">
+                        privacy notice
+                      </Link>{" "}
+                      or{" "}
+                      <Link to="/support" className="font-semibold underline underline-offset-4">
+                        contact support
+                      </Link>{" "}
+                      if you need help.
+                    </p>
                   </form>
                 </Panel>
               )}

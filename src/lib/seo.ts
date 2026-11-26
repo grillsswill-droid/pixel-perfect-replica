@@ -6,12 +6,14 @@ export type SeoConfiguration = {
   origin: string | null;
   indexable: boolean;
   googleSiteVerification: string | null;
+  hasLocations?: boolean;
 };
 
 export const NOINDEX = "noindex, nofollow";
 export const INDEXABLE = "index, follow, max-image-preview:large";
 
-// Only public marketing pages belong in search. Rewards includes device history.
+// Public marketing and customer information pages belong in search.
+// Rewards, support records and other account data stay private.
 export const PUBLIC_SEO_PAGES = [
   {
     path: "/",
@@ -55,6 +57,69 @@ export const PUBLIC_SEO_PAGES = [
     description:
       "Find Grill & Swill store addresses, opening hours and contact details. Choose a location for your next pickup or delivery order.",
   },
+  {
+    path: "/faq",
+    label: "FAQs",
+    title: "Frequently Asked Questions | Grill & Swill",
+    description:
+      "Find answers about Grill & Swill ordering, payment, delivery, cancellations, refunds, allergens, rewards and customer support.",
+  },
+  {
+    path: "/support",
+    label: "Customer support",
+    title: "Contact Customer Support | Grill & Swill",
+    description:
+      "Contact Grill & Swill for help with an order, payment, refund request, catering inquiry, accessibility concern or website problem.",
+  },
+  {
+    path: "/privacy",
+    label: "Privacy notice",
+    title: "Privacy Notice | Grill & Swill",
+    description:
+      "How Grill & Swill uses order, contact, browser and support information, and how to ask about your data.",
+  },
+  {
+    path: "/terms",
+    label: "Terms of use",
+    title: "Terms of Use & Ordering | Grill & Swill",
+    description:
+      "Read the Grill & Swill terms for guest orders, payments, promotions, rewards, catering and public comments.",
+  },
+  {
+    path: "/refund-policy",
+    label: "Cancellations and refunds",
+    title: "Cancellation & Refund Policy | Grill & Swill",
+    description:
+      "Learn how to request an order change, cancellation or review of a Grill & Swill charge, missing item or food-quality problem.",
+  },
+  {
+    path: "/delivery-policy",
+    label: "Delivery information",
+    title: "Delivery & Collection Information | Grill & Swill",
+    description:
+      "Read about Grill & Swill fulfillment availability, delivery details, order estimates and getting help with your order.",
+  },
+  {
+    path: "/allergens",
+    label: "Food and allergens",
+    title: "Food & Allergen Information | Grill & Swill",
+    description:
+      "Read Grill & Swill guidance on food allergies, ingredients, cross-contact and asking about dietary needs before ordering.",
+  },
+  {
+    path: "/cookies",
+    label: "Cookies and browser storage",
+    title: "Cookies & Browser Storage | Grill & Swill",
+    description:
+      "Learn what Grill & Swill remembers in your browser, manage external map preferences and clear saved site data on your device.",
+  },
+  {
+    path: "/accessibility",
+    label: "Accessibility",
+    title: "Accessibility Statement | Grill & Swill",
+    description:
+      "Read the Grill & Swill accessibility aims and available features, request help or report a barrier using customer support.",
+  },
 ] as const;
 
 export function seoFromMatches(matches: ReadonlyArray<{ loaderData?: unknown }>): SeoConfiguration {
@@ -64,6 +129,7 @@ export function seoFromMatches(matches: ReadonlyArray<{ loaderData?: unknown }>)
     indexable: data?.indexable === true,
     googleSiteVerification:
       typeof data?.googleSiteVerification === "string" ? data.googleSiteVerification : null,
+    ...(typeof data?.hasLocations === "boolean" ? { hasLocations: data.hasLocations } : {}),
   };
 }
 
@@ -91,14 +157,19 @@ export function createPublicPageHead(path: string, configuration: SeoConfigurati
   const scripts: { type: string; children: string }[] = [];
   if (!page) return { meta, links, scripts };
 
+  const description =
+    configuration.hasLocations === false
+      ? page.description.replace(/pickup or delivery/g, "delivery")
+      : page.description;
+
   meta.push(
     { title: page.title },
-    { name: "description", content: page.description },
+    { name: "description", content: description },
     { property: "og:title", content: page.title },
-    { property: "og:description", content: page.description },
+    { property: "og:description", content: description },
     { property: "og:type", content: "website" },
     { name: "twitter:title", content: page.title },
-    { name: "twitter:description", content: page.description },
+    { name: "twitter:description", content: description },
     { name: "twitter:card", content: configuration.origin ? "summary_large_image" : "summary" },
   );
   if (!configuration.origin) return { meta, links, scripts };

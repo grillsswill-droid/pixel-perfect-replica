@@ -22,6 +22,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { CartProvider } from "@/hooks/use-cart";
 import { getSeoConfiguration } from "@/lib/seo.functions";
 import { NOINDEX } from "@/lib/seo";
+import { getCustomerSiteConfiguration } from "@/lib/customer-site.functions";
+import { CustomerSiteProvider } from "@/hooks/use-customer-site";
+import { storesQuery } from "@/lib/catalog.functions";
 
 function NotFoundComponent() {
   return (
@@ -29,7 +32,9 @@ function NotFoundComponent() {
       <div className="max-w-md text-center">
         <p className="font-display text-8xl font-black text-primary">404</p>
         <h1 className="mt-4 text-2xl font-black uppercase">This one fell off the grill</h1>
-        <p className="mt-2 text-sm text-muted-foreground">The page you're looking for doesn't exist or has moved.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          The page you're looking for doesn't exist or has moved.
+        </p>
         <div className="mt-6 flex justify-center gap-2">
           <Button asChild variant="hero">
             <Link to="/menu">See the menu</Link>
@@ -54,7 +59,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
     <div className="flex min-h-[70vh] items-center justify-center px-4">
       <div className="max-w-md text-center">
         <h1 className="text-2xl font-black uppercase">This page didn't load</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Something went wrong on our end. Try again, or head back home.</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Something went wrong on our end. Try again, or head back home.
+        </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <Button
             variant="hero"
@@ -75,7 +82,14 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  loader: () => getSeoConfiguration(),
+  loader: async ({ context }) => {
+    const [seo, customer, stores] = await Promise.all([
+      getSeoConfiguration(),
+      getCustomerSiteConfiguration(),
+      context.queryClient.ensureQueryData(storesQuery()),
+    ]);
+    return { ...seo, customer, hasLocations: stores.length > 0 };
+  },
   staleTime: Infinity,
   head: ({ loaderData }) => ({
     // Never add og:image or twitter:image here: every page without its own would inherit it.
@@ -83,7 +97,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Grill & Swill Fast Food" },
-      { name: "description", content: "Smashed burgers, crispy chicken, wood-fired pizza and cold brew. Order delivery or pickup." },
+      {
+        name: "description",
+        content: `Smashed burgers, crispy chicken, wood-fired pizza and cold brew. Order ${loaderData?.hasLocations ? "delivery or pickup" : "delivery"}.`,
+      },
       { name: "author", content: "Grill & Swill" },
       { name: "theme-color", content: "#B84414" },
       { property: "og:site_name", content: "Grill & Swill" },
@@ -118,7 +135,9 @@ function RootShell({ children }: { children: ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <a href="#main-content" className="skip-link">Skip to main content</a>
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         {children}
         <Scripts />
       </body>
@@ -128,23 +147,26 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { customer } = Route.useLoaderData();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MotionConfig reducedMotion="user">
-        <SiteMotion />
-        <CartProvider>
-          <div className="flex min-h-screen flex-col">
-            <SiteHeader />
-            <main id="main-content" className="flex-1" tabIndex={-1}>
-              <Outlet />
-            </main>
-            <SiteFooter />
-          </div>
-          <CartDrawer />
-          <Toaster position="top-center" richColors closeButton />
-        </CartProvider>
-      </MotionConfig>
+      <CustomerSiteProvider configuration={customer}>
+        <MotionConfig reducedMotion="user">
+          <SiteMotion />
+          <CartProvider>
+            <div className="flex min-h-screen flex-col">
+              <SiteHeader />
+              <main id="main-content" className="flex-1" tabIndex={-1}>
+                <Outlet />
+              </main>
+              <SiteFooter />
+            </div>
+            <CartDrawer />
+            <Toaster position="top-center" richColors closeButton />
+          </CartProvider>
+        </MotionConfig>
+      </CustomerSiteProvider>
     </QueryClientProvider>
   );
 }

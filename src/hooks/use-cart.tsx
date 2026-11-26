@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { getCart, saveCart } from "@/lib/cart.functions";
 import type { CartLine, Fulfillment } from "@/lib/menu-types";
 import { useGuestId } from "./use-guest";
+import { useStorefrontLocations } from "./use-storefront-locations";
 
 const STORAGE_KEY = "grill-swill-cart-v1";
 const REMOTE_LOAD_ATTEMPTS = 2;
@@ -72,6 +73,7 @@ export function addLineTo(lines: CartLine[], line: Omit<CartLine, "key">): CartL
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const guestId = useGuestId();
+  const { stores, hasLocations, isPending: locationsPending } = useStorefrontLocations();
   const [state, setState] = useState<CartState>({
     lines: [],
     fulfillment: "delivery",
@@ -82,6 +84,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [remoteAvailable, setRemoteAvailable] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const clearedWhileLoading = useRef(false);
+  const fulfillment = hasLocations ? state.fulfillment : "delivery";
+  const storeId = hasLocations
+    ? (stores.find((store) => store.id === state.storeId)?.id ?? stores[0]!.id)
+    : null;
+
+  useEffect(() => {
+    if (!hydrated || locationsPending) return;
+    setState((current) =>
+      current.fulfillment === fulfillment && current.storeId === storeId
+        ? current
+        : { ...current, fulfillment, storeId },
+    );
+  }, [hydrated, locationsPending, fulfillment, storeId, state.fulfillment, state.storeId]);
 
   useEffect(() => {
     try {
@@ -190,8 +205,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, lines: [] }));
   }, []);
   const setFulfillment = useCallback(
-    (fulfillment: Fulfillment) => setState((s) => ({ ...s, fulfillment })),
-    [],
+    (next: Fulfillment) =>
+      setState((s) => ({ ...s, fulfillment: hasLocations ? next : "delivery" })),
+    [hasLocations],
   );
   const setStoreId = useCallback(
     (storeId: string | null) => setState((s) => ({ ...s, storeId })),
@@ -201,6 +217,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const value = useMemo<CartContextValue>(
     () => ({
       ...state,
+      fulfillment,
+      storeId,
       hydrated,
       count: state.lines.reduce((n, l) => n + l.quantity, 0),
       subtotalCents: state.lines.reduce((n, l) => n + l.unitPriceCents * l.quantity, 0),
@@ -215,6 +233,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }),
     [
       state,
+      fulfillment,
+      storeId,
       hydrated,
       isOpen,
       addLine,

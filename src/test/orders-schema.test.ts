@@ -33,6 +33,18 @@ const validOrder = {
 };
 
 describe("order request validation", () => {
+  it("accepts delivery without a store and requires a store for pickup", () => {
+    expect(placeOrderSchema.safeParse({ ...validOrder, storeId: null }).success).toBe(true);
+    expect(
+      placeOrderSchema.safeParse({
+        ...validOrder,
+        fulfillment: "pickup",
+        storeId: null,
+        address: null,
+        pickupName: "Pat Guest",
+      }).success,
+    ).toBe(false);
+  });
   it("accepts a valid delivery order and normalizes its state code", () => {
     const result = placeOrderSchema.safeParse(validOrder);
 
