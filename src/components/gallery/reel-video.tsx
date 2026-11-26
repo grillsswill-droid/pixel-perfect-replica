@@ -1,11 +1,21 @@
-import { Maximize, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
+import { LoaderCircle, Maximize, Pause, Play, RotateCcw, Volume2, VolumeX } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { useGalleryPageVisible, useGalleryReducedMotion } from "@/hooks/use-gallery-media";
+import { useGalleryVideoSource } from "@/hooks/use-gallery-video-source";
 
 function videoTime(seconds: number) {
   const value = Number.isFinite(seconds) ? Math.max(0, Math.floor(seconds)) : 0;
   return `${Math.floor(value / 60)}:${String(value % 60).padStart(2, "0")}`;
+}
+
+function isAutoplayRejection(error: unknown) {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "name" in error &&
+    error.name === "NotAllowedError"
+  );
 }
 
 export function ReelVideo({
@@ -28,6 +38,12 @@ export function ReelVideo({
   const playbackAllowed = useRef(false);
   const reduced = useGalleryReducedMotion();
   const pageVisible = useGalleryPageVisible();
+  const {
+    url: playableSrc,
+    loading: sourceLoading,
+    error: sourceError,
+    retry: retrySource,
+  } = useGalleryVideoSource(src, active);
   const [intent, setIntent] = useState<"auto" | "play" | "pause">("auto");
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -37,8 +53,16 @@ export function ReelVideo({
   useEffect(() => {
     const player = video.current;
     if (!player) return;
-    playbackAllowed.current =
-      active && pageVisible && !failed && intent !== "pause" && (!reduced || intent === "play");
+    playbackAllowed.current = Boolean(
+      playableSrc &&
+      !sourceLoading &&
+      active &&
+      pageVisible &&
+      !failed &&
+      !sourceError &&
+      intent !== "pause" &&
+      (!reduced || intent === "play"),
+    );
     if (!playbackAllowed.current) {
       player.pause();
       return;
@@ -48,21 +72,26 @@ export function ReelVideo({
       .then(() => {
         if (!playbackAllowed.current) player.pause();
       })
-      .catch(() => {
-        // Browsers may require a click before playback; the play control remains available.
+      .catch((error: unknown) => {
+        if (!playbackAllowed.current) return;
+        if (isAutoplayRejection(error)) return;
+        setFailed(true);
       });
     return () => {
       playbackAllowed.current = false;
       player.pause();
     };
-  }, [active, pageVisible, reduced, intent, failed]);
+  }, [active, pageVisible, reduced, intent, failed, playableSrc, sourceLoading, sourceError]);
 
   function togglePlayback() {
     const player = video.current;
-    if (!player || !active || !pageVisible) return;
+    if (!player || !playableSrc || !active || !pageVisible) return;
     if (player.paused) {
       setIntent("play");
-      void player.play().catch(() => setFailed(true));
+      void player.play().catch((error: unknown) => {
+        if (isAutoplayRejection(error)) return;
+        setFailed(true);
+      });
     } else {
       setIntent("pause");
       player.pause();
@@ -73,14 +102,17 @@ export function ReelVideo({
     <div ref={frame} className="gallery-reel-frame">
       <video
         ref={video}
-        src={src}
+        src={playableSrc ?? undefined}
         aria-label={caption || "Grill & Swill video"}
         muted={muted}
         playsInline
         loop
         preload={active ? "metadata" : "none"}
-        className="absolute inset-0 h-full w-full object-contain"
-        onPlay={() => setPlaying(true)}
+        className="gallery-reel-video absolute inset-0 h-full w-full object-contain"
+        onPlay={() => {
+          setFailed(false);
+          setPlaying(true);
+        }}
         onPause={() => setPlaying(false)}
         onError={() => setFailed(true)}
         onLoadedMetadata={(event) =>
@@ -95,18 +127,29 @@ export function ReelVideo({
         }
         onTimeUpdate={(event) => setCurrentTime(event.currentTarget.currentTime)}
       />
-      {failed ? (
+      {sourceLoading ? (
+        <div
+          role="status"
+          className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-charcoal text-center text-sm text-white"
+        >
+          <LoaderCircle className="h-6 w-6 animate-spin" aria-hidden="true" />
+          <span>Loading video…</span>
+        </div>
+      ) : sourceError || failed ? (
         <div
           role="alert"
           className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-charcoal px-12 text-center text-white"
         >
-          <p className="text-base font-semibold">This video couldn’t be played.</p>
+          <p className="text-base font-semibold">
+            {sourceError ?? "This video couldn’t be played. Check the link or try again."}
+          </p>
           <button
             type="button"
             className="gallery-media-button px-4"
             onClick={() => {
               setFailed(false);
               setIntent("play");
+              retrySource();
               video.current?.load();
             }}
           >
@@ -118,7 +161,7 @@ export function ReelVideo({
             target="_blank"
             rel="noopener noreferrer"
           >
-            Open the original video
+            Open the original link
           </a>
         </div>
       ) : (
@@ -126,6 +169,7 @@ export function ReelVideo({
           type="button"
           data-gallery-play
           aria-label={playing ? "Pause video" : "Play video"}
+          disabled={!playableSrc}
           onClick={togglePlayback}
           className="absolute inset-0 flex cursor-pointer items-center justify-center focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-white"
         >
@@ -146,6 +190,7 @@ export function ReelVideo({
           className="gallery-media-button h-11 w-11"
           aria-label={muted ? "Turn sound on" : "Mute video"}
           aria-pressed={!muted}
+          disabled={!playableSrc}
           onClick={() => onMutedChange(!muted)}
         >
           {muted ? (
@@ -158,6 +203,7 @@ export function ReelVideo({
           type="button"
           className="gallery-media-button h-11 w-11"
           aria-label="Expand video"
+          disabled={!playableSrc}
           onClick={() => {
             if (!frame.current?.requestFullscreen) {
               toast.info("Fullscreen is not available in this browser.");
@@ -172,13 +218,13 @@ export function ReelVideo({
         </button>
       </div>
       {children}
-      <div className="absolute inset-x-4 bottom-2 z-10 flex items-center gap-2 text-xs tabular-nums text-white">
+      <div className="gallery-reel-controls absolute inset-x-4 bottom-2 z-10 flex items-center gap-2 text-xs tabular-nums text-white">
         <button
           type="button"
           aria-label={playing ? "Pause video" : "Play video"}
           className="gallery-media-button h-11 w-11 shrink-0"
           onClick={togglePlayback}
-          disabled={failed}
+          disabled={failed || sourceLoading || !playableSrc}
         >
           {playing ? (
             <Pause className="h-4 w-4" aria-hidden="true" />

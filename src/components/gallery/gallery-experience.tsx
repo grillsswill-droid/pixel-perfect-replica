@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp, Clapperboard, Grid3X3, ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -251,8 +251,29 @@ function ReelFeed({
   );
   const [activeIndex, setActiveIndex] = useState(initialIndex);
   const [muted, setMuted] = useState(true);
+  const [feedVisible, setFeedVisible] = useState(false);
   const reduced = useGalleryReducedMotion();
-  const onVisible = useCallback((index: number) => setActiveIndex(index), []);
+
+  useEffect(() => {
+    const node = feed.current;
+    if (!node) return;
+
+    function updateVisibility() {
+      const rect = feed.current?.getBoundingClientRect();
+      if (!rect) return;
+      const { top, bottom, height } = rect;
+      const visibleHeight = Math.max(0, Math.min(bottom, window.innerHeight) - Math.max(top, 0));
+      setFeedVisible(height > 0 && visibleHeight / height >= 0.25);
+    }
+
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    window.addEventListener("resize", updateVisibility);
+    return () => {
+      window.removeEventListener("scroll", updateVisibility);
+      window.removeEventListener("resize", updateVisibility);
+    };
+  }, []);
 
   useEffect(() => {
     feed.current?.scrollTo({ top: initialIndex * feed.current.clientHeight, behavior: "auto" });
@@ -272,24 +293,22 @@ function ReelFeed({
   }
 
   return (
-    <div className="mx-auto grid max-w-5xl items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-14">
-      <div className="mx-auto w-full max-w-[28rem]">
+    <div className="gallery-reel-layout mx-auto grid max-w-5xl items-start gap-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:gap-14">
+      <div className="gallery-reel-column mx-auto w-full max-w-[28rem]">
         <div
           ref={feed}
           tabIndex={0}
           aria-label="Video feed. Scroll or use the up and down arrow keys to browse."
           className="gallery-reel-feed"
           onScroll={(event) => {
-            if (!window.IntersectionObserver && event.currentTarget.clientHeight)
-              setActiveIndex(
-                Math.max(
-                  0,
-                  Math.min(
-                    items.length - 1,
-                    Math.round(event.currentTarget.scrollTop / event.currentTarget.clientHeight),
-                  ),
-                ),
-              );
+            const height = event.currentTarget.clientHeight;
+            if (!height) return;
+            setActiveIndex(
+              Math.max(
+                0,
+                Math.min(items.length - 1, Math.round(event.currentTarget.scrollTop / height)),
+              ),
+            );
           }}
           onKeyDown={(event) => {
             if (isTyping(event)) return;
@@ -312,8 +331,8 @@ function ReelFeed({
               guestId={guestId}
               muted={muted}
               onMutedChange={setMuted}
+              feedVisible={feedVisible}
               suspended={suspendedId === "all" || suspendedId === item.id}
-              onVisible={onVisible}
               onComment={onComment}
             />
           ))}
@@ -414,8 +433,8 @@ function ReelSlide({
   guestId,
   muted,
   onMutedChange,
+  feedVisible,
   suspended,
-  onVisible,
   onComment,
 }: {
   item: GalleryItem;
@@ -424,34 +443,14 @@ function ReelSlide({
   guestId: string | null;
   muted: boolean;
   onMutedChange: (muted: boolean) => void;
+  feedVisible: boolean;
   suspended: boolean;
-  onVisible: (index: number) => void;
   onComment: (id: string, trigger: HTMLButtonElement) => void;
 }) {
-  const slide = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  useEffect(() => {
-    if (!slide.current) return;
-    if (!window.IntersectionObserver) {
-      setVisible(true);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        const shown = Boolean(entry?.isIntersecting && entry.intersectionRatio >= 0.6);
-        setVisible(shown);
-        if (shown) onVisible(index);
-      },
-      { threshold: [0, 0.6] },
-    );
-    observer.observe(slide.current);
-    return () => observer.disconnect();
-  }, [index, onVisible]);
 
   return (
     <div
-      ref={slide}
       className="gallery-reel-slide"
       role="group"
       aria-label={`Video ${index + 1}: ${item.caption || "Grill & Swill"}`}
@@ -459,20 +458,20 @@ function ReelSlide({
       <ReelVideo
         src={foodImage(item.url)}
         caption={item.caption}
-        active={visible && current && !suspended}
+        active={feedVisible && current && !suspended}
         muted={muted}
         onMutedChange={onMutedChange}
       >
-        <div className="absolute bottom-20 right-3 z-10">
+        <div className="gallery-reel-actions absolute bottom-20 right-3 z-10">
           <GalleryPostActions
             itemId={item.id}
             guestId={guestId}
-            enabled={(visible && current) || suspended}
+            enabled={(feedVisible && current) || suspended}
             rail
             onComment={(source) => onComment(item.id, source)}
           />
         </div>
-        <div className="absolute bottom-18 left-4 right-20 z-10 text-white">
+        <div className="gallery-reel-caption absolute bottom-18 left-4 right-20 z-10 text-white">
           <div className="mb-3 flex items-center gap-2">
             <img src="/favicon.png" alt="" className="h-9 w-9 rounded-full bg-charcoal" />
             <p className="text-sm font-bold">Grill & Swill</p>

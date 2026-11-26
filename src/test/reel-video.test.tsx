@@ -37,15 +37,9 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-function player(active = true) {
+function player(active = true, src = "https://media.example/video.mp4") {
   return (
-    <ReelVideo
-      src="https://media.example/video.mp4"
-      caption="A fresh burger"
-      active={active}
-      muted
-      onMutedChange={vi.fn()}
-    />
+    <ReelVideo src={src} caption="A fresh burger" active={active} muted onMutedChange={vi.fn()} />
   );
 }
 
@@ -88,11 +82,44 @@ describe("Reels playback", () => {
   });
 
   it("keeps a play button when a browser blocks autoplay", async () => {
-    vi.mocked(HTMLMediaElement.prototype.play).mockRejectedValue(new Error("Autoplay blocked"));
+    vi.mocked(HTMLMediaElement.prototype.play).mockRejectedValue(
+      new DOMException("Autoplay blocked", "NotAllowedError"),
+    );
     render(player());
     await act(async () => {});
     expect(screen.getAllByRole("button", { name: "Play video" })).toHaveLength(2);
     expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+  });
+
+  it("resolves a Streamable share link before autoplaying the video", async () => {
+    const playableUrl =
+      "https://cdn-cf-east.streamable.com/video/mp4/ym4ib0.mp4?Expires=1795912179479";
+    const fetch = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ status: 2, files: { mp4: { url: playableUrl } } }), {
+        headers: { "content-type": "application/json" },
+      }),
+    );
+    vi.stubGlobal("fetch", fetch);
+    const { container } = render(player(true, "https://streamable.com/ym4ib0"));
+    const video = container.querySelector("video")!;
+
+    await waitFor(() => expect(video).toHaveAttribute("src", playableUrl));
+    await waitFor(() => expect(HTMLMediaElement.prototype.play).toHaveBeenCalled());
+    expect(fetch).toHaveBeenCalledWith(
+      "https://api.streamable.com/videos/ym4ib0",
+      expect.objectContaining({ credentials: "omit" }),
+    );
+  });
+
+  it("shows a clear recovery message for a page URL that is not supported video media", async () => {
+    const fetch = vi.fn();
+    vi.stubGlobal("fetch", fetch);
+    render(player(true, "https://youtube.com/watch?v=abc123"));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Use a direct HTTPS MP4, M4V or WebM link, or a Streamable video link.",
+    );
+    expect(fetch).not.toHaveBeenCalled();
   });
 
   it("seeks within the actual video duration", () => {

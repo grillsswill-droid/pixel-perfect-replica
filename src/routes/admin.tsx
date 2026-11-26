@@ -25,6 +25,8 @@ import { Button } from "@/components/ui/button";
 import { AdminSupportPanel } from "@/components/customer/admin-support-panel";
 import { GalleryImagePicker } from "@/components/gallery/gallery-image-picker";
 import { prepareGalleryImage } from "@/lib/gallery-image";
+import { useGalleryVideoSource } from "@/hooks/use-gallery-video-source";
+import { isGalleryVideoUrl } from "@/lib/gallery-video";
 import {
   deleteAdminCateringPackage,
   deleteAdminCateringProtein,
@@ -2325,6 +2327,10 @@ export function GalleryPanel({
   const [caption, setCaption] = useState("");
   const [active, setActive] = useState(true);
   const [formError, setFormError] = useState("");
+  const videoPreview = useGalleryVideoSource(
+    mediaType === "video" ? url : "",
+    mediaType === "video" && Boolean(url),
+  );
 
   return (
     <Panel
@@ -2343,6 +2349,10 @@ export function GalleryPanel({
                   ? "Choose a photo from your computer or add an image URL."
                   : "Add a direct HTTPS video link.",
               );
+              return;
+            }
+            if (mediaType === "video" && !isGalleryVideoUrl(url.trim())) {
+              setFormError("Use a direct HTTPS MP4, M4V or WebM link, or a Streamable video link.");
               return;
             }
             setFormError("");
@@ -2454,24 +2464,36 @@ export function GalleryPanel({
             ) : (
               <div className="space-y-2">
                 <TextInput
-                  label="HTTPS video URL"
+                  label="Video file or Streamable link"
                   value={url}
                   onChange={(value) => {
                     setUrl(value);
                     setFormError("");
                   }}
                   type="url"
-                  placeholder="https://…/video.mp4"
+                  placeholder="https://…/video.mp4 or streamable.com/…"
                   required
                 />
                 <p className="text-xs leading-relaxed text-muted-foreground">
-                  Use a direct link to an MP4 or WebM file. Vertical videos work best for Reels.
+                  Use a direct MP4, M4V or WebM file link, or a Streamable share link. Vertical
+                  videos work best for Reels.
                 </p>
-                {url.startsWith("https://") ? (
+                {videoPreview.loading ? (
+                  <p role="status" className="text-sm text-muted-foreground">
+                    Loading video preview…
+                  </p>
+                ) : null}
+                {videoPreview.error && url.startsWith("https://") ? (
+                  <p role="alert" className="text-sm text-destructive">
+                    {videoPreview.error}
+                  </p>
+                ) : null}
+                {videoPreview.url ? (
                   <video
-                    src={url}
+                    src={videoPreview.url}
                     controls
                     playsInline
+                    muted
                     preload="metadata"
                     className="max-h-72 w-full rounded-xl bg-charcoal object-contain"
                   />

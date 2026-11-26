@@ -27,6 +27,7 @@ import {
   type PromoDefinition,
 } from "./pricing";
 import { DEFAULT_TICKER_MESSAGES } from "./site-content";
+import { isGalleryVideoUrl } from "./gallery-video";
 
 type AdminSession = { admin?: boolean };
 
@@ -267,8 +268,8 @@ const gallerySchema = z
     active: z.boolean(),
   })
   .strict()
-  .refine((value) => value.media_type !== "video" || value.url.startsWith("https://"), {
-    message: "Videos must use an HTTPS URL.",
+  .refine((value) => value.media_type !== "video" || isGalleryVideoUrl(value.url), {
+    message: "Videos must use a direct HTTPS video file or a Streamable video link.",
     path: ["url"],
   });
 
