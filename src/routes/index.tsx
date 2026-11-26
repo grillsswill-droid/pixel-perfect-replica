@@ -16,11 +16,12 @@ import {
   X,
 } from "lucide-react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
-import { useDeferredValue, useMemo, useRef, useState } from "react";
+import { useDeferredValue, useMemo, useRef, useState, type CSSProperties } from "react";
 import { toast } from "sonner";
 
 import heroFeast from "@/assets/hero-feast.jpg";
 import kitchenGrill from "@/assets/kitchen-grill.jpg";
+import meltingCheeseHeaven from "@/routes/Melting Cheese Heaven.jpeg";
 import { Reveal } from "@/components/site/reveal";
 import { ItemCustomizer } from "@/components/site/item-customizer";
 import { Button } from "@/components/ui/button";
@@ -497,6 +498,11 @@ function Hero() {
     <section
       ref={heroRef}
       className="storefront-hero relative isolate overflow-hidden bg-charcoal text-cream"
+      style={
+        {
+          "--mobile-hero-image": `url(${meltingCheeseHeaven})`,
+        } as CSSProperties
+      }
     >
       <motion.div style={{ y: imageY }} className="absolute inset-0 -z-20 h-[116%]">
         <img

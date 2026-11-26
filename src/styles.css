@@ -801,6 +801,19 @@
   }
   .storefront-hero {
     height: clamp(550px, calc(100svh - 180px), 650px);
+    background-image:
+      linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--charcoal) 82%, transparent),
+        color-mix(in oklab, var(--charcoal) 34%, transparent) 72%,
+        color-mix(in oklab, var(--charcoal) 18%, transparent)
+      ),
+      var(--mobile-hero-image);
+    background-position: center;
+    background-size: cover;
+  }
+  .storefront-hero > div:first-of-type {
+    display: none;
   }
   .hero-inner {
     align-items: flex-start;
@@ -844,6 +857,9 @@
 @media (max-width: 380px) {
   .hero-title {
     font-size: 50px;
+  }
+  header a[aria-label="Grill & Swill home"] > span {
+    display: none;
   }
   .hero-copy > div:nth-last-child(2) {
     gap: 12px;
